@@ -1,5 +1,4 @@
-sadsadasdwsadadssaddsa
-testi
+Valtterin Testi
 Javascript
 
 Tiedon hakeminen ajaxilla
