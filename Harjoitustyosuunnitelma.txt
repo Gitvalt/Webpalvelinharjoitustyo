@@ -1,0 +1,22 @@
+﻿
+Javascript
+
+Tiedon hakeminen ajaxilla
+
+Kalenterinäkymä
+ - tapahtumat tietyllä aikavälillä
+
+Tapahtuma paikan hakeminen google apilla
+
+Jqueryn käyttö
+
+-------
+
+PHP
+Käyttäjän autentikointi
+	- istuntojen käyttäminen
+
+Tietojen tallentaminen (mysql?, json?)
+Tapahtumien lisääminen, poistaminen
+Tapahtumien tuominen ulkoisista lähteistä?
+REST api?
