@@ -1,4 +1,3 @@
-Valtterin Testi
 Javascript
 
 Tiedon hakeminen ajaxilla
