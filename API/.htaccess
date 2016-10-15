@@ -1,9 +1,17 @@
 RewriteEngine On
-RewriteRule    ^events/*$    index.php?type=events [NC,L]
+#RewriteRule    ^events/*$    index.php?type=events [NC,L]
+#RewriteRule    ^events/([0-9a-zA-Z]+)/?$    index.php?type=event&index=$1    [NC,L]
+
+#
 RewriteRule    ^events/([0-9a-zA-Z]+)/?$    index.php?type=event&index=$1    [NC,L]
+
+
 RewriteRule    ^users/*$    index.php?type=users [NC,L]
 RewriteRule    ^users/([0-9a-zA-Z]+)/?$    index.php?type=user&index=$1    [NC,L]
+RewriteRule    ^users/([0-9a-zA-Z]+)*/([0-9a-zA-Z]+)*$   index.php?type=userEvent&index=$2 [NC,L]
+RewriteRule    ^users/([0-9a-zA-Z]+)*/([0-9a-zA-Z]+).([0-9a-zA-Z]+).([0-9a-zA-Z]+).([0-9a-zA-Z]+).([0-9a-zA-Z]+).([0-9a-zA-Z]+)$   index.php?type=userEventAdd&header=$2&description=$3&startDateTime=$4&endDateTime=$5&location=$6&owner=$7 [NC,L]
 
 # laittamalla selaimeen http://{url}.../Webpalvelinharjoitustyo/API/{JOTAIN} suorittaa käskyn ../Webpalvelinharjoitustyo/API/index.php?index={JOTAIN}
 
 #RewriteRule ^location([acceptable parameter]howmanyparameters)/?$ what really happens to input NC L prevents others from rules being used if this one is used.
+#https://www.addedbytes.com/articles/for-beginners/url-rewriting-for-beginners/

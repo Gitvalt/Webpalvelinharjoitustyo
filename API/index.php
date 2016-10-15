@@ -80,10 +80,10 @@ if(empty($_GET["type"])){
             //API/users/
             if($_SERVER['REQUEST_METHOD'] == "GET"){
                 
-                $parameter = GetTableData("person");
+                $parameter = GetTableData("user");
                 
                 if($parameter == null){
-                    Response(400, "No persons defined", null);
+                    Response(404, "No persons defined", null);
                 } else {
                     Response(200, "Response ok", $parameter);
                 }
@@ -93,6 +93,45 @@ if(empty($_GET["type"])){
                 Response(404 ,"Not implemented", null);
             }
             
+            break;
+            
+        case "userevent":
+            if($_SERVER['REQUEST_METHOD'] == "GET"){
+                //return event made by user, index = eventid
+                $parameter = GetEventData($_GET["index"]);
+            
+                if($parameter != null){
+                    Response(200, "Response OK", $parameter);
+                } else {
+                    Response(404, "Could not find the event by that id", null);
+                }
+                
+            }
+            if($_SERVER['REQUEST_METHOD'] == "POST"){
+                //create event for user. index = username
+                $
+                Response(404, "Not enough parameters for event", null);
+            }
+            break;
+            
+        case "userEventAdd":
+            //API/users/username/{x}
+            if($_SERVER['REQUEST_METHOD'] == "GET"){
+                //return event made by user, index = eventid
+                $parameter = GetEventData($_GET["index"]);
+                
+                if($parameter != null){
+                    Response(200, "User Exists", $parameter);
+                } else {
+                    Response(404, "Could not find the event by that id", null);
+                }
+                
+            }
+            
+            if($_SERVER['REQUEST_METHOD'] == "POST"){
+                //create event for user. index = username
+                Response(404, "Could not find the event by that lastname: " . $_GET["firstname"], null);
+            }
             break;
             
         default:

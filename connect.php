@@ -34,6 +34,7 @@ function GetTableData($table){
     }
 }
 
+//Get specific event
 function GetEventData($event){
      try {
         $conn = Connect();
@@ -49,11 +50,56 @@ function GetEventData($event){
     }
 }
 
+//Create Event for user
+function InsertEvent($user, $header, $description, $startDateTime, $endDateTime, $location){
+     
+    try {
+        $conn = Connect();
+        
+        $statement = $conn->prepare("INSERT INTO event(header, description, startDateTime, endDateTime, location, owner) VALUES(?,?,?,?,?,?);");
+        
+        $statement->bindValue(1, $header, PDO::PARAM_STR);
+        $statement->bindValue(2, $description, PDO::PARAM_STR);
+        $statement->bindValue(3, $startDateTime, PDO::PARAM_DATETIME);
+        
+        $statement->bindValue(4, $endDateTime, PDO::PARAM_DATETIME);
+        $statement->bindValue(5, $location, PDO::PARAM_STR);
+        $statement->bindValue(6, $user, PDO::PARAM_STR);
+        
+        $statement->execute();
+        
+        return true;
+
+    } catch(PDOException $e){
+        //echo "error:" . $e->getMessage();
+        return false;
+    }
+    
+}
+
+
+//Get every event from user. Does not include shared events.
+function GetUserEvents($user){
+     try {
+        $conn = Connect();
+        $event = htmlspecialchars($event);
+        $statement = $conn->prepare("SELECT * FROM event where owner=?;");
+        $statement->bindValue(1, $user, PDO::PARAM_STR);
+        $statement->execute();
+        $tulos = $statement->fetchAll(PDO::FETCH_ASSOC);;
+        return $tulos;
+
+    } catch(PDOException $e){
+        //echo "error:" . $e->getMessage();
+    }
+}
+
+
 function GetUserData($user){
      try {
         $conn = Connect();
         $user = htmlspecialchars($user);
-        $statement = $conn->prepare("SELECT * FROM person where username=?;");
+        $statement = $conn->prepare("SELECT username, firstname, lastname, phone, email, address FROM user where username=?;");
         $statement->bindValue(1, $user, PDO::PARAM_STR);
         $statement->execute();
         $tulos = $statement->fetch(PDO::FETCH_ASSOC);;
