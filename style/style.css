@@ -1,0 +1,36 @@
+#output {
+    border: 5px lightgray solid;
+    background: white;
+
+    width: 50%;
+    height: 60%;
+
+    display: flex;
+
+    flex-wrap: wrap;
+    flex-direction: row;
+    align-content: flex-start;
+}
+
+
+.calendar_day, .calendar_day_outofrange {
+    text-align: left;
+    color: gray;
+}
+.calendar_day {
+    border: 2px black solid;
+    background: white;
+    width: 100px;
+    height: 100px;
+    margin-right: 5px;
+    clear: right;
+    margin-bottom: 5px;
+}
+
+.calendar_day_outofrange {
+    background: black;
+}
+
+#nav input{
+    margin-right: 1%;
+}
