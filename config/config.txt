@@ -1,4 +1,4 @@
-Host:
-Database:
-Username:
-Password:
+host:localhost
+database:testdatabase
+username:root
+password:
