@@ -30,6 +30,6 @@
 
 <?php
 
-include_once("script.php");
+include_once("PHPscript.php");
 
 ?>
