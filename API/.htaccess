@@ -1,2 +1,9 @@
 RewriteEngine On
-RewriteRule    ^([0-9]+)/?$    index.php?index=$1    [NC,L]    # laittamalla selaimeen http://{url}.../Webpalvelinharjoitustyo/API/{JOTAIN} suorittaa käskyn ../Webpalvelinharjoitustyo/API/index.php?index={JOTAIN}
+RewriteRule    ^events/*$    index.php?type=events [NC,L]
+RewriteRule    ^events/([0-9a-zA-Z]+)/?$    index.php?type=event&index=$1    [NC,L]
+RewriteRule    ^users/*$    index.php?type=users [NC,L]
+RewriteRule    ^users/([0-9a-zA-Z]+)/?$    index.php?type=user&index=$1    [NC,L]
+
+# laittamalla selaimeen http://{url}.../Webpalvelinharjoitustyo/API/{JOTAIN} suorittaa käskyn ../Webpalvelinharjoitustyo/API/index.php?index={JOTAIN}
+
+#RewriteRule ^location([acceptable parameter]howmanyparameters)/?$ what really happens to input NC L prevents others from rules being used if this one is used.
