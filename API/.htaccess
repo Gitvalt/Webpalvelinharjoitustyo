@@ -1,0 +1,2 @@
+RewriteEngine On
+RewriteRule    ^([0-9]+)/?$    index.php?index=$1    [NC,L]    # laittamalla selaimeen http://{url}.../Webpalvelinharjoitustyo/API/{JOTAIN} suorittaa käskyn ../Webpalvelinharjoitustyo/API/index.php?index={JOTAIN}
