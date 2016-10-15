@@ -1,8 +1,10 @@
 <?php
 require_once("../connect.php");
 
+/*
+http://www.restapitutorial.com/lessons/httpmethods.html
 
-$array = array(2,3,4,5);
+*/
 
 //200 = ok, 400 = no
 /*
@@ -18,47 +20,83 @@ if(empty($_GET["type"])){
     
     switch($_GET["type"]){
         case "event":
+            //API/events/{x}
+            if($_SERVER['REQUEST_METHOD'] == "GET"){
+                $parameter = GetEventData($_GET["index"]);
+
+                if($parameter == false){
+                    Response(400, "Event does not exist", null);
+                } else {
+                    Response(200, "Response ok", $parameter);    
+                }    
+            }
             
-            $parameter = GetEventData($_GET["index"]);
+            if($_SERVER['REQUEST_METHOD'] == "POST"){
+                Response(404 ,"Not implemented", null);
+            }
             
-            if($parameter == false){
-                Response(400, "Event does not exist", null);
-            } else {
-                Response(200, "Response ok", $parameter);    
-            }    
             break;
             
         case "events":
-            
-            $parameter = GetTableData("event");
-            
-            if($parameter == null){
-                Response(400, "No events defined", null);
-            } else {
-                Response(200, "Response ok", $parameter);
+            //API/events/
+            if($_SERVER['REQUEST_METHOD'] == "GET"){
+
+                $parameter = GetTableData("event");
+
+                if($parameter == null){
+                    Response(400, "No events defined", null);
+                } else {
+                    Response(200, "Response ok", $parameter);
+                }
             }
+            
+            if($_SERVER['REQUEST_METHOD'] == "POST"){
+                Response(404 ,"Not implemented", null);
+            }
+            
+            
             break;
             
          case "user":
+            //API/users/{x}
+            if($_SERVER['REQUEST_METHOD'] == "GET"){
+                $parameter = GetUserData($_GET["index"]);
+
+                if($parameter == false){
+                    Response(400, "User does not exist", null);
+                } else {
+                    Response(200, "Response ok", $parameter);    
+                }
+            }
             
-            $parameter = GetUserData($_GET["index"]);
+            if($_SERVER['REQUEST_METHOD'] == "POST"){
+                Response(404 ,"Not implemented", null);
+            }
             
-            if($parameter == false){
-                Response(400, "User does not exist", null);
-            } else {
-                Response(200, "Response ok", $parameter);    
-            }    
+            
             break;
             
         case "users":
-            
-            $parameter = GetTableData("person");
-            
-            if($parameter == null){
-                Response(400, "No persons defined", null);
-            } else {
-                Response(200, "Response ok", $parameter);
+            //API/users/
+            if($_SERVER['REQUEST_METHOD'] == "GET"){
+                
+                $parameter = GetTableData("person");
+                
+                if($parameter == null){
+                    Response(400, "No persons defined", null);
+                } else {
+                    Response(200, "Response ok", $parameter);
+                }
             }
+            
+            if($_SERVER['REQUEST_METHOD'] == "POST"){
+                Response(404 ,"Not implemented", null);
+            }
+            
+            break;
+            
+        default:
+            Response(404, "System failure", null);
             break;
     }
 }
