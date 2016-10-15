@@ -1,0 +1,20 @@
+Only if admin
+API/users <---> display all users
+API/events <---> display all events
+API/groups <---> display all groups
+
+for user
+API/users/{user} <---> display user information
+
+API/users/{user}/events/ <---> display all events
+API/users/{user}/events/{otsikko} <---> display event {otsikko}
+
+API/users/{user}/events/:{otsikko} <---> Create event {otsikko}
+
+
+API/users/{user}/shared_events/ <---> display all shared events
+API/users/{user}/shared_events/{otsikko} <---> display shared event {otsikko}
+
+?------
+
+send json in post containing new info
