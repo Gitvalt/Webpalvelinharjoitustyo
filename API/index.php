@@ -36,7 +36,64 @@ if(empty($_GET["type"])){
             }
             
             break;
+        case "userCreate":
+             if($_SERVER['REQUEST_METHOD'] == "GET"){
+                Response(400 ,"not acceptable input", null);   
+            }
             
+            
+            if($_SERVER['REQUEST_METHOD'] == "POST"){
+                
+                //API/users/:{username}
+                
+                $id = @$_GET["index"];
+                
+                if(!empty(@$_POST["password"])){
+                        $password = $_POST["password"];
+                    } else {
+                        Response(400, "password not defined", null);
+                }
+                
+                if(!empty(@$_POST["firstname"])){
+                        $firstname = $_POST["firstname"];
+                    } else {
+                        Response(400, "firstname not defined", null);
+                }
+                
+                if(!empty(@$_POST["lastname"])){
+                        $lastname = $_POST["lastname"];
+                    } else {
+                        Response(400, "lastname not defined", null);
+                }
+                
+                if(!empty(@$_POST["email"])){
+                        $email = $_POST["email"];
+                    } else {
+                        Response(400, "email not defined", null);
+                }
+                
+                if(!empty(@$_POST["phone"])){
+                        $phone = $_POST["phone"];
+                    } else {
+                        Response(400, "phone not defined", null);
+                }
+                
+                if(!empty(@$_POST["address"])){
+                        $address = $_POST["address"];
+                    } else {
+                        Response(400, "address not defined", null);
+                }
+                
+                $respond = InsertUser($id, $password, $firstname, $lastname, $email, $phone, $address);
+                
+                if($respond == true){
+                    Response(200, "Response ok", null);
+                } else {
+                    Response(400, "Response false", $respond);
+                }
+            }
+            
+            break;
         case "userEvents":
             //API/users/{username}/events/
             if($_SERVER['REQUEST_METHOD'] == "GET"){

@@ -78,6 +78,32 @@ function InsertEvent($user, $header, $description, $startDateTime, $endDateTime,
     
 }
 
+//Create user
+function InsertUser($user, $pass, $firstname, $lastname, $email, $phone, $address){
+     
+    try {
+        $conn = Connect();
+        
+        $statement = $conn->prepare("INSERT INTO user(username, password, firstname, lastname, email, phone, address) VALUES(?,?,?,?,?,?,?);");
+        
+        $statement->bindValue(1, $user, PDO::PARAM_STR);
+        $statement->bindValue(2, $pass, PDO::PARAM_STR);
+        $statement->bindValue(3, $firstname, PDO::PARAM_STR);
+        
+        $statement->bindValue(4, $lastname, PDO::PARAM_STR);
+        $statement->bindValue(5, $email, PDO::PARAM_STR);
+        $statement->bindValue(6, $phone, PDO::PARAM_STR);
+        $statement->bindValue(7, $address, PDO::PARAM_STR);
+        
+        $statement->execute();
+        
+        return true;
+
+    } catch(PDOException $e){
+        return $e->getMessage();
+    }
+    
+}
 
 //Get every event from user. Does not include shared events.
 function GetUserEvents($user){

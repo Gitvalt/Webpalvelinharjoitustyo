@@ -5,6 +5,11 @@ RewriteEngine On
 #show users
 RewriteRule    ^users/*$    index.php?type=users [NC,L]
 
+
+#create user
+RewriteRule    ^users/[:]([0-9a-zA-Z]+)?$    index.php?type=userCreate&index=$1    [NC,L]
+
+
 #show specific user
 RewriteRule    ^users/([0-9a-zA-Z]+)/?$    index.php?type=user&index=$1    [NC,L]
 
