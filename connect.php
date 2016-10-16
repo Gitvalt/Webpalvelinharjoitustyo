@@ -141,6 +141,7 @@ function GetUserEvent($user, $id){
 
     } catch(PDOException $e){
         //echo "error:" . $e->getMessage();
+         return false;
     }
 }
 
@@ -156,6 +157,30 @@ function ModifyUser($username, $password, $firstname, $lastname, $email, $phone,
         $statement->bindValue(6, $address, PDO::PARAM_STR);
         $statement->bindValue(4, $email, PDO::PARAM_STR);
         $statement->bindValue(7, $username, PDO::PARAM_STR);
+        
+        $statement->execute();
+        
+        return true;
+
+    } catch(PDOException $e){
+        //echo "error:" . $e->getMessage();
+         return false;
+    }
+}
+
+//Modify event
+function ModifyUserEvent($id, $header, $desc, $Start, $Ends, $location, $owner){
+    try {
+        $conn = Connect();
+        $statement = $conn->prepare("UPDATE event SET header=?, description=?, startDateTime=?, endDateTime=?, location=?, owner=? WHERE id=?;");
+        
+        $statement->bindValue(1, $header, PDO::PARAM_STR);
+        $statement->bindValue(2, $desc, PDO::PARAM_STR);
+        $statement->bindValue(3, $Start, PDO::PARAM_STR);
+        $statement->bindValue(4, $Ends, PDO::PARAM_STR);
+        $statement->bindValue(5, $location, PDO::PARAM_STR);
+        $statement->bindValue(6, $owner, PDO::PARAM_STR);
+        $statement->bindValue(7, $id, PDO::PARAM_INT);
         
         $statement->execute();
         

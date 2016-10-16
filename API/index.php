@@ -151,63 +151,144 @@ if(empty($_GET["type"])){
             }
             
             break;
+            
         case "userEventModify":
             if($_SERVER['REQUEST_METHOD'] == "POST"){
-                $user_data = GetUserData($_GET["index"]);
-
+                
+                $user_data = GetUserData($_GET["owner"]);
+                $eventdata = GetUserEvent($_GET["owner"], $_GET["index"]);
+                
+                $counter = 0;
+                
                 if($user_data == false){
                     Response(404, "No use found", null);
                 } else {
-
-                if(!empty($_POST["firstname"])){
-                    $firstname = $_POST["firstname"];
+                
+                if($eventdata == false){
+                    Response(404, "No event found", null);
                 } else {
-                    $firstname = $user_data["firstname"];
-                }
                     
-                if(isset($_POST["lastname"])){
-                    $lastname = @$_POST["lastname"];
-                } else {
-                    $lastname = $user_data["lastname"];
-                }
+                    if(!empty($_POST["header"])){
+                        $header = $_POST["header"];
+                        $counter++;
+                    } else {
+                        $header = $eventdata["header"];
+                    }
                     
-                if(isset($_POST["password"])){
-                    $password = @$_POST["password"];
-                } else {
-                    $password = $user_data["password"];
-                }
-                
-                if(isset($_POST["address"])){
-                    $address = @$_POST["address"];
-                } else {
-                    $address = $user_data["address"];
-                }
-                
-                if(isset($_POST["phone"])){
-                    $phone = @$_POST["phone"];
-                } else {
-                    $phone = $user_data["phone"];
-                }
-                
-                if(isset($_POST["email"])){
-                    $email = @$_POST["email"];
-                } else {
-                    $email = $user_data["email"];
-                }
-                
-                $result = ModifyUser($_GET["index"], $password, $firstname, $lastname, $email, $phone, $address);
+                    if(!empty($_POST["description"])){
+                        $description = $_POST["description"];
+                        $counter++;
+                    } else {
+                        $description = $eventdata["description"];
+                    }
                     
-                if($result == true){
-                    Response(200, "Modified user", $firstname);    
-                } else {
-                    Response(400, "Modification failure", $result);    
-                }    
+                    if(!empty($_POST["startDateTime"])){
+                        $startDateTime = $_POST["startDateTime"];
+                        $counter++;
+                    } else {
+                        $startDateTime = $eventdata["startDateTime"];
+                    }
+                    
+                    if(!empty($_POST["endDateTime"])){
+                        $endDateTime = $_POST["endDateTime"];
+                        $counter++;
+                    } else {
+                        $endDateTime = $eventdata["endDateTime"];
+                    }
+                    
+                    if(!empty($_POST["location"])){
+                        $location = $_POST["location"];
+                        $counter++;
+                    } else {
+                        $location = $eventdata["location"];
+                    }
+                    
+                    if(!empty($_POST["owner"])){
+                        $owner = $_POST["owner"];
+                        $counter++;
+                    } else {
+                        $owner = $eventdata["owner"];
+                    }
+                    
+                    //if any changes are detected.
+                    if($counter != 0){
+                    $result = ModifyUserEvent($_GET["index"], $header, $description, $startDateTime, $endDateTime, $location, $owner);
+                    } else {
+                        Response(400, "No changes defined", null);
+                    }
+                    
+                    if($result == true){
+                        Response(200, "Modified user", GetUserEvent($_GET["owner"], $_GET["index"]));    
+                    } else {
+                        Response(400, "Modification failure", $result);    
+                    }
+                }
                 }
             } else {
                 Response(404, "Invalid get", null);
             }
             break;
             
+        case "userModify":
+              if($_SERVER['REQUEST_METHOD'] == "POST"){
+                
+                $user_data = GetUserData($_GET["owner"]);
+                    
+                if($user_data == false){
+                    Response(404, "No use found", null);
+                } else {
+                
+
+                    if(!empty($_POST["firstname"])){
+                        $firstname = $_POST["firstname"];
+                    } else {
+                        $firstname = $user_data["firstname"];
+                    }
+
+                    if(isset($_POST["lastname"])){
+                        $lastname = @$_POST["lastname"];
+                    } else {
+                        $lastname = $user_data["lastname"];
+                    }
+
+                    if(isset($_POST["password"])){
+                        $password = @$_POST["password"];
+                    } else {
+                        $password = $user_data["password"];
+                    }
+
+                    if(isset($_POST["address"])){
+                        $address = @$_POST["address"];
+                    } else {
+                        $address = $user_data["address"];
+                    }
+
+                    if(isset($_POST["phone"])){
+                        $phone = @$_POST["phone"];
+                    } else {
+                        $phone = $user_data["phone"];
+                    }
+
+                    if(isset($_POST["email"])){
+                        $email = @$_POST["email"];
+                    } else {
+                        $email = $user_data["email"];
+                    }
+
+                    $result = ModifyUser($_GET["index"], $password, $firstname, $lastname, $email, $phone, $address);
+
+                    if($result == true){
+                        Response(200, "Modified user", $firstname);    
+                    } else {
+                        Response(400, "Modification failure", $result);    
+                    }
+                }
+                
+            } else {
+                Response(404, "Invalid get", null);
+            }
+            break;
+        
         case "userEventInstert":
             //API/users/username/:{x}
             // --> insert event
