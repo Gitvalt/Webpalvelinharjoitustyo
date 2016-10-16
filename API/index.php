@@ -19,10 +19,10 @@ if(empty($_GET["type"])){
     $parameter;
     
     switch($_GET["type"]){
-        case "event":
-            //API/events/{x}
+        case "userEvent":
+            //API/users/{username}/events/{eventid}
             if($_SERVER['REQUEST_METHOD'] == "GET"){
-                $parameter = GetEventData($_GET["index"]);
+                $parameter = GetUserEvent($_GET["user"],$_GET["index"]);
 
                 if($parameter == false){
                     Response(400, "Event does not exist", null);
@@ -37,11 +37,11 @@ if(empty($_GET["type"])){
             
             break;
             
-        case "events":
-            //API/events/
+        case "userEvents":
+            //API/users/{username}/events/
             if($_SERVER['REQUEST_METHOD'] == "GET"){
 
-                $parameter = GetTableData("event");
+                $parameter = GetUserEvents($_GET["index"]);
 
                 if($parameter == null){
                     Response(400, "No events defined", null);
@@ -58,7 +58,7 @@ if(empty($_GET["type"])){
             break;
             
          case "user":
-            //API/users/{x}
+            //API/users/{username}
             if($_SERVER['REQUEST_METHOD'] == "GET"){
                 $parameter = GetUserData($_GET["index"]);
 
@@ -93,24 +93,6 @@ if(empty($_GET["type"])){
                 Response(404 ,"Not implemented", null);
             }
             
-            break;
-            
-        case "userEvent":
-            if($_SERVER['REQUEST_METHOD'] == "GET"){
-                //return event made by user, index = eventid
-                $parameter = GetEventData($_GET["index"]);
-            
-                if($parameter != null){
-                    Response(200, "Response OK", $parameter);
-                } else {
-                    Response(404, "Could not find the event by that id", null);
-                }
-                
-            }
-            if($_SERVER['REQUEST_METHOD'] == "POST"){
-                //create event for user. index = username
-                Response(404, "Not enough parameters for event", null);
-            }
             break;
             
         case "userEventInstert":

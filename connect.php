@@ -50,6 +50,8 @@ function GetEventData($event){
     }
 }
 
+
+
 //Create Event for user
 function InsertEvent($user, $header, $description, $startDateTime, $endDateTime, $location){
      
@@ -81,10 +83,13 @@ function InsertEvent($user, $header, $description, $startDateTime, $endDateTime,
 function GetUserEvents($user){
      try {
         $conn = Connect();
-        $event = htmlspecialchars($event);
+        $user = htmlspecialchars($user);
+         
         $statement = $conn->prepare("SELECT * FROM event where owner=?;");
+        
         $statement->bindValue(1, $user, PDO::PARAM_STR);
         $statement->execute();
+        
         $tulos = $statement->fetchAll(PDO::FETCH_ASSOC);;
         return $tulos;
 
@@ -93,6 +98,26 @@ function GetUserEvents($user){
     }
 }
 
+//Get specific event from user. Does not include shared events.
+function GetUserEvent($user, $id){
+     try {
+        $conn = Connect();
+        $user = htmlspecialchars($user);
+        $id = htmlspecialchars($id);
+         
+        $statement = $conn->prepare("SELECT * FROM event where owner=? and id=?;");
+        
+        $statement->bindValue(1, $user, PDO::PARAM_STR);
+        $statement->bindValue(2, $id, PDO::PARAM_INT);
+        $statement->execute();
+        
+        $tulos = $statement->fetch(PDO::FETCH_ASSOC);;
+        return $tulos;
+
+    } catch(PDOException $e){
+        //echo "error:" . $e->getMessage();
+    }
+}
 
 function GetUserData($user){
      try {
