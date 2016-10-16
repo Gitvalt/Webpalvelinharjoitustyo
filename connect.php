@@ -18,6 +18,7 @@ function Connect(){
     }
 }
 
+//get data from table x
 function GetTableData($table){
      try {
         $conn = Connect();
@@ -49,8 +50,6 @@ function GetEventData($event){
         //echo "error:" . $e->getMessage();
     }
 }
-
-
 
 //Create Event for user
 function InsertEvent($user, $header, $description, $startDateTime, $endDateTime, $location){
@@ -145,11 +144,35 @@ function GetUserEvent($user, $id){
     }
 }
 
+function ModifyUser($username, $password, $firstname, $lastname, $email, $phone, $address){
+    try {
+        $conn = Connect();
+        $statement = $conn->prepare("UPDATE user SET password=?, firstname=?, lastname=?, email=?, phone=?, address=? WHERE username=?;");
+        
+        $statement->bindValue(1, $password, PDO::PARAM_STR);
+        $statement->bindValue(2, $firstname, PDO::PARAM_STR);
+        $statement->bindValue(3, $lastname, PDO::PARAM_STR);
+        $statement->bindValue(5, $phone, PDO::PARAM_STR);
+        $statement->bindValue(6, $address, PDO::PARAM_STR);
+        $statement->bindValue(4, $email, PDO::PARAM_STR);
+        $statement->bindValue(7, $username, PDO::PARAM_STR);
+        
+        $statement->execute();
+        
+        return true;
+
+    } catch(PDOException $e){
+        //echo "error:" . $e->getMessage();
+         return false;
+    }
+}
+
+//Get user profile
 function GetUserData($user){
      try {
         $conn = Connect();
         $user = htmlspecialchars($user);
-        $statement = $conn->prepare("SELECT username, firstname, lastname, phone, email, address FROM user where username=?;");
+        $statement = $conn->prepare("SELECT username, password, firstname, lastname, phone, email, address FROM user where username=?;");
         $statement->bindValue(1, $user, PDO::PARAM_STR);
         $statement->execute();
         $tulos = $statement->fetch(PDO::FETCH_ASSOC);;
@@ -157,6 +180,7 @@ function GetUserData($user){
 
     } catch(PDOException $e){
         //echo "error:" . $e->getMessage();
+         return false;
     }
 }
 

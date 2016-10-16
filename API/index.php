@@ -151,6 +151,62 @@ if(empty($_GET["type"])){
             }
             
             break;
+        case "userEventModify":
+            if($_SERVER['REQUEST_METHOD'] == "POST"){
+                $user_data = GetUserData($_GET["index"]);
+
+                if($user_data == false){
+                    Response(404, "No use found", null);
+                } else {
+
+                if(!empty($_POST["firstname"])){
+                    $firstname = $_POST["firstname"];
+                } else {
+                    $firstname = $user_data["firstname"];
+                }
+                    
+                if(isset($_POST["lastname"])){
+                    $lastname = @$_POST["lastname"];
+                } else {
+                    $lastname = $user_data["lastname"];
+                }
+                    
+                if(isset($_POST["password"])){
+                    $password = @$_POST["password"];
+                } else {
+                    $password = $user_data["password"];
+                }
+                
+                if(isset($_POST["address"])){
+                    $address = @$_POST["address"];
+                } else {
+                    $address = $user_data["address"];
+                }
+                
+                if(isset($_POST["phone"])){
+                    $phone = @$_POST["phone"];
+                } else {
+                    $phone = $user_data["phone"];
+                }
+                
+                if(isset($_POST["email"])){
+                    $email = @$_POST["email"];
+                } else {
+                    $email = $user_data["email"];
+                }
+                
+                $result = ModifyUser($_GET["index"], $password, $firstname, $lastname, $email, $phone, $address);
+                    
+                if($result == true){
+                    Response(200, "Modified user", $firstname);    
+                } else {
+                    Response(400, "Modification failure", $result);    
+                }    
+                }
+            } else {
+                Response(404, "Invalid get", null);
+            }
+            break;
             
         case "userEventInstert":
             //API/users/username/:{x}

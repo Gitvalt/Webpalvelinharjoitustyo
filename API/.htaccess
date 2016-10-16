@@ -22,9 +22,11 @@ RewriteRule    ^users/([0-9a-zA-Z]+)/events/([0-9a-zA-Z])$   index.php?type=user
 #create event with name :{index}
 RewriteRule    ^users/([0-9a-zA-Z]+)/events/[:]([0-9a-zA-Z]+)?$   index.php?type=userEventInstert&index=$2&owner=$1 [NC,L]
 
+#modify user event with name :{index}
+RewriteRule    ^users/([0-9a-zA-Z]+)/events/modf:([0-9a-zA-Z]+)?$   index.php?type=userEventModify&index=$2&owner=$1 [NC,L]
 
 
-# laittamalla selaimeen http://{url}.../Webpalvelinharjoitustyo/API/{JOTAIN} suorittaa käskyn ../Webpalvelinharjoitustyo/API/index.php?index={JOTAIN}
+
 
 #RewriteRule ^location([acceptable parameter]howmanyparameters)/?$ what really happens to input NC L prevents others from rules being used if this one is used.
 #https://www.addedbytes.com/articles/for-beginners/url-rewriting-for-beginners/

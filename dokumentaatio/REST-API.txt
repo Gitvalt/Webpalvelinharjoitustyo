@@ -18,3 +18,11 @@ API/users/{user}/shared_events/{otsikko} <---> display shared event {otsikko}
 ?------
 
 send json in post containing new info
+
+
+- ShareEvent
+    - Insert
+    - Remove
+    
+- Modify events
+- Delete events
