@@ -60,9 +60,9 @@ function InsertEvent($user, $header, $description, $startDateTime, $endDateTime,
         
         $statement->bindValue(1, $header, PDO::PARAM_STR);
         $statement->bindValue(2, $description, PDO::PARAM_STR);
-        $statement->bindValue(3, $startDateTime, PDO::PARAM_DATETIME);
+        $statement->bindValue(3, $startDateTime, PDO::PARAM_LOB);
         
-        $statement->bindValue(4, $endDateTime, PDO::PARAM_DATETIME);
+        $statement->bindValue(4, $endDateTime, PDO::PARAM_LOB);
         $statement->bindValue(5, $location, PDO::PARAM_STR);
         $statement->bindValue(6, $user, PDO::PARAM_STR);
         
@@ -71,8 +71,7 @@ function InsertEvent($user, $header, $description, $startDateTime, $endDateTime,
         return true;
 
     } catch(PDOException $e){
-        //echo "error:" . $e->getMessage();
-        return false;
+        return $e->getMessage();
     }
     
 }

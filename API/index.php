@@ -95,7 +95,7 @@ if(empty($_GET["type"])){
             
             break;
             
-        case "userevent":
+        case "userEvent":
             if($_SERVER['REQUEST_METHOD'] == "GET"){
                 //return event made by user, index = eventid
                 $parameter = GetEventData($_GET["index"]);
@@ -109,28 +109,63 @@ if(empty($_GET["type"])){
             }
             if($_SERVER['REQUEST_METHOD'] == "POST"){
                 //create event for user. index = username
-                $
                 Response(404, "Not enough parameters for event", null);
             }
             break;
             
-        case "userEventAdd":
-            //API/users/username/{x}
+        case "userEventInstert":
+            //API/users/username/:{x}
+            // --> insert event
             if($_SERVER['REQUEST_METHOD'] == "GET"){
-                //return event made by user, index = eventid
-                $parameter = GetEventData($_GET["index"]);
-                
-                if($parameter != null){
-                    Response(200, "User Exists", $parameter);
-                } else {
-                    Response(404, "Could not find the event by that id", null);
-                }
-                
+                //Response false
+                Response(400, "Invalid GET command", null);
             }
             
             if($_SERVER['REQUEST_METHOD'] == "POST"){
                 //create event for user. index = username
-                Response(404, "Could not find the event by that lastname: " . $_GET["firstname"], null);
+                //index = otsikko
+                if(isset($_POST["header"]) and isset($_POST["startdatetime"]) and isset($_POST["enddatetime"])) {
+                    
+                    //all required data exists
+                    //validate input
+                    if(!empty(@$_GET["index"])){
+                        $header = @$_GET["index"];
+                    } else {
+                        $header = "";
+                    }
+                    
+                    if(!empty(@$_POST["description"])){
+                        $desc = @$_POST["description"];
+                    } else {
+                        $desc = "";
+                    }
+                    
+                    
+                    $EventStart = new DateTime($_POST["startdatetime"]);
+                    $FormatStart = $EventStart->format("Y-m-d H:i:s");
+                    
+                    $EventEnd =  new DateTime($_POST["enddatetime"]);
+                    $FormatEnd = $EventEnd->format("Y-m-d H:i:s");
+                    
+                    if(!empty(@$_POST["location"])){
+                        $location = @$_POST["location"];
+                    } else {
+                        $location = "";
+                    }
+                    
+                    $response = InsertEvent($_GET["owner"], $header, $desc, $FormatStart, $FormatEnd, $location);
+                    
+                    if($response == true){
+                        Response(200, "New event created", $response);
+                    } else {
+                        Response(404, "Creating event failed", $response);    
+                    }
+                    
+                } else {
+                Response(404, "Missing required data", null);    
+                }
+                
+                
             }
             break;
             
