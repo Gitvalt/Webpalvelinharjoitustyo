@@ -2,17 +2,35 @@ RewriteEngine On
 #RewriteRule    ^events/*$    index.php?type=events [NC,L]
 #RewriteRule    ^events/([0-9a-zA-Z]+)/?$    index.php?type=event&index=$1    [NC,L]
 
-#
-RewriteRule    ^events/([0-9a-zA-Z]+)/?$    index.php?type=event&index=$1    [NC,L]
-
-
+#show users
 RewriteRule    ^users/*$    index.php?type=users [NC,L]
+
+
+#create user
+RewriteRule    ^users/[:]([0-9a-zA-Z]+)?$    index.php?type=userCreate&index=$1    [NC,L]
+
+
+#show specific user
 RewriteRule    ^users/([0-9a-zA-Z]+)/?$    index.php?type=user&index=$1    [NC,L]
-RewriteRule    ^users/([0-9a-zA-Z]+)/([0-9a-zA-Z])$   index.php?type=userEvent&index=$2 [NC,L]
-RewriteRule    ^users/([0-9a-zA-Z]+)/[:]([0-9a-zA-Z]+)?$   index.php?type=userEventInstert&index=$2&owner=$1 [NC,L]
 
+#show events made by user
+RewriteRule    ^users/([0-9a-zA-Z]+)/events/*$   index.php?type=userEvents&index=$1 [NC,L]
 
-# laittamalla selaimeen http://{url}.../Webpalvelinharjoitustyo/API/{JOTAIN} suorittaa käskyn ../Webpalvelinharjoitustyo/API/index.php?index={JOTAIN}
+#show specific event made by user
+RewriteRule    ^users/([0-9a-zA-Z]+)/events/([0-9a-zA-Z])$   index.php?type=userEvent&index=$2&user=$1 [NC,L]
+
+#create event with name :{index}
+RewriteRule    ^users/([0-9a-zA-Z]+)/events/[:]([0-9a-zA-Z]+)?$   index.php?type=userEventInstert&index=$2&owner=$1 [NC,L]
+
+#create user with name :{index}
+RewriteRule    ^users/[:]([0-9a-zA-Z]+)?$   index.php?type=userCreate&index=$1 [NC,L]
+
+#modify user event with id :{index}
+RewriteRule    ^users/([0-9a-zA-Z]+)/events/modf:([0-9a-zA-Z]+)?$   index.php?type=userEventModify&index=$2&owner=$1 [NC,L]
+
+#modify user with name :{index}
+RewriteRule    ^users/modf:([0-9a-zA-Z]+)?$   index.php?type=userModify&owner=$1 [NC,L]
+
 
 #RewriteRule ^location([acceptable parameter]howmanyparameters)/?$ what really happens to input NC L prevents others from rules being used if this one is used.
 #https://www.addedbytes.com/articles/for-beginners/url-rewriting-for-beginners/

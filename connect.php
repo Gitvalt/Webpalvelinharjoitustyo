@@ -18,6 +18,7 @@ function Connect(){
     }
 }
 
+//get data from table x
 function GetTableData($table){
      try {
         $conn = Connect();
@@ -76,15 +77,44 @@ function InsertEvent($user, $header, $description, $startDateTime, $endDateTime,
     
 }
 
+//Create user
+function InsertUser($user, $pass, $firstname, $lastname, $email, $phone, $address){
+     
+    try {
+        $conn = Connect();
+        
+        $statement = $conn->prepare("INSERT INTO user(username, password, firstname, lastname, email, phone, address) VALUES(?,?,?,?,?,?,?);");
+        
+        $statement->bindValue(1, $user, PDO::PARAM_STR);
+        $statement->bindValue(2, $pass, PDO::PARAM_STR);
+        $statement->bindValue(3, $firstname, PDO::PARAM_STR);
+        
+        $statement->bindValue(4, $lastname, PDO::PARAM_STR);
+        $statement->bindValue(5, $email, PDO::PARAM_STR);
+        $statement->bindValue(6, $phone, PDO::PARAM_STR);
+        $statement->bindValue(7, $address, PDO::PARAM_STR);
+        
+        $statement->execute();
+        
+        return true;
+
+    } catch(PDOException $e){
+        return $e->getMessage();
+    }
+    
+}
 
 //Get every event from user. Does not include shared events.
 function GetUserEvents($user){
      try {
         $conn = Connect();
-        $event = htmlspecialchars($event);
+        $user = htmlspecialchars($user);
+         
         $statement = $conn->prepare("SELECT * FROM event where owner=?;");
+        
         $statement->bindValue(1, $user, PDO::PARAM_STR);
         $statement->execute();
+        
         $tulos = $statement->fetchAll(PDO::FETCH_ASSOC);;
         return $tulos;
 
@@ -93,12 +123,81 @@ function GetUserEvents($user){
     }
 }
 
+//Get specific event from user. Does not include shared events.
+function GetUserEvent($user, $id){
+     try {
+        $conn = Connect();
+        $user = htmlspecialchars($user);
+        $id = htmlspecialchars($id);
+         
+        $statement = $conn->prepare("SELECT * FROM event where owner=? and id=?;");
+        
+        $statement->bindValue(1, $user, PDO::PARAM_STR);
+        $statement->bindValue(2, $id, PDO::PARAM_INT);
+        $statement->execute();
+        
+        $tulos = $statement->fetch(PDO::FETCH_ASSOC);;
+        return $tulos;
 
+    } catch(PDOException $e){
+        //echo "error:" . $e->getMessage();
+         return false;
+    }
+}
+
+function ModifyUser($username, $password, $firstname, $lastname, $email, $phone, $address){
+    try {
+        $conn = Connect();
+        $statement = $conn->prepare("UPDATE user SET password=?, firstname=?, lastname=?, email=?, phone=?, address=? WHERE username=?;");
+        
+        $statement->bindValue(1, $password, PDO::PARAM_STR);
+        $statement->bindValue(2, $firstname, PDO::PARAM_STR);
+        $statement->bindValue(3, $lastname, PDO::PARAM_STR);
+        $statement->bindValue(5, $phone, PDO::PARAM_STR);
+        $statement->bindValue(6, $address, PDO::PARAM_STR);
+        $statement->bindValue(4, $email, PDO::PARAM_STR);
+        $statement->bindValue(7, $username, PDO::PARAM_STR);
+        
+        $statement->execute();
+        
+        return true;
+
+    } catch(PDOException $e){
+        //echo "error:" . $e->getMessage();
+         return false;
+    }
+}
+
+//Modify event
+function ModifyUserEvent($id, $header, $desc, $Start, $Ends, $location, $owner){
+    try {
+        $conn = Connect();
+        $statement = $conn->prepare("UPDATE event SET header=?, description=?, startDateTime=?, endDateTime=?, location=?, owner=? WHERE id=?;");
+        
+        $statement->bindValue(1, $header, PDO::PARAM_STR);
+        $statement->bindValue(2, $desc, PDO::PARAM_STR);
+        $statement->bindValue(3, $Start, PDO::PARAM_STR);
+        $statement->bindValue(4, $Ends, PDO::PARAM_STR);
+        $statement->bindValue(5, $location, PDO::PARAM_STR);
+        $statement->bindValue(6, $owner, PDO::PARAM_STR);
+        $statement->bindValue(7, $id, PDO::PARAM_INT);
+        
+        $statement->execute();
+        
+        return true;
+
+    } catch(PDOException $e){
+        //echo "error:" . $e->getMessage();
+         return false;
+    }
+}
+
+//Get user profile
 function GetUserData($user){
      try {
         $conn = Connect();
         $user = htmlspecialchars($user);
-        $statement = $conn->prepare("SELECT username, firstname, lastname, phone, email, address FROM user where username=?;");
+        $statement = $conn->prepare("SELECT username, password, firstname, lastname, phone, email, address FROM user where username=?;");
         $statement->bindValue(1, $user, PDO::PARAM_STR);
         $statement->execute();
         $tulos = $statement->fetch(PDO::FETCH_ASSOC);;
@@ -106,6 +205,7 @@ function GetUserData($user){
 
     } catch(PDOException $e){
         //echo "error:" . $e->getMessage();
+         return false;
     }
 }
 
