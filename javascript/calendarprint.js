@@ -30,8 +30,10 @@ function JavaPrint(){
 function PrintCalender(date){
 
     /*
-    Prints a calender to div id=ouput
-    input of function is a date in a month, that you want inspect. For example: input: 15.10.2016 -> result: prints October and highlights 15th day.
+    Prints a calender to <div id=ouput>
+    
+    input of function is a date in a month, that you want inspect. For example: input: 15.10.2016 -> result: prints October and highlights 15th day of october.
+    
     */
 
 
@@ -161,7 +163,8 @@ function PrintCalender(date){
        handlerDate = new Date(date.getFullYear(), date.getMonth() + 1, x, "0", "0", "0", "0");
 
         while(tr.childElementCount < 7){
-
+            
+            //Luodaan päivät
             day = document.createElement("td");
             day.className = "calendar_day_outofrange";
             day_content = document.createElement("p");

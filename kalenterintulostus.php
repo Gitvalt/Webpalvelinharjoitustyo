@@ -8,7 +8,6 @@
     </head>
     <body>
         <form action="<?php echo $_SERVER["PHP_SELF"]; ?>" method="post">
-            POST-PHP CalenderPrint<br>
             <input type="date" name="selected_date" value="">
             <hr>
 
@@ -29,7 +28,5 @@
 </html>
 
 <?php
-
-include_once("PHPscript.php");
 
 ?>
