@@ -1,6 +1,7 @@
 # Webpalvelinharjoitustyo
 
----Asennus----
+<h2>Asennus</h2>
+<hr>
 !Huom. Olen harjoitustyön tekemiseen käyttänyt XAMPP-ympäristöä, joten en tiedä toimiiko ohjelma koulun palvelimella.
 Voi olla, että joudutte esim. import.sql tiedostoa muuttamaan, jotta sen lataaminen omalle koulun sql tietokantaohjelmaan toimisi.
 
