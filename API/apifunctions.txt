@@ -7,8 +7,14 @@ modify user
 show events
 show user events
 show user event specific
+
+show events shared to user
+show events shared by user
+
 create event
 modify event
+
+
 
 !share event
 !unshare event
@@ -22,5 +28,3 @@ modify event
 remove user
 remove event
 
-Huom
-!show user events also show user events that have been shared

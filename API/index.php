@@ -187,7 +187,7 @@ if(empty($_GET["type"])){
             }
             
             break;
-            
+        
         case "users":
             //API/users/
             if($_SERVER['REQUEST_METHOD'] == "GET"){
@@ -207,6 +207,41 @@ if(empty($_GET["type"])){
             
             break;
             
+        case "SharedToMe":
+            
+            if($_SERVER['REQUEST_METHOD'] == "GET"){
+                
+                $user = $_GET["index"];
+                $events = GetSharedEvents($user);
+                
+                if(!empty($events)){
+                    Response(200, "Shared events found", $events);    
+                } else {
+                    Response(404, "No shared events found", null);    
+                }
+                
+            } else {
+                Response(404, "Invalid http type", null);
+            }
+            break;
+            
+        case "SharedEvents":
+            
+                if($_SERVER['REQUEST_METHOD'] == "GET"){
+                
+                $user = $_GET["index"];
+                $events = GetEventsSharedByUser($user);
+                
+                if(!empty($events)){
+                    Response(200, "Shared events found", $events);    
+                } else {
+                    Response(404, "No events shared", null);    
+                }
+                
+            } else {
+                Response(404, "Invalid http type", null);
+            }
+            break;
         case "userEventModify":
             if($_SERVER['REQUEST_METHOD'] == "POST"){
                 

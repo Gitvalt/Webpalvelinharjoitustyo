@@ -144,59 +144,42 @@ function DeleteUser($user){
     
 }
 
-//Return all event id:s that have been shared with user x
-//eventID = reference to event field -> id
-function GetSharedEventIDs($user){
+function GetSharedEvents($user){
      
     try {
-        $conn = Connect();
-        
-        $statement = $conn->prepare("Select eventID from sharedevent where username=?;");
-        
-        $statement->bindValue(1, $user, PDO::PARAM_STR);
-        
-        $statement->execute();
-        $results = $statement->fetchAll(PDO::FETCH_ASSOC);
-        return $results;
 
+        $conn = Connect();    
+        $statement = $conn->prepare("Select id, header, startDateTime, endDateTime, location, owner from event INNER JOIN sharedevent on event.id=sharedevent.eventID WHERE username=?;");
+                
+        $statement->bindValue(1, $user, PDO::PARAM_STR);
+        $statement->execute();
+        $var = $statement->fetchAll(PDO::FETCH_ASSOC);
+        
+        return $var;
+        
     } catch(PDOException $e){
         return null;
     }
 }
 
-function GetSharedEvents($user){
+function GetEventsSharedByUser($user){
      
     try {
+        $conn = Connect();
+        $statement = $conn->prepare("SELECT id, header, startDateTime, endDateTime, location, sharedevent.username as sharedToUser from event INNER JOIN sharedevent on event.id = sharedevent.eventID where owner=?");
+                
+        $statement->bindValue(1, $user, PDO::PARAM_STR);
+        $statement->execute();
+        $results = $statement->fetchAll(PDO::FETCH_ASSOC);
         
-        $sharedEvents = GetSharedEventIDs($user);
-        
-    
-        if($sharedEvents != null){
-            
-            $conn = Connect();
-            $results = array();
-            
-            foreach($sharedEvents[0] as $id){
-                
-                $statement = $conn->prepare("Select * from event where id=?;");
-                
-                $statement->bindValue(1, $id, PDO::PARAM_STR);
-                $statement->execute();
-                $var = $statement->fetch(PDO::FETCH_ASSOC);
-                array_push($results, $var);
-                
-            }
-           
-            return $results;
-    
-        } else {
-            return null;
-        }
+        return $results;
         
     } catch(PDOException $e){
         return false;
     }
 }
+
+
 
 //Get every event from user. Does not include shared events.
 function GetUserEvents($user){
