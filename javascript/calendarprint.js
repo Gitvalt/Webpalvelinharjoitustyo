@@ -123,7 +123,7 @@ function PrintCalender(date){
     var int = tr.childElementCount - 1;
 
     var table_elements = table.childElementCount;
-
+    //tulostaa tr elementtiin päiviä. 
     while(handlerDate.getMonth() == startMonth && table_elements < 6){
 
         //remember 11 = december
@@ -158,6 +158,7 @@ function PrintCalender(date){
 
 
     }
+    //jos kuukausi päättyy ja viimeinen päivä ei ole sunnuntai --> lisätään loput kalenteri tauluun
     if(tr.childElementCount < 7){
         var x = 1;
        handlerDate = new Date(date.getFullYear(), date.getMonth() + 1, x, "0", "0", "0", "0");

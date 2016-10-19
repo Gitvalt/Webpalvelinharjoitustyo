@@ -1,0 +1,26 @@
+show users
+
+show user
+create user
+modify user
+
+show events
+show user events
+show user event specific
+create event
+modify event
+
+!share event
+!unshare event
+
+<?
+!create group
+!delete group
+!modify group
+?>
+
+remove user
+remove event
+
+Huom
+!show user events also show user events that have been shared

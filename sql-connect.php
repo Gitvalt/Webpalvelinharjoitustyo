@@ -77,6 +77,27 @@ function InsertEvent($user, $header, $description, $startDateTime, $endDateTime,
     
 }
 
+function DeleteEvent($user, $id){
+     
+    try {
+        $conn = Connect();
+        
+        $statement = $conn->prepare("DELETE FROM event WHERE id=? and owner=?;");
+        
+        $statement->bindValue(1, $id, PDO::PARAM_INT);
+        $statement->bindValue(2, $user, PDO::PARAM_STR);
+        
+        $statement->execute();
+        
+        return true;
+
+    } catch(PDOException $e){
+        return $e->getMessage();
+    }
+    
+}
+
+
 //Create user
 function InsertUser($user, $pass, $firstname, $lastname, $email, $phone, $address){
      
@@ -104,6 +125,79 @@ function InsertUser($user, $pass, $firstname, $lastname, $email, $phone, $addres
     
 }
 
+function DeleteUser($user){
+     
+    try {
+        $conn = Connect();
+        
+        $statement = $conn->prepare("DELETE FROM user WHERE username=? ;");
+        
+        $statement->bindValue(1, $user, PDO::PARAM_STR);
+        
+        $statement->execute();
+        
+        return true;
+
+    } catch(PDOException $e){
+        return $e->getMessage();
+    }
+    
+}
+
+//Return all event id:s that have been shared with user x
+//eventID = reference to event field -> id
+function GetSharedEventIDs($user){
+     
+    try {
+        $conn = Connect();
+        
+        $statement = $conn->prepare("Select eventID from sharedevent where username=?;");
+        
+        $statement->bindValue(1, $user, PDO::PARAM_STR);
+        
+        $statement->execute();
+        $results = $statement->fetchAll(PDO::FETCH_ASSOC);
+        return $results;
+
+    } catch(PDOException $e){
+        return null;
+    }
+}
+
+function GetSharedEvents($user){
+     
+    try {
+        
+        $sharedEvents = GetSharedEventIDs($user);
+        
+    
+        if($sharedEvents != null){
+            
+            $conn = Connect();
+            $results = array();
+            
+            foreach($sharedEvents[0] as $id){
+                
+                $statement = $conn->prepare("Select * from event where id=?;");
+                
+                $statement->bindValue(1, $id, PDO::PARAM_STR);
+                $statement->execute();
+                $var = $statement->fetch(PDO::FETCH_ASSOC);
+                array_push($results, $var);
+                
+            }
+           
+            return $results;
+    
+        } else {
+            return null;
+        }
+        
+    } catch(PDOException $e){
+        return false;
+    }
+}
+
 //Get every event from user. Does not include shared events.
 function GetUserEvents($user){
      try {
@@ -115,7 +209,20 @@ function GetUserEvents($user){
         $statement->bindValue(1, $user, PDO::PARAM_STR);
         $statement->execute();
         
-        $tulos = $statement->fetchAll(PDO::FETCH_ASSOC);;
+        $tulos = $statement->fetchAll(PDO::FETCH_ASSOC);
+        
+        //Start handling shared events
+        $shared = GetSharedEvents($user); 
+        //return $shared;
+        
+        if($shared != null and $shared != false){
+           foreach($shared as $event){
+                array_push($tulos, $event);
+           } 
+        }
+       //End handling shared events
+        sort($tulos);
+         
         return $tulos;
 
     } catch(PDOException $e){
@@ -137,6 +244,9 @@ function GetUserEvent($user, $id){
         $statement->execute();
         
         $tulos = $statement->fetch(PDO::FETCH_ASSOC);;
+        
+       
+        
         return $tulos;
 
     } catch(PDOException $e){

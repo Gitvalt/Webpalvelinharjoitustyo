@@ -98,16 +98,48 @@ if(empty($_GET["type"])){
             }
             
             break;
+        
+        
+        case "events":
+            if($_SERVER['REQUEST_METHOD'] == "GET"){
+                $parameter = GetTableData("event");
+                
+                if($parameter == null){
+                    Response(404, "No events defined", null);
+                } else {
+                    Response(200, "Events found", $parameter);
+                }
+                
+            }
+            break;
+        
+        case "DeleteEvent":
+            if($_SERVER['REQUEST_METHOD'] == "POST"){
+                
+                $result = DeleteEvent($_GET["owner"], $_GET["index"]);
+                
+                if($result == true){
+                    Response(200,"Deleted event", true);  
+                } else {
+                    Response(404,"Not implemented", null);  
+            
+                }
+                
+            } else {
+              Response(404,"Not implemented", null);  
+            }
+            break;
+            
         case "userEvents":
             //API/users/{username}/events/
             if($_SERVER['REQUEST_METHOD'] == "GET"){
-
+            
                 $parameter = GetUserEvents($_GET["index"]);
 
                 if($parameter == null){
-                    Response(400, "No events defined", null);
+                    Response(404, "No events defined", null);
                 } else {
-                    Response(200, "Response ok", $parameter);
+                    Response(200, "Events found", $parameter);
                 }
             }
             
@@ -134,6 +166,25 @@ if(empty($_GET["type"])){
                 Response(404 ,"Not implemented", null);
             }
             
+            
+            break;
+        
+        case "DeleteUser":
+            
+            if($_SERVER['REQUEST_METHOD'] == "POST"){
+                
+                $result = DeleteUser($_GET["index"]);
+                
+                if($result == true){
+                    Response(200,"Deleted user", true);  
+                } else {
+                    Response(404,"Not implemented", null);  
+            
+                }
+                
+            } else {
+              Response(404,"Not implemented", null);  
+            }
             
             break;
             
@@ -293,7 +344,7 @@ if(empty($_GET["type"])){
             }
             break;
         
-        case "userEventInstert":
+        case "userEventInsert":
             //API/users/username/:{x}
             // --> insert event
             if($_SERVER['REQUEST_METHOD'] == "GET"){
