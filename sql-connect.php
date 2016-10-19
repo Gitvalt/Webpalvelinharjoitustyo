@@ -253,7 +253,7 @@ function ModifyUser($username, $password, $firstname, $lastname, $email, $phone,
         
         $statement->execute();
         
-        return true;
+        return GetUserData($username);
 
     } catch(PDOException $e){
         //echo "error:" . $e->getMessage();

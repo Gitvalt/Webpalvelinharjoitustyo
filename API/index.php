@@ -30,220 +30,53 @@ if(empty($_GET["type"])){
                     Response(200, "Response ok", $parameter);    
                 }    
             }
-            
+                     
             if($_SERVER['REQUEST_METHOD'] == "POST"){
-                Response(404 ,"Not implemented", null);
-            }
-            
-            break;
-            
-        case "userCreate":
-             if($_SERVER['REQUEST_METHOD'] == "GET"){
-                Response(400 ,"not acceptable input", null);   
-            }
-            
-            
-            if($_SERVER['REQUEST_METHOD'] == "POST"){
-                
-                //API/users/:{username}
-                
-                $id = @$_GET["index"];
-                
-                if(!empty(@$_POST["password"])){
-                        $password = $_POST["password"];
+                //create event for user. index = username
+                //index = otsikko
+                if(isset($_POST["header"]) and isset($_POST["startdatetime"]) and isset($_POST["enddatetime"])) {
+                    
+                    //all required data exists
+                    //validate input
+                    if(!empty(@$_GET["index"])){
+                        $header = @$_GET["index"];
                     } else {
-                        Response(400, "password not defined", null);
-                }
-                
-                if(!empty(@$_POST["firstname"])){
-                        $firstname = $_POST["firstname"];
-                    } else {
-                        $firstname = "";
-                }
-                
-                if(!empty(@$_POST["lastname"])){
-                        $lastname = $_POST["lastname"];
-                    } else {
-                        $lastname = "";
-                }
-                
-                if(!empty(@$_POST["email"])){
-                        $email = $_POST["email"];
-                    } else {
-                        Response(404, "email not defined", null);
-                }
-                
-                if(!empty(@$_POST["phone"])){
-                        $phone = $_POST["phone"];
-                    } else {
-                        $phone = "";                }
-                
-                if(!empty(@$_POST["address"])){
-                        $address = $_POST["address"];
-                    } else {
-                        $address = "";
-                }
-                
-                if(empty($id) or empty($password) or empty($email)){
-                    Response(404,"Form data missing;" . $password, null);
-                } else {
-                    $respond = InsertUser($id, $password, $firstname, $lastname, $email, $phone, $address);
-
-                    if($respond == true){
-                        Response(200, "Response ok", null);
-                    } else {
-                        Response(400, "Response false", $respond);
+                        $header = "";
                     }
-                }
-            }
-            
-            break;
-        
-        
-        case "events":
-            if($_SERVER['REQUEST_METHOD'] == "GET"){
-                $parameter = GetTableData("event");
-                
-                if($parameter == null){
-                    Response(404, "No events defined", null);
+                    
+                    if(!empty(@$_POST["description"])){
+                        $desc = @$_POST["description"];
+                    } else {
+                        $desc = "";
+                    }
+                    
+                    
+                    $EventStart = new DateTime($_POST["startdatetime"]);
+                    $FormatStart = $EventStart->format("Y-m-d H:i:s");
+                    
+                    $EventEnd =  new DateTime($_POST["enddatetime"]);
+                    $FormatEnd = $EventEnd->format("Y-m-d H:i:s");
+                    
+                    if(!empty(@$_POST["location"])){
+                        $location = @$_POST["location"];
+                    } else {
+                        $location = "";
+                    }
+                    
+                    $response = InsertEvent($_GET["owner"], $header, $desc, $FormatStart, $FormatEnd, $location);
+                    
+                    if($response == true){
+                        Response(200, "New event created", $response);
+                    } else {
+                        Response(404, "Creating event failed", $response);    
+                    }
+                    
                 } else {
-                    Response(200, "Events found", $parameter);
-                }
-                
-            }
-            break;
-        
-        case "DeleteEvent":
-            if($_SERVER['REQUEST_METHOD'] == "POST"){
-                
-                $result = DeleteEvent($_GET["owner"], $_GET["index"]);
-                
-                if($result == true){
-                    Response(200,"Deleted event", true);  
-                } else {
-                    Response(404,"Not implemented", null);  
+                Response(404, "Missing required data", null);    
+                }  
+            } 
             
-                }
-                
-            } else {
-              Response(404,"Not implemented", null);  
-            }
-            break;
-            
-        case "userEvents":
-            //API/users/{username}/events/
-            if($_SERVER['REQUEST_METHOD'] == "GET"){
-            
-                $parameter = GetUserEvents($_GET["index"]);
-
-                if($parameter == null){
-                    Response(404, "No events defined", null);
-                } else {
-                    Response(200, "Events found", $parameter);
-                }
-            }
-            
-            if($_SERVER['REQUEST_METHOD'] == "POST"){
-                Response(404 ,"Not implemented", null);
-            }
-            
-            
-            break;
-            
-         case "user":
-            //API/users/{username}
-            if($_SERVER['REQUEST_METHOD'] == "GET"){
-                $parameter = GetUserData($_GET["index"]);
-
-                if($parameter == false){
-                    Response(400, "User does not exist", null);
-                } else {
-                    Response(200, "Response ok", $parameter);    
-                }
-            }
-            
-            if($_SERVER['REQUEST_METHOD'] == "POST"){
-                Response(404 ,"Not implemented", null);
-            }
-            
-            
-            break;
-        
-        case "DeleteUser":
-            
-            if($_SERVER['REQUEST_METHOD'] == "POST"){
-                
-                $result = DeleteUser($_GET["index"]);
-                
-                if($result == true){
-                    Response(200,"Deleted user", true);  
-                } else {
-                    Response(404,"Not implemented", null);  
-            
-                }
-                
-            } else {
-              Response(404,"Not implemented", null);  
-            }
-            
-            break;
-        
-        case "users":
-            //API/users/
-            if($_SERVER['REQUEST_METHOD'] == "GET"){
-                
-                $parameter = GetTableData("user");
-                
-                if($parameter == null){
-                    Response(404, "No persons defined", null);
-                } else {
-                    Response(200, "Response ok", $parameter);
-                }
-            }
-            
-            if($_SERVER['REQUEST_METHOD'] == "POST"){
-                Response(404 ,"Not implemented", null);
-            }
-            
-            break;
-            
-        case "SharedToMe":
-            
-            if($_SERVER['REQUEST_METHOD'] == "GET"){
-                
-                $user = $_GET["index"];
-                $events = GetSharedEvents($user);
-                
-                if(!empty($events)){
-                    Response(200, "Shared events found", $events);    
-                } else {
-                    Response(404, "No shared events found", null);    
-                }
-                
-            } else {
-                Response(404, "Invalid http type", null);
-            }
-            break;
-            
-        case "SharedEvents":
-            
-                if($_SERVER['REQUEST_METHOD'] == "GET"){
-                
-                $user = $_GET["index"];
-                $events = GetEventsSharedByUser($user);
-                
-                if(!empty($events)){
-                    Response(200, "Shared events found", $events);    
-                } else {
-                    Response(404, "No events shared", null);    
-                }
-                
-            } else {
-                Response(404, "Invalid http type", null);
-            }
-            break;
-        case "userEventModify":
-            if($_SERVER['REQUEST_METHOD'] == "POST"){
+            if($_SERVER['REQUEST_METHOD'] == "PUT"){
                 
                 $user_data = GetUserData($_GET["owner"]);
                 $eventdata = GetUserEvent($_GET["owner"], $_GET["index"]);
@@ -314,124 +147,256 @@ if(empty($_GET["type"])){
                     }
                 }
                 }
-            } else {
-                Response(404, "Invalid get", null);
+            } //end put
+            
+            if($_SERVER['REQUEST_METHOD'] == "DELETE"){
+                
+                $result = DeleteEvent($_GET["owner"], $_GET["index"]);
+                
+                if($result == true){
+                    Response(200,"Deleted event", true);  
+                } else {
+                    Response(404,"Not implemented", null);  
+            
+                }
+                
+            }
+            
+            break;
+             
+        case "events":
+            if($_SERVER['REQUEST_METHOD'] == "GET"){
+                $parameter = GetTableData("event");
+                
+                if($parameter == null){
+                    Response(404, "No events defined", null);
+                } else {
+                    Response(200, "Events found", $parameter);
+                }
+                
             }
             break;
+        
             
-        case "userModify":
-              if($_SERVER['REQUEST_METHOD'] == "POST"){
+        case "userEvents":
+            //API/users/{username}/events/
+            if($_SERVER['REQUEST_METHOD'] == "GET"){
+            
+                $parameter = GetUserEvents($_GET["index"]);
+
+                if($parameter == null){
+                    Response(404, "No events defined", null);
+                } else {
+                    Response(200, "Events found", $parameter);
+                }
+            }
+            
+            if($_SERVER['REQUEST_METHOD'] == "POST"){
+                Response(404 ,"Not implemented", null);
+            }
+            
+            
+            break;
+            
+         case "user":
+            //API/users/{username}
+            if($_SERVER['REQUEST_METHOD'] == "GET"){
+                $parameter = GetUserData($_GET["index"]);
+
+                if($parameter == false){
+                    Response(400, "User does not exist", null);
+                } else {
+                    Response(200, "Response ok", $parameter);    
+                }
+            }
+            
+             if($_SERVER['REQUEST_METHOD'] == "POST"){
                 
-                $user_data = GetUserData($_GET["owner"]);
+                //API/users/:{username}
+                
+                $id = @$_GET["index"];
+                 
+                if(!empty(@$_POST["password"])){
+                        //! ENCRYPTAUS
+                        $password = $_POST["password"];
+                    
+                } else {
+                        Response(400, "password not defined", null);
+                }
+                
+                if(!empty(@$_POST["firstname"])){
+                        $firstname = $_POST["firstname"];
+                    } else {
+                        $firstname = "";
+                }
+                
+                if(!empty(@$_POST["lastname"])){
+                        $lastname = $_POST["lastname"];
+                    } else {
+                        $lastname = "";
+                }
+                
+                if(!empty(@$_POST["email"])){
+                        $email = $_POST["email"];
+                    } else {
+                        Response(404, "email not defined", null);
+                }
+                
+                if(!empty(@$_POST["phone"])){
+                        $phone = $_POST["phone"];
+                    } else {
+                        $phone = "";                }
+                
+                if(!empty(@$_POST["address"])){
+                        $address = $_POST["address"];
+                    } else {
+                        $address = "";
+                }
+                
+                if(empty($id) or empty($password) or empty($email)){
+                    Response(404,"Form data missing;" . $password, null);
+                } else {
+                    $respond = InsertUser($id, $password, $firstname, $lastname, $email, $phone, $address);
+
+                    if($respond == true){
+                        Response(200, "Response ok", null);
+                    } else {
+                        Response(400, "Response false", $respond);
+                    }
+                }
+            }
+            
+            
+            //Modify user
+            if($_SERVER['REQUEST_METHOD'] == "PUT"){
+                
+                $user_data = GetUserData($_GET["index"]);
                     
                 if($user_data == false){
-                    Response(404, "No use found", null);
+                    Response(404, "No user found", null);
                 } else {
                 
-
-                    if(!empty($_POST["firstname"])){
-                        $firstname = $_POST["firstname"];
+                     $input = GetInput();
+                    if(empty($input)){
+                        Response(400, "noinput", null);
+                    }
+                    
+                    if(!empty($input["firstname"])){
+                        $firstname = $input["firstname"];
                     } else {
                         $firstname = $user_data["firstname"];
                     }
 
-                    if(isset($_POST["lastname"])){
-                        $lastname = @$_POST["lastname"];
+                    if(isset($input["lastname"])){
+                        $lastname = @$input["lastname"];
                     } else {
                         $lastname = $user_data["lastname"];
                     }
 
-                    if(isset($_POST["password"])){
-                        $password = @$_POST["password"];
+                    if(isset($input["password"])){
+                        $password = @$input["password"];
                     } else {
                         $password = $user_data["password"];
                     }
 
-                    if(isset($_POST["address"])){
-                        $address = @$_POST["address"];
+                    if(isset($input["address"])){
+                        $address = @$input["address"];
                     } else {
                         $address = $user_data["address"];
                     }
 
-                    if(isset($_POST["phone"])){
-                        $phone = @$_POST["phone"];
+                    if(isset($input["phone"])){
+                        $phone = @$input["phone"];
                     } else {
                         $phone = $user_data["phone"];
                     }
-
-                    if(isset($_POST["email"])){
-                        $email = @$_POST["email"];
+                    
+                    if(isset($input["email"])){
+                        $email = @$input["email"];
                     } else {
                         $email = $user_data["email"];
                     }
 
                     $result = ModifyUser($_GET["index"], $password, $firstname, $lastname, $email, $phone, $address);
 
-                    if($result == true){
-                        Response(200, "Modified user", $firstname);    
+                    if($result != null){
+                        Response(200, "Modified user", $result);    
                     } else {
                         Response(400, "Modification failure", $result);    
                     }
                 }
                 
-            } else {
-                Response(404, "Invalid get", null);
             }
+            //start if delete user
+            if($_SERVER['REQUEST_METHOD'] == "DELETE"){
+                
+                $result = DeleteUser($_GET["index"]);
+                
+                if($result == true){
+                    Response(200,"Deleted user", true);  
+                } else {
+                    Response(404,"Deletion not working", $result);  
+            
+                }
+                
+            } 
+            
+            
+            
             break;
         
-        case "userEventInsert":
-            //API/users/username/:{x}
-            // --> insert event
+        case "users":
+            //API/users/
             if($_SERVER['REQUEST_METHOD'] == "GET"){
-                //Response false
-                Response(400, "Invalid GET command", null);
+                
+                $parameter = GetTableData("user");
+                
+                if($parameter == null){
+                    Response(404, "No persons defined", null);
+                } else {
+                    Response(200, "Response ok", $parameter);
+                }
             }
             
             if($_SERVER['REQUEST_METHOD'] == "POST"){
-                //create event for user. index = username
-                //index = otsikko
-                if(isset($_POST["header"]) and isset($_POST["startdatetime"]) and isset($_POST["enddatetime"])) {
-                    
-                    //all required data exists
-                    //validate input
-                    if(!empty(@$_GET["index"])){
-                        $header = @$_GET["index"];
-                    } else {
-                        $header = "";
-                    }
-                    
-                    if(!empty(@$_POST["description"])){
-                        $desc = @$_POST["description"];
-                    } else {
-                        $desc = "";
-                    }
-                    
-                    
-                    $EventStart = new DateTime($_POST["startdatetime"]);
-                    $FormatStart = $EventStart->format("Y-m-d H:i:s");
-                    
-                    $EventEnd =  new DateTime($_POST["enddatetime"]);
-                    $FormatEnd = $EventEnd->format("Y-m-d H:i:s");
-                    
-                    if(!empty(@$_POST["location"])){
-                        $location = @$_POST["location"];
-                    } else {
-                        $location = "";
-                    }
-                    
-                    $response = InsertEvent($_GET["owner"], $header, $desc, $FormatStart, $FormatEnd, $location);
-                    
-                    if($response == true){
-                        Response(200, "New event created", $response);
-                    } else {
-                        Response(404, "Creating event failed", $response);    
-                    }
-                    
+                Response(404 ,"Not implemented", null);
+            }
+            
+            break;
+            
+        case "SharedToMe":
+            
+            if($_SERVER['REQUEST_METHOD'] == "GET"){
+                
+                $user = $_GET["index"];
+                $events = GetSharedEvents($user);
+                
+                if(!empty($events)){
+                    Response(200, "Shared events found", $events);    
                 } else {
-                Response(404, "Missing required data", null);    
+                    Response(404, "No shared events found", null);    
                 }
                 
+            } else {
+                Response(404, "Invalid http type", null);
+            }
+            break;
+            
+        case "SharedEvents":
+            
+                if($_SERVER['REQUEST_METHOD'] == "GET"){
                 
+                $user = $_GET["index"];
+                $events = GetEventsSharedByUser($user);
+                
+                if(!empty($events)){
+                    Response(200, "Shared events found", $events);    
+                } else {
+                    Response(404, "No events shared", null);    
+                }
+                
+            } else {
+                Response(404, "Invalid http type", null);
             }
             break;
             
@@ -441,6 +406,24 @@ if(empty($_GET["type"])){
     }
 }
 
+
+function GetInput(){
+//script will read x-www-form-urlencoded data
+$input = file_get_contents('php://input');
+$input = urldecode($input);
+$array = explode("&", $input);
+$array2 = array();
+$parameter = array();
+foreach($array as $field){
+    $parameter = explode("=", $field);
+    $array2[$parameter[0]] = $parameter[1];
+}
+
+$input = $array2;
+return $input;
+
+//input[firstname] = X
+}
 
 function Response($status, $status_message, $data){
     header('Content-Type: application/json');

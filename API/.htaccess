@@ -5,24 +5,27 @@ RewriteRule    ^users/*$    index.php?type=users [NC,L]
 
 #show specific user
 RewriteRule    ^users/([0-9a-zA-Z]+)/?$    index.php?type=user&index=$1    [NC,L]
+#GET USER
 
 #create user with name :{index}
-RewriteRule    ^users/[:]([0-9a-zA-Z]+)?$   index.php?type=userCreate&index=$1 [NC,L]
+#POST USER
 
 #modify user with name :{index}
-RewriteRule    ^users/mod:([0-9a-zA-Z]+)?$   index.php?type=userModify&owner=$1 [NC,L]
+#PUT USER
 
 #delete user {index}
-RewriteRule    ^users/del:([0-9a-zA-Z]+)?$   index.php?type=DeleteUser&index=$1     [NC,L]
+#DELETE
 
-
+#show all events in event table
 RewriteRule    ^events/*$    index.php?type=events&index=$1    [NC,L]
 
 #show events made by user
 RewriteRule    ^users/([0-9a-zA-Z]+)/events/*$   index.php?type=userEvents&index=$1 [NC,L]
 
+
 #show specific event made by user
 RewriteRule    ^users/([0-9a-zA-Z]+)/events/([0-9a-zA-Z])$   index.php?type=userEvent&index=$2&user=$1 [NC,L]
+#GET EVENT
 
 #show events shared to you
 RewriteRule    ^users/([0-9a-zA-Z]+)/events/shared/ToMe$   index.php?type=SharedToMe&index=$1 [NC,L]
@@ -32,14 +35,14 @@ RewriteRule    ^users/([0-9a-zA-Z]+)/events/shared/ToOthers$   index.php?type=Sh
 
 
 #create event with name :{index}
-RewriteRule    ^users/([0-9a-zA-Z]+)/events/[:]([0-9a-zA-Z]+)?$   index.php?type=userEventInsert&index=$2&owner=$1 [NC,L]
+#POST EVENT
 
 #modify event, from user, with id :{index}
-RewriteRule    ^users/([0-9a-zA-Z]+)/events/mod:([0-9a-zA-Z]+)?$   index.php?type=userEventModify&index=$2&owner=$1 [NC,L]
+#PUT EVENT
 
 #delete event, from user, with id :{index}
-RewriteRule    ^users/([0-9a-zA-Z]+)/events/del:([0-9a-zA-Z]+)?$   index.php?type=DeleteEvent&index=$2&owner=$1 [NC,L]
+#DELETE EVENT
 
-
+#Comments:
 #RewriteRule ^location([acceptable parameter]howmanyparameters)/?$ what really happens to input NC L prevents others from rules being used if this one is used.
 #https://www.addedbytes.com/articles/for-beginners/url-rewriting-for-beginners/
