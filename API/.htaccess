@@ -24,7 +24,7 @@ RewriteRule    ^users/([0-9a-zA-Z]+)/events/*$   index.php?type=userEvents&index
 
 
 #show specific event made by user
-RewriteRule    ^users/([0-9a-zA-Z]+)/events/([0-9a-zA-Z])$   index.php?type=userEvent&index=$2&user=$1 [NC,L]
+RewriteRule    ^users/([0-9a-zA-Z]+)/events/([0-9a-zA-Z]+)$   index.php?type=userEvent&index=$2&user=$1 [NC,L]
 #GET EVENT
 
 #show events shared to you

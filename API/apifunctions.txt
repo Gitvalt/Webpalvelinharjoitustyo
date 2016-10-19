@@ -14,8 +14,6 @@ show events shared by user
 create event
 modify event
 
-
-
 !share event
 !unshare event
 
