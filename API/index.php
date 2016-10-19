@@ -397,6 +397,48 @@ if(empty($_GET["type"])){
                 Response(404, "Invalid http type", null);
             }
             break;
+        
+        case "Share":
+			//event id = eventid, user whos event is shared 
+            $eventID = $_GET["index"];
+			$httpMethod = $_SERVER['REQUEST_METHOD'];
+			
+			switch($httpMethod){
+				case "POST":
+					$target_user = @$_POST["username"];
+					if(!empty($target)){
+						if(ShareEvent($eventID, $target_user) == true){
+							Response(200, "Event shared with $target_user", null);
+						}
+						else {
+							Response(400, "sharing the event failed", null);
+						}
+					} else {
+						Response(404, "Input incorrect", null);
+					}
+				break;
+				case "DELETE":
+					$target_user = @$_POST["username"];
+					if(!empty($target)){
+						if(UnShareEvent($eventID, $target_user) == true){
+							Response(200, "Event removed from $target_user", null);
+						}
+						else {
+							Response(400, "sql error, removing event failed", null);
+						}
+					} else {
+						Response(404, "Input incorrect", null);
+					}
+				break;
+				default:
+					Response(404, "Invalid http method", $httpMethods);
+				break;
+			}
+			
+            break;
+        
+        case "RemoveShare":
+            break;
             
         default:
             Response(404, "System failure", null);

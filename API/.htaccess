@@ -33,6 +33,10 @@ RewriteRule    ^users/([0-9a-zA-Z]+)/events/shared/ToMe$   index.php?type=Shared
 #show events shared BY you
 RewriteRule    ^users/([0-9a-zA-Z]+)/events/shared/ToOthers$   index.php?type=SharedEvents&index=$1 [NC,L]
 
+#shareEvent
+RewriteRule    ^users/([0-9a-zA-Z]+)/events/shared/([0-9a-zA-Z]+)*$   index.php?type=Share&index=$1&eventid=$2 [NC,L]
+
+
 
 #create event with name :{index}
 #POST EVENT
@@ -42,6 +46,8 @@ RewriteRule    ^users/([0-9a-zA-Z]+)/events/shared/ToOthers$   index.php?type=Sh
 
 #delete event, from user, with id :{index}
 #DELETE EVENT
+
+
 
 #Comments:
 #RewriteRule ^location([acceptable parameter]howmanyparameters)/?$ what really happens to input NC L prevents others from rules being used if this one is used.

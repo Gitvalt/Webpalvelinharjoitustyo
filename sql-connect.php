@@ -238,6 +238,42 @@ function GetUserEvent($user, $id){
     }
 }
 
+function ShareEvent($eventID, $user){
+    try {
+        $conn = Connect();
+        $statement = $conn->prepare("INSERT INTO sharedevent(eventID, username) VALUES(?,?);");
+        
+        $statement->bindValue(1, $eventID, PDO::PARAM_INT);
+        $statement->bindValue(2, $user, PDO::PARAM_STR);
+        
+        $statement->execute();
+        
+        return true;
+
+    } catch(PDOException $e){
+        //echo "error:" . $e->getMessage();
+         return false;
+    }
+}
+
+function UnShareEvent($eventID, $user){
+    try {
+        $conn = Connect();
+        $statement = $conn->prepare("DELETE from sharedevent where eventID=? and username=?;");
+        
+        $statement->bindValue(1, $eventID, PDO::PARAM_INT);
+        $statement->bindValue(2, $user, PDO::PARAM_STR);
+        
+        $statement->execute();
+        
+        return true;
+
+    } catch(PDOException $e){
+        //echo "error:" . $e->getMessage();
+         return false;
+    }
+}
+
 function ModifyUser($username, $password, $firstname, $lastname, $email, $phone, $address){
     try {
         $conn = Connect();
