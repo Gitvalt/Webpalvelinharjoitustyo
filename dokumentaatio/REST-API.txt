@@ -1,28 +1,35 @@
+
+
+./ = URL
+
+!{x} = ei ole tehtynä
+
+--
 Only if admin
-API/users <---> display all users
-API/events <---> display all events
-API/groups <---> display all groups
+./API/users <---> display all users
+./API/events <---> display all events
 
-for user
-API/users/{user} <---> display user information
-
-API/users/{user}/events/ <---> display all events
-API/users/{user}/events/{otsikko} <---> display event {otsikko}
-
-API/users/{user}/events/:{otsikko} <---> Create event {otsikko}
+!./API/groups <---> display all groups
 
 
-API/users/{user}/shared_events/ <---> display all shared events
-API/users/{user}/shared_events/{otsikko} <---> display shared event {otsikko}
+---for user---
+GET ./API/users/{user} <---> Display user information
+POST ./API/users/{user} <---> Add new user
+PUT ./API/users/{user} <---> Update user information
+DELETE ./API/users/{user} <---> Delete user
 
-?------
+./API/users/{user}/events/ <---> display all events
 
-send json in post containing new info
+GET ./API/users/{user}/events/{otsikko} <---> Display event {otsikko}
+POST ./API/users/{user}/events/{otsikko} <---> Add new event {otsikko}
+PUT ./API/users/{user}/events/{otsikko} <---> Update event {otsikko}
+DELETE ./API/users/{user}/events/{otsikko} <---> Delete event {otsikko}
 
+GET ./API/users/{user}/events/shared/ToMe <---> display events shared to user
+GET ./API/users/{user}/events/shared/ToOthers <---> display events shared to other users by {user}
 
-- ShareEvent
-    - Insert
-    - Remove
-    
-- Modify events
-- Delete events
+POST ./API/users/{user}/events/shared/{event} <---> Share Event to user
+DELETE ./API/users/{user}/events/shared/{event} <---> Remove Event to user
+
+./API/users/{user}/shared_events/{otsikko} <---> display shared event {otsikko}
+
