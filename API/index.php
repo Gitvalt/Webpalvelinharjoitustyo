@@ -69,7 +69,7 @@ if(empty($_GET["type"])){
 
                         $response = InsertEvent($_GET["user"], $header, $desc, $FormatStart, $FormatEnd, $location);
 
-                        if($response == true){
+                        if($response === true){
                             Response(200, "New event created", $response);
                         } else {
                             Response(404, "Creating event failed", $response);    
@@ -140,7 +140,7 @@ if(empty($_GET["type"])){
                             Response(400, "No changes defined", null);
                         }
 
-                        if($result == true){
+                        if($result === true){
                             Response(200, "Modified user", GetUserEvent($_GET["user"], $_GET["index"]));    
                         } else {
                             Response(400, "Modification failure", $result);    
@@ -212,7 +212,7 @@ if(empty($_GET["type"])){
                 case "GET":
                     $parameter = GetUserData($_GET["index"]);
 
-                    if($parameter == false){
+                    if($parameter === false){
                         Response(400, "User does not exist", null);
                     } else {
                         Response(200, "Response ok", $parameter);    
@@ -221,52 +221,59 @@ if(empty($_GET["type"])){
                     
                 case "POST":
                         $id = @$_GET["index"];
-                 
-                        if(!empty(@$_POST["password"])){
-                                //! ENCRYPTAUS
-                                $password = $_POST["password"];
-
+                        
+                        if(empty($id) or empty($_POST["password"]) or empty($_POST["email"])){
+                            Response(404,"Form data missing", null);
                         } else {
-                                Response(404, "password not defined", null);
-                        }
+                            
+                            if(!empty(@$_POST["password"])){
+                                    //! ENCRYPTAUS
+                                    $password = $_POST["password"];
 
-                        if(!empty(@$_POST["firstname"])){
-                                $firstname = $_POST["firstname"];
                             } else {
-                                $firstname = "";
-                        }
+                                    Response(404, "password not defined", null);
+                            }
 
-                        if(!empty(@$_POST["lastname"])){
-                                $lastname = $_POST["lastname"];
-                            } else {
-                                $lastname = "";
-                        }
+                            if(!empty(@$_POST["firstname"])){
+                                    $firstname = $_POST["firstname"];
+                                } else {
+                                    $firstname = "";
+                            }
 
-                        if(!empty(@$_POST["email"])){
-                                $email = $_POST["email"];
-                            } else {
-                                Response(404, "email not defined", null);
-                        }
+                            if(!empty(@$_POST["lastname"])){
+                                    $lastname = $_POST["lastname"];
+                                } else {
+                                    $lastname = "";
+                            }
 
-                        if(!empty(@$_POST["phone"])){
-                                $phone = $_POST["phone"];
-                            } else {
-                                $phone = "";                }
+                            if(!empty(@$_POST["email"])){
+                                    $email = $_POST["email"];
+                                } else {
+                                    Response(404, "email not defined", null);
+                            }
 
-                        if(!empty(@$_POST["address"])){
-                                $address = $_POST["address"];
-                            } else {
-                                $address = "";
-                        }
+                            if(!empty(@$_POST["phone"])){
+                                    $phone = $_POST["phone"];
+                                } else {
+                                    $phone = "";                }
 
-                        if(empty($id) or empty($password) or empty($email)){
-                            Response(404,"Form data missing;" . $password, null);
-                        } else {
-                            $respond = InsertUser($id, $password, $firstname, $lastname, $email, $phone, $address);
-                            if($respond == true){
-                                Response(200, "Response ok", null);
+                            if(!empty(@$_POST["address"])){
+                                    $address = $_POST["address"];
+                                } else {
+                                    $address = "";
+                            }
+
+                            if(empty($id) or empty($password) or empty($email)){
+                                Response(404,"Form data missing", null);
                             } else {
-                                Response(400, "Response false", $respond);
+
+                                $respond = InsertUser($id, $password, $firstname, $lastname, $email, $phone, $address);
+
+                                if($respond === true){
+                                    Response(200, "Response ok", $respond);
+                                } else {
+                                    Response(400, "Response false", $respond);
+                                }
                             }
                         }
                 break;
@@ -350,7 +357,7 @@ if(empty($_GET["type"])){
                 $parameter = GetTableData("user");
                 
                 if($parameter == null){
-                    Response(404, "No persons defined", null);
+                    Response(404, "No users defined", null);
                 } else {
                     Response(200, "Response ok", $parameter);
                 }
@@ -399,14 +406,18 @@ if(empty($_GET["type"])){
             break;
         
         case "Share":
-			//event id = eventid, user whos event is shared 
+			
+            //event id = eventid, user whos event is shared 
             $eventID = $_GET["index"];
 			$httpMethod = $_SERVER['REQUEST_METHOD'];
-			
+            $target_user = @$_GET["selecteduser"];
+            $eventID = $_GET["eventid"];
+                
+                    
 			switch($httpMethod){
 				case "POST":
-					$target_user = @$_POST["username"];
-					if(!empty($target)){
+					
+					if(!empty($target_user)){
 						if(ShareEvent($eventID, $target_user) == true){
 							Response(200, "Event shared with $target_user", null);
 						}
@@ -418,10 +429,9 @@ if(empty($_GET["type"])){
 					}
 				break;
 				case "DELETE":
-					$target_user = @$_POST["username"];
-					if(!empty($target)){
+					if(!empty($target_user)){
 						if(UnShareEvent($eventID, $target_user) == true){
-							Response(200, "Event removed from $target_user", null);
+							Response(200, "Event no longer shared with $target_user", null);
 						}
 						else {
 							Response(400, "sql error, removing event failed", null);
@@ -436,8 +446,81 @@ if(empty($_GET["type"])){
 			}
 			
             break;
-        
-        case "RemoveShare":
+        case "groups":
+            $method = $_SERVER['REQUEST_METHOD'];
+            
+            
+            switch($method){
+                case "GET":
+                    $getdata = GetTableData("group_table");
+                    
+                    if($getdata != null){
+                        Response(200, "Groups found", $getdata);
+                    } else {
+                        Response(404, "Groups not found", null);
+                    }
+                    
+                break;
+                default:
+                    Response(404, "Invalid http method", null);
+                break;
+            }
+            
+            break;
+        case "group":
+            $method = $_SERVER['REQUEST_METHOD'];
+            $id = $_GET["id"];
+            
+            switch($method){
+                case "GET":
+                    $function = ShowGroup($id);
+                    if($function == false){
+                        Response(404, "Group not found", null);
+                    } else {
+                        Response(200, "Group found", $function);
+                    }
+                break;
+                case "POST":
+                    
+                break;
+                case "PUT":
+                    
+                    $function = ShowGroup($id);
+                    
+                    $input = GetInput();
+                    $owner = @$input["owner"];
+                    $Groupname = $input["groupname"];
+                    $counter = 0;
+                    
+                    if(empty($owner)){
+                        $owner = $function["owner"];
+                    } else {
+                        $counter++;
+                    }    
+                    
+                    if(empty($Groupname)){
+                        $Groupname = $function["groupName"];
+                    } else {
+                        $counter++;
+                    }    
+                    
+                    if($counter == 0){
+                        Response(400, "No changes to do", null);
+                    } else {
+                        $modifier = ModifyGroup($id, $Groupname, $owner);
+                        if($modifier === false){
+                               Response(400, "Group modification failed", null);
+                        } else {
+                            Response(200, "Group modified", ShowGroup($id));
+                        }
+                    }
+
+                break;
+                default:
+                    Response(404, "Invalid http method", null);
+                break;
+            }
+            
             break;
             
         default:
@@ -446,7 +529,7 @@ if(empty($_GET["type"])){
     }
 }
 
-
+//used to read input when using http method PUT
 function GetInput(){
 //script will read x-www-form-urlencoded data
 $input = file_get_contents('php://input');

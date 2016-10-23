@@ -31,6 +31,7 @@ function GetTableData($table){
         return $tulos;
 
     } catch(PDOException $e){
+         return false;
         //echo "error:" . $e->getMessage();
     }
 }
@@ -56,6 +57,15 @@ function InsertEvent($user, $header, $description, $startDateTime, $endDateTime,
      
     try {
         $conn = Connect();
+        
+        //starting date must be same or smaller than enddate.
+        $sdate = date_parse($startDateTime);
+        $edate = date_parse($endDateTime);
+        
+        if($sdate > $edate){
+            return "Event starts after it has already ended";
+        }
+        //end date validation
         
         $statement = $conn->prepare("INSERT INTO event(header, description, startDateTime, endDateTime, location, owner) VALUES(?,?,?,?,?,?);");
         
@@ -339,4 +349,63 @@ function GetUserData($user){
 }
 
 
+function ShowGroup($id){
+    
+    try {
+        $conn = Connect();
+        $statement = $conn->prepare("SELECT * FROM group_table where id=?;");
+        $statement->bindValue(1, $id, PDO::PARAM_INT);
+        $statement->execute();
+    
+        $tulos = $statement->fetch(PDO::FETCH_ASSOC);;
+        return $tulos;
+    } catch (PDOException $e){
+        return false;
+    }
+}
+
+function ModifyGroup($id, $name, $owner){
+        try{
+        $conn = Connect();
+        $user = htmlspecialchars($user);
+        $statement = $conn->prepare("UPDATE group_table set groupName=?, owner=? where id=?;");
+        
+        $statement->bindValue(1, $name, PDO::PARAM_STR);
+        $statement->bindValue(2, $owner, PDO::PARAM_STR);
+        $statement->bindValue(3, $id, PDO::PARAM_INT);
+        
+        $statement->execute();
+        return "Success";
+            
+        } catch(PDOException $e){
+            return false;
+        }
+}
+
+function CreateGroup($name, $owner){
+    try {
+        $conn = Connect();
+        $user = htmlspecialchars($user);
+        $statement = $conn->prepare("INSERT INTO group(groupName, creationDate, owner) VALUES(?,?,?);");
+        
+        $statement->bindValue(1, $name, PDO::PARAM_STR);
+        $statement->bindValue(2, date("Y-m-d"), PDO::PARAM_STR);
+        $statement->bindValue(3, $owner, PDO::PARAM_STR);
+        
+        $statement->execute();
+        $tulos = $statement->fetch(PDO::FETCH_ASSOC);;
+        return $tulos;
+
+    } catch(PDOException $e){
+        //echo "error:" . $e->getMessage();
+         return $e->getMessage();
+    }
+}
+function ShowUsersInGroupt($groupname){
+    
+}
+
+function AddUserToGroup($user, $group){
+    
+}
 ?>

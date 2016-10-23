@@ -34,8 +34,7 @@ RewriteRule    ^users/([0-9a-zA-Z]+)/events/shared/ToMe$   index.php?type=Shared
 RewriteRule    ^users/([0-9a-zA-Z]+)/events/shared/ToOthers$   index.php?type=SharedEvents&index=$1 [NC,L]
 
 #shareEvent
-RewriteRule    ^users/([0-9a-zA-Z]+)/events/shared/([0-9a-zA-Z]+)*$   index.php?type=Share&index=$1&eventid=$2 [NC,L]
-
+RewriteRule    ^users/([0-9a-zA-Z]+)/events/([0-9a-zA-Z]+)/share/([0-9a-zA-Z]+)*$   index.php?type=Share&selecteduser=$3&eventid=$2&owner=$1 [NC,L]
 
 
 #create event with name :{index}
@@ -46,6 +45,18 @@ RewriteRule    ^users/([0-9a-zA-Z]+)/events/shared/([0-9a-zA-Z]+)*$   index.php?
 
 #delete event, from user, with id :{index}
 #DELETE EVENT
+
+#-----------------------------------------
+
+RewriteRule    ^groups/*$   index.php?type=groups [NC,L]
+#GET Groups
+
+RewriteRule    ^groups/([0-9a-zA-Z]+)/*$   index.php?type=group&id=$1 [NC,L]
+#GET Group
+#POST create group
+#PUT Modify group
+#DELETE Delete Group
+
 
 
 

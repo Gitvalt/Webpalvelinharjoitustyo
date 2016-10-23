@@ -9,7 +9,16 @@ Only if admin
 ./API/users <---> display all users
 ./API/events <---> display all events
 
-!./API/groups <---> display all groups
+GET ./API/groups <---> display all groups
+
+!GET ./API/groups/{name}/users/ <---> show users in group
+! POST ./API/groups/{name} <---> create group
+! DELETE ./API/groups/{name} <---> delete group
+PUT ./API/groups/{name} <---> modify group
+
+! POST ./API/groups/{name}/users/{user} <---> add user to group
+! GET ./API/groups/{name}/users/{user} <---> is user in group? true/false
+! DELETE ./API/groups/{name}/users/{user} <---> remove use from group
 
 
 ---for user---
@@ -28,8 +37,7 @@ DELETE ./API/users/{user}/events/{otsikko} <---> Delete event {otsikko}
 GET ./API/users/{user}/events/shared/ToMe <---> display events shared to user
 GET ./API/users/{user}/events/shared/ToOthers <---> display events shared to other users by {user}
 
-POST ./API/users/{user}/events/shared/{event} <---> Share Event to user
-DELETE ./API/users/{user}/events/shared/{event} <---> Remove Event to user
+POST ./API/users/{user}/events/{event}/share/{user} <---> Share Event to user
+DELETE ./API/users/{user}/events/{event}/share/{user} <---> Remove Event to user
 
-./API/users/{user}/shared_events/{otsikko} <---> display shared event {otsikko}
 
