@@ -15,10 +15,72 @@ echo json_encode($uri);
 if(empty($_GET["type"])){
     Response(400,"Response fail, no data input", null);
 } else {
+    /*
+    if(isValidToken($_COOKIE["token"]) == false){
+        Response(400, "You have to login", null);
+    } else {
+    */    
+    
     
     $parameter;
     
     switch($_GET["type"]){
+        case "login":
+            $requestMethod = $_SERVER['REQUEST_METHOD'];
+            // When creating event index = header, else = id         
+            
+            switch($requestMethod){
+                case "GET":
+                    
+                    $token   =   $_COOKIE["token"];
+                    
+                    if(empty($token)){
+                        Response(400, "You have to login", null);
+                    } else {
+                        if(isValidToken($token) == true){
+                            Response(200, "You are logged in", null);
+                        } else {
+                            Response(404, "Incorrect token. Login again", null);
+                        }   
+                    }
+                    
+                    break;
+                    case "DELETE":
+                    
+                    $token   =   $_COOKIE["token"];
+                    
+                    if(empty($token)){
+                        Response(400, "You are already logged out", null);
+                    } else {
+                        if(Logout($token) == true){
+                            Response(200, "You have logged out succefully", null);
+                        } else {
+                            Response(404, "Logging out failed", null);
+                        }   
+                    }
+                    
+                    break;
+                    case "POST":
+                    
+                    $user   =   $_GET["username"];
+                    $pass   =   $_POST["password"];
+                    $success = Login($user, $pass);
+                    
+                    if($success == true){
+                        //get access token
+                        $token = CreateAccessToken($user);
+                        if(empty($token)){
+                            Response(400, "Token creation failed", null);
+                        } else {
+                            Response(200, "Token created", $token);
+                        }
+                    } else {
+                        Response(400, "Username or password incorrect", null);
+                    }
+                    
+                    break;
+            }
+            break;
         case "userEvent":
             //API/users/{username}/events/{eventid}
             $requestMethod = $_SERVER['REQUEST_METHOD'];
@@ -446,88 +508,13 @@ if(empty($_GET["type"])){
 			}
 			
             break;
-        case "groups":
-            $method = $_SERVER['REQUEST_METHOD'];
-            
-            
-            switch($method){
-                case "GET":
-                    $getdata = GetTableData("group_table");
-                    
-                    if($getdata != null){
-                        Response(200, "Groups found", $getdata);
-                    } else {
-                        Response(404, "Groups not found", null);
-                    }
-                    
-                break;
-                default:
-                    Response(404, "Invalid http method", null);
-                break;
-            }
-            
-            break;
-        case "group":
-            $method = $_SERVER['REQUEST_METHOD'];
-            $id = $_GET["id"];
-            
-            switch($method){
-                case "GET":
-                    $function = ShowGroup($id);
-                    if($function == false){
-                        Response(404, "Group not found", null);
-                    } else {
-                        Response(200, "Group found", $function);
-                    }
-                break;
-                case "POST":
-                    
-                break;
-                case "PUT":
-                    
-                    $function = ShowGroup($id);
-                    
-                    $input = GetInput();
-                    $owner = @$input["owner"];
-                    $Groupname = $input["groupname"];
-                    $counter = 0;
-                    
-                    if(empty($owner)){
-                        $owner = $function["owner"];
-                    } else {
-                        $counter++;
-                    }    
-                    
-                    if(empty($Groupname)){
-                        $Groupname = $function["groupName"];
-                    } else {
-                        $counter++;
-                    }    
-                    
-                    if($counter == 0){
-                        Response(400, "No changes to do", null);
-                    } else {
-                        $modifier = ModifyGroup($id, $Groupname, $owner);
-                        if($modifier === false){
-                               Response(400, "Group modification failed", null);
-                        } else {
-                            Response(200, "Group modified", ShowGroup($id));
-                        }
-                    }
-
-                break;
-                default:
-                    Response(404, "Invalid http method", null);
-                break;
-            }
-            
-            break;
-            
         default:
             Response(404, "System failure", null);
             break;
     }
-}
+    }
+//} //end of "if you are logged in"
+
 
 /*
 reg_match

@@ -348,7 +348,149 @@ function GetUserData($user){
     }
 }
 
+function Login($user, $pass){
+    try {
+        
+        $conn = Connect();
+        $user = htmlspecialchars($user);
+        $pass = htmlspecialchars($pass);
+        
+        
+        $statement = $conn->prepare("SELECT username, password FROM user where username=? and password=?;");
+        $statement->bindValue(1, $user, PDO::PARAM_STR);
+        $statement->bindValue(2, $pass, PDO::PARAM_STR);
+        $statement->execute();
+        $tulos = $statement->fetch(PDO::FETCH_ASSOC);;
+        
+        if(empty($tulos)){
+            return false;
+        } else {
+            return $tulos;    
+        }
+        
+        
+    } catch(PDOException $e){
+        //echo "error:" . $e->getMessage();
+         return false;
+    }
+}
 
+function DoesUserHaveToken($user){
+    try {
+        $conn = Connect();
+        $user = htmlspecialchars($user);
+        
+        $statement = $conn->prepare("Select token from useraccess where username = ?;");
+        $statement->bindValue(1, $user, PDO::PARAM_STR);
+        $statement->execute();
+        $result = $statement->fetch(PDO::FETCH_ASSOC);
+        
+        if(empty($result)){
+            return false;
+        } else {
+            return true;
+        }
+        
+    } catch(PDOException $e){
+        //echo "error:" . $e->getMessage();
+         return false;
+    }
+}
+
+function isValidToken($token){
+    try {
+        $conn = Connect();
+        $statement = $conn->prepare("Select token from useraccess where token = ?;");
+        $statement->bindValue(1, $token, PDO::PARAM_STR);
+        $statement->execute();
+        $result = $statement->fetch(PDO::FETCH_ASSOC);
+        
+        if(empty($result)){
+            return false;
+        } else {
+            return true;
+        }
+        
+    } catch(PDOException $e){
+        //echo "error:" . $e->getMessage();
+         return false;
+    }
+}
+
+function isUserAdmin($username){
+    try {
+        $conn = Connect();
+        $statement = $conn->prepare("Select account-type from useraccess where username = ?;");
+        $statement->bindValue(1, $username, PDO::PARAM_STR);
+        $statement->execute();
+        $result = $statement->fetch(PDO::FETCH_ASSOC);
+        
+        if(empty($result) or $result != "Admin"){
+            return false;
+        } else {
+            return true;
+        }
+        
+    } catch(PDOException $e){
+        //echo "error:" . $e->getMessage();
+         return false;
+    }
+}
+
+function Logout($token){
+    try {
+        $conn = Connect();
+        $statement = $conn->prepare("DELETE from useraccess where token = ?;");
+        $statement->bindValue(1, $token, PDO::PARAM_STR);
+        $statement->execute();
+        setcookie("token", "", time() - 3600);
+        return true;
+
+    } catch(PDOException $e){
+        //echo "error:" . $e->getMessage();
+         return false;
+    }
+}
+
+
+function CreateAccessToken($user){
+    try {
+        
+        $date = new DateTime("NOW");
+        $dateformat = $date->format("Y-m-d H:m:s");
+        $encrypted = sha1($dateformat);
+        
+        $conn = Connect();
+        $user = htmlspecialchars($user);
+        
+        if(DoesUserHaveToken($user) == true){
+            $statement = $conn->prepare("Update useraccess set token = ?, createdToken = ? where username = ?;");
+            $statement->bindValue(1, $encrypted, PDO::PARAM_STR);
+            $statement->bindValue(2, $dateformat, PDO::PARAM_STR);
+            $statement->bindValue(3, $user, PDO::PARAM_STR);
+        
+            $statement->execute();
+            
+            setcookie("token", $encrypted, time()+(1000), "/");
+            //return $encrypted;
+        } else {
+
+            $statement = $conn->prepare("INSERT INTO useraccess(username, token, createdToken) VALUES(?,?,?);");
+            $statement->bindValue(1, $user, PDO::PARAM_STR);
+            $statement->bindValue(2, $encrypted, PDO::PARAM_STR);
+            $statement->bindValue(3, $dateformat, PDO::PARAM_STR);
+            $statement->execute();
+            setcookie("token", $encrypted, time()+(1000), "/");
+            return $encrypted;
+            
+        }
+    } catch(PDOException $e){
+        //echo "error:" . $e->getMessage();
+         return false;
+    }
+}
+
+/*
 function ShowGroup($id){
     
     try {
@@ -401,11 +543,5 @@ function CreateGroup($name, $owner){
          return $e->getMessage();
     }
 }
-function ShowUsersInGroupt($groupname){
-    
-}
-
-function AddUserToGroup($user, $group){
-    
-}
+*/
 ?>

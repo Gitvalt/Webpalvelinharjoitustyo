@@ -48,10 +48,20 @@ RewriteRule    ^users/([0-9a-zA-Z]+)/events/([0-9a-zA-Z]+)/share/([0-9a-zA-Z]+)*
 
 #-----------------------------------------
 
-RewriteRule    ^groups/*$   index.php?type=groups [NC,L]
+#login
+
+#tallennetaan cookie tiedostoon 
+RewriteRule    ^login/([0-9a-zA-Z]+)$    index.php?type=login&username=$1    [NC,L]
+
+
+
+#--------------------------------------
+
+
+#RewriteRule    ^groups/*$   index.php?type=groups [NC,L]
 #GET Groups
 
-RewriteRule    ^groups/([0-9a-zA-Z]+)/*$   index.php?type=group&id=$1 [NC,L]
+#RewriteRule    ^groups/([0-9a-zA-Z]+)/*$   index.php?type=group&id=$1 [NC,L]
 #GET Group
 #POST create group
 #PUT Modify group
