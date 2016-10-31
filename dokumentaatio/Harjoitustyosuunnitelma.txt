@@ -9,13 +9,23 @@ Tapahtuma paikan hakeminen google apilla
 
 Jqueryn käyttö
 
+Google chart
+
 -------
 
 PHP
 Käyttäjän autentikointi
-	- istuntojen käyttäminen
+User                |       Server
+username, password  ->      
+                    <-      if(correct == true) send access token
+                    ->
+                    
+                    
+Admin käyttäjät?
+
+tietojen validointi preg_match
 
 Tietojen tallentaminen (mysql?, json?)
 Tapahtumien lisääminen, poistaminen
-Tapahtumien tuominen ulkoisista lähteistä?
-REST api?
+Tapahtumien tuominen ulkoisista lähteistä? Google Calendar cvs formaatti?
+REST api

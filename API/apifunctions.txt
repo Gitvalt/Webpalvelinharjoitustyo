@@ -14,10 +14,9 @@ show events shared by user
 create event
 modify event
 
-<testaa>
 share event
 unshare event
-</testaa>
+
 
 <?
 !create group

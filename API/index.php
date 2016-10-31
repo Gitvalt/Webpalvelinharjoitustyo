@@ -529,6 +529,21 @@ if(empty($_GET["type"])){
     }
 }
 
+/*
+reg_match
+//username letters and numbers 
+//password any min 8 max X
+//firstname letters or -
+//lastname letters
+//email X@X.X
+//phone numbers and optional + at start
+//address
+
+
+*/
+
+
+
 //used to read input when using http method PUT
 function GetInput(){
 //script will read x-www-form-urlencoded data
