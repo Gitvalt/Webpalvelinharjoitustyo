@@ -1,5 +1,3 @@
-
-
 ./ = URL
 
 !{x} = ei ole tehtynä
@@ -34,5 +32,3 @@ GET ./API/login/{token} <---> is current session valid? (has user logged in?)
 POST ./API/login/{username} <---> Login
 
 DELETE ./API/login/{token} <---> Logout
-
-

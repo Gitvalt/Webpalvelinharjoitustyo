@@ -12,10 +12,14 @@ $uri = explode("API/",$_SERVER["REQUEST_URI"]);
 echo json_encode($uri);
 */
 
+
 if(empty($_GET["type"])){
+    //Jos selataan selaimella apia ilman määrittämättä mitä etsitään.
     Response(400,"Response fail, no data input", null);
 } else {
+    
     /*
+    Jos käyttäjä on kirjautunut sisään
     if(isValidToken($_COOKIE["token"]) == false){
         Response(400, "You have to login", null);
     } else {
@@ -32,7 +36,7 @@ if(empty($_GET["type"])){
             switch($requestMethod){
                 case "GET":
                     
-                    $token   =   $_COOKIE["token"];
+                    $token   =   $_SESSION["token"];
                     
                     if(empty($token)){
                         Response(400, "You have to login", null);
@@ -68,9 +72,10 @@ if(empty($_GET["type"])){
                     
                     if($success == true){
                         //get access token
+                        
                         $token = CreateAccessToken($user);
                         if(empty($token)){
-                            Response(400, "Token creation failed", null);
+                            Response(400, "Token creation failed", $token);
                         } else {
                             Response(200, "Token created", $token);
                         }
