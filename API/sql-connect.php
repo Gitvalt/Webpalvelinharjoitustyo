@@ -356,6 +356,7 @@ function Login($user, $pass){
         $user = htmlspecialchars($user);
         $pass = htmlspecialchars($pass);
         
+        //!!!!CREATE PASSWORD ENCRYPTION!!!!
         
         $statement = $conn->prepare("SELECT username, password FROM user where username=? and password=?;");
         $statement->bindValue(1, $user, PDO::PARAM_STR);
@@ -445,6 +446,7 @@ function Logout($token){
         $statement->bindValue(1, $token, PDO::PARAM_STR);
         $statement->execute();
         setcookie("token", "", time() - 3600);
+        setcookie("user", "", time()-3600);
         return true;
 
     } catch(PDOException $e){
@@ -473,6 +475,9 @@ function CreateAccessToken($user){
             
             //token contains the access token for one day;
             setcookie("token", $encrypted, time()+(3600*24), "/");
+            
+            setcookie("user", $user, time()+(3600*24), "/");
+            
             return $encrypted;
         } else {
 
@@ -484,6 +489,9 @@ function CreateAccessToken($user){
             
             //token contains the access token for one day;
             setcookie("token", $encrypted, time()+(3600*24), "/");
+            
+            setcookie("user", $user, time()+(3600*24), "/");
+            
             
             return $encrypted;
             

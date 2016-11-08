@@ -1,5 +1,5 @@
 <?php
-require_once("../sql-connect.php");
+require_once("sql-connect.php");
 
 /*
 http://www.restapitutorial.com/lessons/httpmethods.html
@@ -18,6 +18,11 @@ if(empty($_GET["type"])){
 } else {
     
     /*
+    
+    if(empty($_GET["apikey"]) and $_GET["type"] == "login"){
+    
+    }
+    
     Jos käyttäjä on kirjautunut sisään
     if(isValidToken($_GET["apikey"]) == false){
         Response(400, "You have to login", null);
