@@ -55,3 +55,24 @@
     </body>
 
 </html>
+
+<?php
+    
+    //script will read x-www-form-urlencoded data
+    $input = file_get_contents('php://input');
+    $input = urldecode($input);
+    $array = explode("&", $input);
+    print_r($array);
+
+    $array2 = array();
+
+    $parameter = array();
+    
+    foreach($array as $field){
+        $parameter = explode("=", $field);
+        $array2[$parameter[0]] = $parameter[1];
+    }
+    
+    $input = $array2;
+    //input[firstname] = X
+?>

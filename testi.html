@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8">
+	<title>database testi</title>
+    <script>
+		var api = "http://192.168.100.51/harkkatyo/API/";
+		
+		function getUsers(){
+			var out = document.getElementById("output");
+			var xhttp = new XMLHttpRequest();
+			
+			var a = "users/";
+			
+			var url = api+a;
+			
+			xhttp.open("GET", url, true);
+			xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+			xhttp.onreadystatechange = function() {
+				if (this.readyState == 4 && this.status == 200) {
+					
+					out.innerHTML += this.responseText;
+				}
+			};
+			xhttp.send();
+		}
+		function getUser(){
+			var out = document.getElementById("output");
+			var xhttp = new XMLHttpRequest();
+			
+			var a = "users/";
+			
+			var name = document.getElementsByName("getUName")[0].value;
+			
+			var url = api+a+name;
+			
+			xhttp.open("GET", url, true);
+			xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+			xhttp.onreadystatechange = function() {
+				if (this.readyState == 4 && this.status == 200) {
+					
+					out.innerHTML += this.responseText;
+				}
+			};
+			xhttp.send();
+		}
+		function addUser(){
+			var out = document.getElementById("output");
+			var xhttp = new XMLHttpRequest();
+			
+			var a = "users/";
+			
+			var name = document.getElementsByName("addUName")[0].value;
+			var pass = document.getElementsByName("addPWd")[0].value;
+			var email = document.getElementsByName("addEmail")[0].value;
+			var fName = document.getElementsByName("addFName")[0].value;
+			var lName = document.getElementsByName("addLName")[0].value;
+			var phone = document.getElementsByName("addPhone")[0].value;
+			var addr = document.getElementsByName("addAddr")[0].value;
+			
+			var url = api+a+name;
+			
+			xhttp.open("POST", url, true);
+			xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+			xhttp.onreadystatechange = function() {
+				if (this.readyState == 4 && this.status == 200) {
+					
+					out.innerHTML += this.responseText;
+				}
+			};
+			xhttp.send("password=" + pass + "&" +
+			"email=" + email + "&" +
+			"firstname=" + fName + "&" +
+			"lastname=" + lName + "&" +
+			"phone=" + phone + "&" +
+			"address=" + addr
+			);
+		}
+		function delUser(){
+			var out = document.getElementById("output");
+			var xhttp = new XMLHttpRequest();
+			
+			var a = "users/";
+			
+			var name = document.getElementsByName("delUName")[0].value;
+			var pass = document.getElementsByName("delPWd")[0].value;
+			
+			var url = api+a+name;
+			
+			xhttp.open("DELETE", url, true);
+			xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+			xhttp.onreadystatechange = function() {
+				if (this.readyState == 4 && this.status == 200) {
+					
+					out.innerHTML += this.responseText;
+				}
+			};
+			xhttp.send();
+		}
+    </script>
+</head>
+
+<body>
+	<button onclick="getUsers()">All</button>
+	<br>
+	<input type="text" name="getUName" placeholder="name">
+	<button onclick="getUser()">Get</button>
+	<br>
+	<input type="text" name="addUName" placeholder="name">
+	<input type="text" name="addPWd" placeholder="pwd">
+	<input type="text" name="addEmail" placeholder="email">
+	<input type="text" name="addFName" placeholder="fname">
+	<input type="text" name="addLName" placeholder="lname">
+	<input type="text" name="addPhone" placeholder="phone">
+	<input type="text" name="addAddr" placeholder="addr">
+	<button onclick="addUser()">Add</button>
+	<br>
+	<input type="text" name="delUName" placeholder="name">
+	<input type="text" name="delPWd" placeholder="pwd">
+	<button onclick="delUser()">Del</button>
+	<p id="output"></p>
+</body>
+
+</html>
