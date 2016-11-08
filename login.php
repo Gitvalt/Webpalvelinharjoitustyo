@@ -1,5 +1,6 @@
 <?php
 session_start();
+//$_SESSION[$token sisältää] tarvittavan id
 ?>
 <html lang="fi">
     <head>
@@ -26,6 +27,7 @@ session_start();
                 console.log(data);
                 if(data.data = "200"){
                     console.log("success");
+                    console.log(data.message);
                 }
             }
         });
@@ -51,5 +53,5 @@ session_start();
     </body>
 </html>
 <?php
-echo $_SESSION["token"];
+echo @$_SESSION["token"];
 ?>
