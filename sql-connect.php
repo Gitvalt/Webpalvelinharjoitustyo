@@ -469,10 +469,10 @@ function CreateAccessToken($user){
             $statement->bindValue(1, $encrypted, PDO::PARAM_STR);
             $statement->bindValue(2, $dateformat, PDO::PARAM_STR);
             $statement->bindValue(3, $user, PDO::PARAM_STR);
-            $_SESSION["token"] = $encrypted;
             $statement->execute();
             
-            setcookie("token", $encrypted, time()+(1000), "/");
+            //token contains the access token for one day;
+            setcookie("token", $encrypted, time()+(3600*24), "/");
             return $encrypted;
         } else {
 
@@ -481,8 +481,10 @@ function CreateAccessToken($user){
             $statement->bindValue(2, $encrypted, PDO::PARAM_STR);
             $statement->bindValue(3, $dateformat, PDO::PARAM_STR);
             $statement->execute();
-            $_SESSION["token"] = $encrypted;
-            //setcookie("token", $encrypted, time()+(1000), "/");
+            
+            //token contains the access token for one day;
+            setcookie("token", $encrypted, time()+(3600*24), "/");
+            
             return $encrypted;
             
         }

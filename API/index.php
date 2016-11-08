@@ -3,7 +3,6 @@ require_once("../sql-connect.php");
 
 /*
 http://www.restapitutorial.com/lessons/httpmethods.html
-
 */
 
 //200 = ok, 400 = no
@@ -20,7 +19,7 @@ if(empty($_GET["type"])){
     
     /*
     Jos käyttäjä on kirjautunut sisään
-    if(isValidToken($_COOKIE["token"]) == false){
+    if(isValidToken($_GET["apikey"]) == false){
         Response(400, "You have to login", null);
     } else {
     */    
@@ -77,7 +76,7 @@ if(empty($_GET["type"])){
                         if(empty($token)){
                             Response(400, "Token creation failed", $token);
                         } else {
-                            Response(200, "Token created", $token);
+                            Response(200, "Token created", "$token");
                         }
                     } else {
                         Response(400, "Username or password incorrect", null);

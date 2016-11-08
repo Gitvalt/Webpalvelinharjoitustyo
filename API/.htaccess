@@ -1,10 +1,10 @@
 RewriteEngine On
 
 #show users
-RewriteRule    ^users/*$    index.php?type=users [NC,L]
+RewriteRule    ^users/apikey=([0-9a-zA-Z]+)*$    index.php?type=users&apikey=$1 [NC,L]
 
 #show specific user
-RewriteRule    ^users/([0-9a-zA-Z]+)/?$    index.php?type=user&index=$1    [NC,L]
+RewriteRule    ^users/([0-9a-zA-Z]+)/apikey=([0-9a-zA-Z]+)?$    index.php?type=user&index=$1&apikey=$2    [NC,L]
 #GET USER
 
 #create user with name :{index}
@@ -17,24 +17,24 @@ RewriteRule    ^users/([0-9a-zA-Z]+)/?$    index.php?type=user&index=$1    [NC,L
 #DELETE
 
 #show all events in event table
-RewriteRule    ^events/*$    index.php?type=events&index=$1    [NC,L]
+RewriteRule    ^events/apikey=([0-9a-zA-Z]+)*$    index.php?type=events&index=$1&apikey=$2    [NC,L]
 
 #show events made by user
-RewriteRule    ^users/([0-9a-zA-Z]+)/events/*$   index.php?type=userEvents&index=$1 [NC,L]
+RewriteRule    ^users/([0-9a-zA-Z]+)/events/apikey=([0-9a-zA-Z]+)*$   index.php?type=userEvents&index=$1&apikey=$2 [NC,L]
 
 
 #show specific event made by user
-RewriteRule    ^users/([0-9a-zA-Z]+)/events/([0-9a-zA-Z]+)$   index.php?type=userEvent&index=$2&user=$1 [NC,L]
+RewriteRule    ^users/([0-9a-zA-Z]+)/events/([0-9a-zA-Z]+)apikey=([0-9a-zA-Z]+)$   index.php?type=userEvent&index=$2&user=$1&apikey=$3 [NC,L]
 #GET EVENT
 
 #show events shared to you
-RewriteRule    ^users/([0-9a-zA-Z]+)/events/shared/ToMe$   index.php?type=SharedToMe&index=$1 [NC,L]
+RewriteRule    ^users/([0-9a-zA-Z]+)/events/shared/ToMeapikey=([0-9a-zA-Z]+)$   index.php?type=SharedToMe&index=$1&apikey=$2 [NC,L]
 
 #show events shared BY you
-RewriteRule    ^users/([0-9a-zA-Z]+)/events/shared/ToOthers$   index.php?type=SharedEvents&index=$1 [NC,L]
+RewriteRule    ^users/([0-9a-zA-Z]+)/events/shared/ToOthersapikey=([0-9a-zA-Z]+)$   index.php?type=SharedEvents&index=$1&apikey=$2 [NC,L]
 
 #shareEvent
-RewriteRule    ^users/([0-9a-zA-Z]+)/events/([0-9a-zA-Z]+)/share/([0-9a-zA-Z]+)*$   index.php?type=Share&selecteduser=$3&eventid=$2&owner=$1 [NC,L]
+RewriteRule    ^users/([0-9a-zA-Z]+)/events/([0-9a-zA-Z]+)/share/([0-9a-zA-Z]+)apikey=([0-9a-zA-Z]+)*$   index.php?type=Share&selecteduser=$3&eventid=$2&owner=$1&apikey=$4 [NC,L]
 
 
 #create event with name :{index}
@@ -61,7 +61,7 @@ RewriteRule    ^login/([0-9a-zA-Z]+)$    index.php?type=login&username=$1    [NC
 #RewriteRule    ^groups/*$   index.php?type=groups [NC,L]
 #GET Groups
 
-#RewriteRule    ^groups/([0-9a-zA-Z]+)/*$   index.php?type=group&id=$1 [NC,L]
+#RewriteRule    ^groups/([0-9a-zA-Z]+)/apikey=([0-9a-zA-Z]+)*$   index.php?type=group&id=$1&apikey=$2 [NC,L]
 #GET Group
 #POST create group
 #PUT Modify group
