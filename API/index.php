@@ -105,18 +105,12 @@ if(empty($_GET["type"])){
             switch($requestMethod){
                 case "GET":
 		    /*
+		     
 		    if($_GET["user"] != $_COOKIE["user"]){
 		    	Response("404", "You can only look for your own data", null);
-		    } else {
-			    $parameter = GetUserEvent($_GET["user"], $_GET["index"]);
-
-			    if($parameter == false){
-				Response(400, "Event does not exist", null);
-			    } else {
-				Response(200, "Response ok", $parameter);    
-			    }    
-			    break;
+			break;
 		    }
+		    
 		    */
                     $parameter = GetUserEvent($_GET["user"], $_GET["index"]);
 
@@ -128,7 +122,15 @@ if(empty($_GET["type"])){
                     break;
                 case "POST":
                     //create event for user. index = username
-
+		    
+		     /*
+		    if($_GET["user"] != $_COOKIE["user"]){
+		    	Response("404", "You can only create events for yourself", null);
+			break;
+		    }
+		    */
+			    
+			    
                     //index = otsikko
                     if(isset($_GET["user"]) and isset($_POST["startdatetime"]) and isset($_POST["enddatetime"])) {
 
@@ -173,6 +175,14 @@ if(empty($_GET["type"])){
                     break;
                     
                 case "PUT":
+			    
+	  	    /*
+		    if($_GET["user"] != $_COOKIE["user"]){
+		    	Response("404", "You can only change events you have created", null);
+			break;
+		    }
+		    */
+			    
                     $user_data = GetUserData($_GET["user"]);
                     $eventdata = GetUserEvent($_GET["user"], $_GET["index"]);
                 
@@ -243,6 +253,14 @@ if(empty($_GET["type"])){
                     break;
             
                 case "DELETE":
+			  
+			     /*
+		    if($_GET["user"] != $_COOKIE["user"]){
+		    	Response("404", "You can only delete events you have created.", null);
+			break;
+		    }
+		    */
+			   
                         $result = DeleteEvent($_GET["user"], $_GET["index"]);
 
                         if($result == true){
@@ -262,6 +280,7 @@ if(empty($_GET["type"])){
              
             
         case "events":
+		    //isadmin?
             if($_SERVER['REQUEST_METHOD'] == "GET"){
                 $parameter = GetTableData("event");
                 
@@ -276,9 +295,14 @@ if(empty($_GET["type"])){
         
             
         case "userEvents":
+		/*
+	    if($_GET["user"] != $_COOKIE["user"]){
+		Response("404", "You can only look up your own events", null);
+		break;
+	    }
+	    */
             //API/users/{username}/events/
-            if($_SERVER['REQUEST_METHOD'] == "GET"){
-            
+      
                 $parameter = GetUserEvents($_GET["index"]);
 
                 if($parameter == null){
@@ -286,20 +310,20 @@ if(empty($_GET["type"])){
                 } else {
                     Response(200, "Events found", $parameter);
                 }
-            }
-            
-            if($_SERVER['REQUEST_METHOD'] == "POST"){
-                Response(404 ,"Not implemented", null);
-            }
-            
-            
-            break;
-            
-         case "user":
+		break;
+     
+   	case "user":
             
             $requestMethod = $_SERVER['REQUEST_METHOD'];
             // When creating event index = header, else = id         
             
+	     	/*
+		    if($_GET["index"] != $_COOKIE["user"]){
+		    	Response("404", "You can only access you own information", null);
+			break;
+		    }
+		    */
+		    
             switch($requestMethod){
                 case "GET":
                     $parameter = GetUserData($_GET["index"]);
@@ -443,6 +467,9 @@ if(empty($_GET["type"])){
             }
             break;
         case "users":
+		    
+		//admin=?
+		    
             //API/users/
             if($_SERVER['REQUEST_METHOD'] == "GET"){
                 
@@ -462,7 +489,13 @@ if(empty($_GET["type"])){
             break;
             
         case "SharedToMe":
-            
+             /*
+		    if($_GET["index"] != $_COOKIE["user"]){
+		    	Response("404", "You can only look for your own data", null);
+			break;
+		    }
+		    */
+		    
             if($_SERVER['REQUEST_METHOD'] == "GET"){
                 
                 $user = $_GET["index"];
@@ -481,6 +514,13 @@ if(empty($_GET["type"])){
             
         case "SharedEvents":
             
+		  /*
+		    if($_GET["user"] != $_COOKIE["user"]){
+		    	Response("404", "You can only look for your own data", null);
+			break;
+		    }
+		    */
+		    
                 if($_SERVER['REQUEST_METHOD'] == "GET"){
                 
                 $user = $_GET["index"];
