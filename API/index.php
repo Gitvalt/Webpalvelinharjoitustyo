@@ -19,8 +19,10 @@ if(empty($_GET["type"])){
     
     /*
     
-    if(isAdmin($apikey) == false){
+    if(isUserAdmin($_COOKIE["user"]) == false){
     	Response("404", "You must be a admin to use this feature", "null");
+    } else {
+    
     }
     
     
@@ -45,7 +47,7 @@ if(empty($_GET["type"])){
             switch($requestMethod){
                 case "GET":
                     
-                    $token   =   $_SESSION["token"];
+                    $token   =   $_COOKIE["token"];
                     
                     if(empty($token)){
                         Response(400, "You have to login", null);
@@ -102,6 +104,20 @@ if(empty($_GET["type"])){
             
             switch($requestMethod){
                 case "GET":
+		    /*
+		    if($_GET["user"] != $_COOKIE["user"]){
+		    	Response("404", "You can only look for your own data", null);
+		    } else {
+			    $parameter = GetUserEvent($_GET["user"], $_GET["index"]);
+
+			    if($parameter == false){
+				Response(400, "Event does not exist", null);
+			    } else {
+				Response(200, "Response ok", $parameter);    
+			    }    
+			    break;
+		    }
+		    */
                     $parameter = GetUserEvent($_GET["user"], $_GET["index"]);
 
                     if($parameter == false){
