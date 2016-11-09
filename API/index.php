@@ -19,6 +19,11 @@ if(empty($_GET["type"])){
     
     /*
     
+    if(isAdmin($apikey) == false){
+    	Response("404", "You must be a admin to use this feature", "null");
+    }
+    
+    
     if(empty($_GET["apikey"]) and $_GET["type"] == "login"){
     
     }
