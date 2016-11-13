@@ -37,6 +37,29 @@ function GetTableData($table){
     }
 }
 
+function SearchUsers($target){
+    
+    $found_users = array();
+    $users = GetTableData("user");
+    
+    foreach($users as $user){
+        //print_r($user);
+        
+        $username = strpos($user["username"], $target); 
+        $email = strpos($user["email"], $target);
+        
+        //echo $username;
+        
+        if($username !== false or $email !== false){
+            array_push($found_users, $user);
+        }
+        
+    }
+    return $found_users;
+}
+
+
+
 //Get specific event
 function GetEventData($event){
      try {
@@ -454,6 +477,7 @@ function Logout($token){
          return false;
     }
 }
+
 
 
 function CreateAccessToken($user){

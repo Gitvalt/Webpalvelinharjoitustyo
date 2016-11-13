@@ -37,6 +37,9 @@ RewriteRule    ^users/([0-9a-zA-Z]+)/events/shared/ToOthersapikey=([0-9a-zA-Z]+)
 RewriteRule    ^users/([0-9a-zA-Z]+)/events/([0-9a-zA-Z]+)/share/([0-9a-zA-Z]+)apikey=([0-9a-zA-Z]+)*$   index.php?type=Share&selecteduser=$3&eventid=$2&owner=$1&apikey=$4 [NC,L]
 
 
+RewriteRule    ^users/search/([0-9a-zA-Z]+)*$    index.php?type=search_user&param=$1 [NC,L]
+
+
 #create event with name :{index}
 #POST EVENT
 
@@ -45,6 +48,10 @@ RewriteRule    ^users/([0-9a-zA-Z]+)/events/([0-9a-zA-Z]+)/share/([0-9a-zA-Z]+)a
 
 #delete event, from user, with id :{index}
 #DELETE EVENT
+
+
+
+
 
 #-----------------------------------------
 

@@ -40,6 +40,19 @@ if(empty($_GET["type"])){
     $parameter;
     
     switch($_GET["type"]){
+            
+            
+        case "search_user":
+            $index = $_GET["param"];
+            $users = SearchUsers($index);
+            
+            if(count($users) == 0){
+                Response(404, "User not found", null);
+            } else {
+                Response(200, "Users found", $users);
+            }
+            
+            break;
         case "login":
             $requestMethod = $_SERVER['REQUEST_METHOD'];
             // When creating event index = header, else = id         
