@@ -26,6 +26,8 @@ GET ./API/users/{user}/events/shared/ToOthers <---> display events shared to oth
 POST ./API/users/{user}/events/{event}/share/{user} <---> Share Event to user
 DELETE ./API/users/{user}/events/{event}/share/{user} <---> Remove Event to user
 
+ANY ./API/users/search/{username} <---> Search for user based on email or username 
+
 
 GET ./API/login/{token} <---> is current session valid? (has user logged in?)
 

@@ -1,3 +1,14 @@
+  #map {
+      height: 30%;
+      width: 40%;
+  }
+  
+  #divusers2 li {
+      background: red;
+      text-decoration: none;
+      list-style: none;
+  }
+
 input {
     width: 30%;
 }
