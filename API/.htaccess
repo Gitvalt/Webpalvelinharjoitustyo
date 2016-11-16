@@ -27,6 +27,7 @@ RewriteRule    ^users/([0-9a-zA-Z]+)/events/apikey=([0-9a-zA-Z]+)*$   index.php?
 RewriteRule    ^users/([0-9a-zA-Z]+)/events/([0-9a-zA-Z]+)apikey=([0-9a-zA-Z]+)$   index.php?type=userEvent&index=$2&user=$1&apikey=$3 [NC,L]
 #GET EVENT
 
+
 #show events shared to you
 RewriteRule    ^users/([0-9a-zA-Z]+)/events/shared/ToMeapikey=([0-9a-zA-Z]+)$   index.php?type=SharedToMe&index=$1&apikey=$2 [NC,L]
 

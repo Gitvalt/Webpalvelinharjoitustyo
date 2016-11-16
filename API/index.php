@@ -45,7 +45,7 @@ if(empty($_GET["type"])){
         case "search_user":
             $index = $_GET["param"];
             $users = SearchUsers($index);
-            
+
             if(count($users) == 0){
                 Response(404, "User not found", null);
             } else {
@@ -125,13 +125,20 @@ if(empty($_GET["type"])){
 		    }
 		    
 		    */
-                    $parameter = GetUserEvent($_GET["user"], $_GET["index"]);
-
+            
+                    
+                    if(is_int($_GET["index"])){
+                        $parameter = GetUserEvent($_GET["user"], $_GET["index"]);    
+                    } else {
+                        $parameter = GetEventDataHeader($_GET["index"], $_GET["user"]);
+                    }
+ 
                     if($parameter == false){
                         Response(400, "Event does not exist", null);
                     } else {
                         Response(200, "Response ok", $parameter);    
-                    }    
+                    }
+                    
                     break;
                 case "POST":
                     //create event for user. index = username

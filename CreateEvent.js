@@ -1,40 +1,81 @@
+    
     function AddUserToList(x){
-            
+            console.log("addtouserlist");
             var field = document.getElementById("osallistujafield");
-            var input = field.value;
             
-            var ul = document.getElementById("divusers");
-            while(ul.childElementCount > 0){
-                ul.removeChild(ul.firstChild);
-            }
+            var sel_users = document.getElementById("sel_users");
+            
+            var user = x.textContent;
             
             var li = document.createElement("li");
-            if(input != null){
-                li.textContent = input;
-                document.getElementById("divusers").appendChild(li);
-                field.value = "";
-                field.focus();
-            }
+            li.textContent = user;
+            li.setAttribute("name", "selected_user");
+        
+        
+            var selected = document.getElementsByName("selected_user");
+        
+            console.log(selected);
             
+            var error = false;
+        
+            for(var x = 0; x<selected.length;x++){
+                
+                if(selected[x].textContent == user){
+                    console.log("already selected");
+                    error = true;
+                    break;
+                }
+                
+            }
+            if(error === false){
+                sel_users.appendChild(li);
+            }
         }
         
-        
-        
-        
-        function GetUsers(){
-            
-            var user = document.getElementById("osallistujafield").value;
 
-            var users2 = document.getElementById("users2");
+        function emptyUsers(){
+            var ul = document.getElementById("users");
+
+                    if(ul.childElementCount != 0){
+                        while(ul.childElementCount > 0){
+                            ul.removeChild(ul.firstChild);
+                        }
+                    }
+        }
+    
+    
+        function GetUsers(parent, event){
+            
+            var keyCode = event.keyCode;
+            
+            switch(keyCode){
+                case 13:
+                    break;
+            }
+            
+            try{
+                
+            var user = document.getElementById("osallistujafield").value;
+        
+            var users2 = document.getElementById("users");
             
             while(users2.childElementCount > 0){
                 users2.removeChild(users2.firstChild);
             }
             
+            } catch(Exception){
+                
+            }
+            
+            if(user == null){
+                console.log("no user input");
+            } else {
+        
             $.ajax({
                 url: 'http://localhost:8080/html/web-palvelinohjelmointi/Webpalvelinharjoitustyo/API/users/search/' + user, method: "GET"
-                 }).fail(function () {
+                 }).fail(function (data) {
                         console.log("fail!");
+                        
                 }).done(function (data) {
 
                     //var x = data.kentta["geometry"]["location"];
@@ -47,34 +88,49 @@
                         console.log("Data found");
                         
                         for(var x = 0; x<data.data.length;x++){
-                            /*
+                            
                             var li = document.createElement("li");
                             var a = document.createElement("a");
-
-                            a.onclick = AddUserToList(data.data[x].username);
+                            
+                        
+                            
+                            a.onclick = function(){
+                                console.log("click");
+                                AddUserToList(this);
+                            };
+                            a.href = "#";
                             a.textContent = data.data[x].username;
-
+                            a.tagName = "option";
+                            
                             console.log(data.data[x].username);
 
                             li.appendChild(a);
-
-                            //document.getElementById("osallistujafield").appendChild(li);
-                            */
+                            
+                            var ul = document.getElementById("users");
+                            
+                            if(ul.childElementCount != 0){
+                                while(ul.childElementCount > 0){
+                                    ul.removeChild(ul.firstChild);
+                                }
+                            }
+                            
+                            document.getElementById("users").appendChild(li);
+                            
                             array.push(data.data[x].username);
                             
                         }
                         
-                        $( "#osallistujafield" ).autocomplete({
-                            source: array
-                            });
+                     
                         
                     } else {
                         console.log("Error or no data found");
                     }
 
                     });
-            
+                }
         }
+        
+        
         
         function validatetime(){
             
@@ -171,6 +227,24 @@
             });
         }
          
+
+        function getEventId(eventheader){
+    
+        var user = document.cookie;
+        console.log(user);
+    
+            $.ajax({
+        url: './API/users/' + user + '/events/' + eventheader + "apikey=notimplemented", method: "GET"
+         }).fail(function () {
+                console.log("Creating event failed!");
+        }).done(function (data) {
+               console.log(data); 
+            }
+        );
+        
+        }
+
+
     
         function submitEvent(){
         
@@ -195,6 +269,8 @@
         
         //otsikko cant contain space
        
+        var shareTo = document.getElementsbyName("selected_users");    
+               
         var otsikko_reg = /([0-9a-zA-Z]+)/;
         if(otsikko_reg.exec(otsikko) == true){
             
@@ -202,10 +278,19 @@
         $.ajax({
         url: './API/users/testi/events/' + otsikko + "apikey=notimplemented", method: "POST", data: {description: kuvaus, startdatetime: alkamisajankohta, enddatetime: loppumisajankohta, location: sijainti}
          }).fail(function () {
-        console.log("Creating event failed!");
+                console.log("Creating event failed!");
         }).done(function (data) {
                 
-                console.log("done");    
+                console.log("done");
+             if(shareTo.length == 0){
+                    console.log("Event will not be shared");
+            } else {
+                //get event id
+                //POST ./API/users/{user}/events/{event}/share/{user}
+                getEventId(otsikko);
+                 
+                
+            }
             
             }
         );

@@ -1,14 +1,56 @@
-  #map {
-      height: 30%;
-      width: 40%;
-  }
-  
-  #divusers2 li {
-      background: red;
-      text-decoration: none;
-      list-style: none;
-  }
+#map {
+  height: 30%;
+  width: 40%;
+}
+
+#divusers2 li {
+  background: red;
+  text-decoration: none;
+  list-style: none;
+}
 
 input {
     width: 30%;
+}
+
+#osallistujat, #valituthenkilot {
+    width: 50%;
+}
+
+#osallistujat li, #valituthenkilot li{
+    width: 28%;
+    list-style: none;
+    padding: 0px;
+    margin: 0px;
+    
+}
+
+#osallistujat ul{
+    padding: 0px;
+    
+    margin: 0px;
+    margin-top: 00px;
+
+}
+
+#osallistujat a,#valituthenkilot a {
+    
+    background: gray;
+    
+    margin: 0px;
+    
+    width: 100%;
+    height: auto;
+    
+    padding-right: 50%;
+    padding-left: 50%;
+    
+    margin-top: 10px;
+
+    
+    
+}
+
+#osallistujat a:hover{
+    background: red;
 }

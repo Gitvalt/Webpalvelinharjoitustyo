@@ -45,13 +45,15 @@ function SearchUsers($target){
     foreach($users as $user){
         //print_r($user);
         
-        $username = strpos($user["username"], $target); 
+        
+        $username = false;
+        $email = false;
+        
+        $username = strpos($user["username"], $target);
         $email = strpos($user["email"], $target);
         
-        //echo $username;
-        
         if($username !== false or $email !== false){
-            array_push($found_users, $user);
+            array_push($found_users, $user);  
         }
         
     }
@@ -67,6 +69,22 @@ function GetEventData($event){
         $event = htmlspecialchars($event);
         $statement = $conn->prepare("SELECT * FROM event where id=?;");
         $statement->bindValue(1, $event, PDO::PARAM_INT);
+        $statement->execute();
+        $tulos = $statement->fetch(PDO::FETCH_ASSOC);;
+        return $tulos;
+
+    } catch(PDOException $e){
+        //echo "error:" . $e->getMessage();
+    }
+}
+
+function GetEventDataHeader($eventheader, $user){
+     try {
+        $conn = Connect();
+        $event = htmlspecialchars($event);
+        $statement = $conn->prepare("SELECT * FROM event where header=? and owner=?;");
+        $statement->bindValue(1, $eventheader, PDO::PARAM_STR);
+        $statement->bindValue(2, $user, PDO::PARAM_STR);
         $statement->execute();
         $tulos = $statement->fetch(PDO::FETCH_ASSOC);;
         return $tulos;
