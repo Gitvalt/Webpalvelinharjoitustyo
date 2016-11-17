@@ -27,7 +27,11 @@
                 }
                 
             }
+            //document.cookie += "user=testi";
+
+        
             if(error === false){
+                //console.log(document.cookie);
                 sel_users.appendChild(li);
             }
         }
@@ -75,6 +79,7 @@
                 url: 'http://localhost:8080/html/web-palvelinohjelmointi/Webpalvelinharjoitustyo/API/users/search/' + user, method: "GET"
                  }).fail(function (data) {
                         console.log("fail!");
+                        console.log(data.responseText);
                         
                 }).done(function (data) {
 
@@ -269,8 +274,12 @@
         
         //otsikko cant contain space
        
-        var shareTo = document.getElementsbyName("selected_users");    
-               
+        var shareTo = document.getElementsByName("selected_users");    
+       
+            
+            
+            
+            
         var otsikko_reg = /([0-9a-zA-Z]+)/;
         if(otsikko_reg.exec(otsikko) == true){
             

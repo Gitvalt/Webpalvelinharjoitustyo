@@ -40,7 +40,7 @@ https://developers.google.com/maps/documentation/javascript/examples/places-sear
         <br>
         
         Sijainti:
-        <input type="text" id="sijainti" onchange="GoogleApiAutocomplete()" onblur="onAutocompleteBlur()">
+        <input type="text" id="sijainti" onkeyup="GoogleApiAutocomplete()" onblur="onAutocompleteBlur()">
         <div id="map"></div>
         <br>
         
