@@ -18,7 +18,7 @@ function Connect(){
         echo $ex->getMessage();
     }
 }
-
+/*
 //get data from table x
 function GetTableData($table){
      try {
@@ -36,11 +36,44 @@ function GetTableData($table){
         //echo "error:" . $e->getMessage();
     }
 }
+*/
+
+function GetUsers(){
+     try {
+        $conn = Connect();
+        
+        $statement = $conn->prepare("SELECT username, firstname, lastname, email, phone, address, account-type FROM user;");
+        $statement->execute();
+        $tulos = $statement->fetchAll(PDO::FETCH_ASSOC);;
+        return $tulos;
+
+    } catch(PDOException $e){
+         return false;
+        //echo "error:" . $e->getMessage();
+    }
+}
+
+function GetEvents(){
+     try {
+        $conn = Connect();
+        
+        $statement = $conn->prepare("SELECT * FROM event;");
+        $statement->execute();
+        $tulos = $statement->fetchAll(PDO::FETCH_ASSOC);;
+        return $tulos;
+
+    } catch(PDOException $e){
+         return false;
+        //echo "error:" . $e->getMessage();
+    }
+}
+
+
 
 function SearchUsers($target){
     
     $found_users = array();
-    $users = GetTableData("user");
+    $users = GetUsers();
     
     foreach($users as $user){
         //print_r($user);
@@ -56,6 +89,27 @@ function SearchUsers($target){
             array_push($found_users, $user);  
         }
         
+    }
+    return $found_users;
+}
+
+function SearchEvent($header, $user){
+    
+    try {
+        $conn = Connect();
+        $event = htmlspecialchars($header);
+        $user = htmlspecialchars($user);
+        
+        $statement = $conn->prepare("SELECT * FROM event where header=? and owner=?;");
+        
+        $statement->bindValue(1, $header, PDO::PARAM_STR);
+        $statement->bindValue(2, $user, PDO::PARAM_STR);
+        
+        $statement->execute();
+        $tulos = $statement->fetchALL(PDO::FETCH_ASSOC);;
+        return $tulos;
+    } catch(PDOException $e){
+        //echo "error:" . $e->getMessage();
     }
     return $found_users;
 }
@@ -78,6 +132,7 @@ function GetEventData($event){
     }
 }
 
+//display events by name x made by user y
 function GetEventDataHeader($eventheader, $user){
      try {
         $conn = Connect();
@@ -86,13 +141,31 @@ function GetEventDataHeader($eventheader, $user){
         $statement->bindValue(1, $eventheader, PDO::PARAM_STR);
         $statement->bindValue(2, $user, PDO::PARAM_STR);
         $statement->execute();
-        $tulos = $statement->fetch(PDO::FETCH_ASSOC);;
+        $tulos = $statement->fetchALL(PDO::FETCH_ASSOC);;
         return $tulos;
 
     } catch(PDOException $e){
         //echo "error:" . $e->getMessage();
     }
 }
+//includes shared events
+function UserAllEvents($user){
+    
+    $combined_array = array();
+    $user_made = GetUserEvents($user);
+    $shared = GetSharedEvents($user);
+    
+    array_push($combined_array, $user_made);
+    array_push($combined_array, $shared);
+    
+    
+    if($user_made == null and $shared == null){
+        return null;
+    } else {
+        return $combined_array;    
+    }
+}   
+
 
 //Create Event for user
 function InsertEvent($user, $header, $description, $startDateTime, $endDateTime, $location){
@@ -121,10 +194,24 @@ function InsertEvent($user, $header, $description, $startDateTime, $endDateTime,
         
         $statement->execute();
         
-        return true;
+        $statement = $conn->prepare("SELECT id FROM event where header=? and startDateTime=? and owner=? and endDateTime=?;");
+        
+        $statement->bindValue(1, $header, PDO::PARAM_STR);
+        $statement->bindValue(2, $startDateTime, PDO::PARAM_LOB);    
+        $statement->bindValue(3, $user, PDO::PARAM_STR);
+        $statement->bindValue(4, $endDateTime, PDO::PARAM_LOB);
+        $statement->execute();
+        
+        $tulos = $statement->fetch(PDO::FETCH_ASSOC);;
+        if($tulos != null){
+            return $tulos;
+        } else {
+            return false;
+        }
+        
 
     } catch(PDOException $e){
-        return $e->getMessage();
+        return false;
     }
     
 }
@@ -196,12 +283,13 @@ function DeleteUser($user){
     
 }
 
+//Get events shared to me
 function GetSharedEvents($user){
      
     try {
 
         $conn = Connect();    
-        $statement = $conn->prepare("Select id, header, startDateTime, endDateTime, location, owner from event INNER JOIN sharedevent on event.id=sharedevent.eventID WHERE username=?;");
+        $statement = $conn->prepare("Select id, header, description, startDateTime, endDateTime, location, owner from event INNER JOIN sharedevent on event.id=sharedevent.eventID WHERE username=?;");
                 
         $statement->bindValue(1, $user, PDO::PARAM_STR);
         $statement->execute();
@@ -214,11 +302,12 @@ function GetSharedEvents($user){
     }
 }
 
+//Get events shared to others
 function GetEventsSharedByUser($user){
      
     try {
         $conn = Connect();
-        $statement = $conn->prepare("SELECT id, header, startDateTime, endDateTime, location, sharedevent.username as sharedToUser from event INNER JOIN sharedevent on event.id = sharedevent.eventID where owner=?");
+        $statement = $conn->prepare("SELECT id, header, description, startDateTime, endDateTime, location, sharedevent.username as sharedToUser from event INNER JOIN sharedevent on event.id = sharedevent.eventID where owner=?");
                 
         $statement->bindValue(1, $user, PDO::PARAM_STR);
         $statement->execute();

@@ -1,7 +1,58 @@
+html {
+    margin-left: 20px;
+    margin-top: 20px;
+}
+
+body {
+    width: 50%;
+    float: left;
+}
+
 #map {
   height: 30%;
-  width: 40%;
+  width: 100%;
 }
+
+#sijainti_style {
+    border: 1px solid black;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    max-width: 30%:
+}
+
+#sijainti {
+    width: 40%;
+    margin: 10px;
+}
+
+
+#alkamispaiva, #paattymispaiva{
+    width: 100%;
+    
+}
+
+#alkamisaika, #paattymisaika {
+    width: 100%;
+    margin-top: 10px;
+}
+
+
+#alkaa, #loppuu {
+    
+    padding: 10px;
+    
+    float: left;
+    width: 30%;
+    height: 10%;
+    border: 1px solid black;
+}
+
+#loppuu {
+    margin-left: 2%;
+    clear: right;
+    margin-right: auto;
+}
+
 
 #divusers2 li {
   background: red;
@@ -9,8 +60,11 @@
   list-style: none;
 }
 
-input {
-    width: 30%;
+#time {
+    width: 100%;
+    float: left;
+    clear: both;
+    margin-bottom: 10px;
 }
 
 #osallistujat, #valituthenkilot {
@@ -18,7 +72,7 @@ input {
 }
 
 #osallistujat li, #valituthenkilot li{
-    width: 28%;
+    width: 50%;
     list-style: none;
     padding: 0px;
     margin: 0px;

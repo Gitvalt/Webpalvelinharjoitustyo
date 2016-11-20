@@ -38,9 +38,22 @@ if(empty($_GET["type"])){
     
     
     $parameter;
-    
+
     switch($_GET["type"]){
             
+        case "search_event":
+            
+            $user = $_GET["user"];
+            $header = $_GET["header"];
+            $found_event = SearchEvent($header, $user);
+                
+            if(empty($found_event)){
+                Response(404, "No event found", null);
+            } else {
+                Response(200, "Event found", $found_event);
+            }
+            
+            break;
             
         case "search_user":
             $index = $_GET["param"];
@@ -183,7 +196,7 @@ if(empty($_GET["type"])){
 
                         $response = InsertEvent($_GET["user"], $header, $desc, $FormatStart, $FormatEnd, $location);
 
-                        if($response === true){
+                        if($response !== false){
                             Response(200, "New event created", $response);
                         } else {
                             Response(404, "Creating event failed", $response);    
@@ -302,7 +315,7 @@ if(empty($_GET["type"])){
         case "events":
 		    //isadmin?
             if($_SERVER['REQUEST_METHOD'] == "GET"){
-                $parameter = GetTableData("event");
+                $parameter = GetEvents();
                 
                 if($parameter == null){
                     Response(404, "No events defined", null);
@@ -493,7 +506,7 @@ if(empty($_GET["type"])){
             //API/users/
             if($_SERVER['REQUEST_METHOD'] == "GET"){
                 
-                $parameter = GetTableData("user");
+                $parameter = GetUsers();
                 
                 if($parameter == null){
                     Response(404, "No users defined", null);
@@ -560,7 +573,7 @@ if(empty($_GET["type"])){
         case "Share":
 			
             //event id = eventid, user whos event is shared 
-            $eventID = $_GET["index"];
+            $eventID = $_GET["eventid"];
 			$httpMethod = $_SERVER['REQUEST_METHOD'];
             $target_user = @$_GET["selecteduser"];
             $eventID = $_GET["eventid"];

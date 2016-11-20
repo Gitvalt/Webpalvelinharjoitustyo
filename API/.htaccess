@@ -7,10 +7,10 @@ RewriteRule    ^users/apikey=([0-9a-zA-Z]+)*$    index.php?type=users&apikey=$1 
 RewriteRule    ^users/([0-9a-zA-Z]+)/apikey=([0-9a-zA-Z]+)?$    index.php?type=user&index=$1&apikey=$2    [NC,L]
 #GET USER
 
-#create user with name :{index}
+#create user with name {index}
 #POST USER
 
-#modify user with name :{index}
+#modify user with name {index}
 #PUT USER
 
 #delete user {index}
@@ -23,9 +23,6 @@ RewriteRule    ^events/apikey=([0-9a-zA-Z]+)*$    index.php?type=events&index=$1
 RewriteRule    ^users/([0-9a-zA-Z]+)/events/apikey=([0-9a-zA-Z]+)*$   index.php?type=userEvents&index=$1&apikey=$2 [NC,L]
 
 
-#show specific event made by user
-RewriteRule    ^users/([0-9a-zA-Z]+)/events/([0-9a-zA-Z]+)apikey=([0-9a-zA-Z]+)$   index.php?type=userEvent&index=$2&user=$1&apikey=$3 [NC,L]
-#GET EVENT
 
 
 #show events shared to you
@@ -35,24 +32,27 @@ RewriteRule    ^users/([0-9a-zA-Z]+)/events/shared/ToMeapikey=([0-9a-zA-Z]+)$   
 RewriteRule    ^users/([0-9a-zA-Z]+)/events/shared/ToOthersapikey=([0-9a-zA-Z]+)$   index.php?type=SharedEvents&index=$1&apikey=$2 [NC,L]
 
 #shareEvent
-RewriteRule    ^users/([0-9a-zA-Z]+)/events/([0-9a-zA-Z]+)/share/([0-9a-zA-Z]+)apikey=([0-9a-zA-Z]+)*$   index.php?type=Share&selecteduser=$3&eventid=$2&owner=$1&apikey=$4 [NC,L]
+RewriteRule    ^users/([0-9a-zA-Z]+)/events/([0-9a-zA-Z]+)/share/([0-9a-zA-Z]+)/apikey=([0-9a-zA-Z]+)*$   index.php?type=Share&selecteduser=$3&eventid=$2&owner=$1&apikey=$4 [NC,L]
 
 
 RewriteRule    ^users/search/([0-9a-zA-Z]+)*$    index.php?type=search_user&param=$1 [NC,L]
 
+RewriteRule    ^users/([0-9a-zA-Z]+)/events/search/([0-9a-zA-Z]+)/apikey=([0-9a-zA-Z]+)*$    index.php?type=search_event&user=$1&header=$2&apikey=$3 [NC,L]
 
-#create event with name :{index}
+
+#show specific event made by user
+RewriteRule    ^users/([0-9a-zA-Z]+)/events/([0-9a-zA-Z]+)/apikey=([0-9a-zA-Z]+)$   index.php?type=userEvent&index=$2&user=$1&apikey=$3 [NC,L]
+#GET EVENT
+
+
+#create event with name {index}
 #POST EVENT
 
-#modify event, from user, with id :{index}
+#modify event, from user, with id {index}
 #PUT EVENT
 
-#delete event, from user, with id :{index}
+#delete event, from user, with id {index}
 #DELETE EVENT
-
-
-
-
 
 #-----------------------------------------
 
@@ -61,10 +61,7 @@ RewriteRule    ^users/search/([0-9a-zA-Z]+)*$    index.php?type=search_user&para
 #tallennetaan cookie tiedostoon 
 RewriteRule    ^login/([0-9a-zA-Z]+)$    index.php?type=login&username=$1    [NC,L]
 
-
-
 #--------------------------------------
-
 
 #RewriteRule    ^groups/*$   index.php?type=groups [NC,L]
 #GET Groups
