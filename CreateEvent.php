@@ -11,6 +11,8 @@ https://developers.google.com/maps/documentation/javascript/examples/places-sear
 
 //mahdollisesti lisääminen luotaisiin javascriptilla
 
+require("./API/sql-connect.php");
+
 ?>
 <html lang="fi">
     <head>
@@ -29,7 +31,8 @@ https://developers.google.com/maps/documentation/javascript/examples/places-sear
     </script>
 
     <body>
-        <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" onsubmit="event.preventDefault(); eventSubmit();" method="post" id="form">
+        <!--<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>-->
+        <form action="CreateEvent.php"  method="post" id="form">
             <h1>Tapahtuman luominen</h1>
 
             Otsikko:
@@ -52,6 +55,7 @@ https://developers.google.com/maps/documentation/javascript/examples/places-sear
                     <label for="alkaa">Tapahtuma alkaa</label>
                     <input type="date" id="alkamispaiva" name="alkudate" onchange="validatedate()"><br>
                     <input type="time" id="alkamisaika" name="alkutime" onchange="validatetime()">
+                    <label for="isallday">Kokopäivän</label><input type="checkbox" name="isallday" >
                 </div>
 
 
@@ -80,11 +84,114 @@ https://developers.google.com/maps/documentation/javascript/examples/places-sear
                 <div id="sel_users"></div>
                 <br>
             </div>
-            <input type="submit" name="submit">
-            <!--<button onclick="submitEvent()">Tallenna tapahtuma</button>-->
+            
+            <div id="salainen" style="display:block;">
+                <select id="forPHPid" name="forPHP">
+                </select>
+            </div>
+            
+            <!--<input type="submit" name="submit">-->
+            <button onclick="submitEvent()">Tallenna tapahtuma</button>
         </form>
     </body>
 </html>
 
+<?php
 
+$message = "";
+$error_counter = 0;
+
+$otsikko = @$_POST["otsikko"];
+$kuvaus = @$_POST["kuvaus"];
+$sijainti = @$_POST["sijainti"];
+
+
+$alkutime = @$_POST["alkutime"];
+$alkupaiva = @$_POST["alkudate"];
+
+$lopputime = @$_POST["lopputime"];
+$loppupaiva = @$_POST["loppudate"];
+
+//otsikon tarkistaminen
+if(@$_POST["otsikko"] == null){
+    $message .= "Error: Otsikko on määriteltävä!<br>";
+    $error_counter++;
+}
+//---
+
+//paivien tarkistaminen
+if(@$alkupaiva == null){
+    $message .= "Error: merkitse tapahtuman alkamispaiva!<br>";
+    $error_counter++;
+} else {
+    if(@$alkutime == null or @$_POST["isallday"] == true){
+     @$alkutime = "00:00:00";
+     @$lopputime = "00:00:00";
+    }
+}
+
+if(@$loppupaiva == null){
+    $message .= "Error: merkitse tapahtuman loppumispaiva!<br>";
+    $error_counter++;
+} else {
+    if(@$lopputime == null or @$_POST["isallday"] == true){
+     @$lopputime = "00:00:00";   
+    }
+}
+
+if(!empty($alkupaiva) or !empty($loppupaiva)){
+    
+    /*
+    echo $alkupaiva . " " . $alkutime;
+    echo "<br>";
+    echo $loppupaiva . " " . $lopputime;
+    */
+    
+    $alkamisajankohta = date($alkupaiva . " " . $alkutime);
+    
+    $loppumisajankohta = date($loppupaiva . " " . $lopputime);
+
+    if($alkamisajankohta > $loppumisajankohta){
+        $message .= "Error: Tapahtuma merkitty päättyväksi ennen tapahtuman alkamista!<br>";
+        $error_counter++;
+    } else {
+        //$message .= "Error: Ajat OK<br>";
+    }
+} else {
+    $alkamisajankohta = null;
+    $loppumisajankohta = null;
+}
+//---
+
+if($error_counter == 0){
+    $function = InsertEvent("testi", $otsikko, $kuvaus, $alkamisajankohta, $loppumisajankohta, $sijainti);
+    
+    if($function === false){
+        $message .= "Error: Tapahtuman luominen ei onnistunut<br>";
+    } else {
+        $message .= "<b>Tapahtuman luominen onnistui!</b><br>";
+        
+        $index = $function;
+        
+    }
+    
+} else {
+    
+}
+
+echo "<hr>";
+if(isset($_POST["otsikko"])){
+    echo "<h2>Palvelimen vastaus</h2>";
+    //palvelimen vastaukset
+    echo $message;
+    
+
+}
+
+function ShareFunction($id){
+    return true;
+}
+
+
+?>
 

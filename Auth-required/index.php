@@ -8,7 +8,7 @@ require("isValidUser.php");
         <meta charset="utf-8">
     </head>
     <body>
-        <!--navbar.php-->
+        <?php include("navbar.php"); ?>
         Kirjauduit onnistuneesti sisään palveluun.<br>
         
         <?php

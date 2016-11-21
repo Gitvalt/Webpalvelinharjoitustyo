@@ -9,7 +9,7 @@ require("../API/sql-connect.php");
         <meta charset="utf-8">
     </head>
     <body>
-        <!--navbar.php-->
+        <?php include("navbar.php"); ?>
         <?php
         $user = "testi";
         $events = UserAllEvents($user);

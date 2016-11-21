@@ -42,14 +42,15 @@ function GetUsers(){
      try {
         $conn = Connect();
         
-        $statement = $conn->prepare("SELECT username, firstname, lastname, email, phone, address, account-type FROM user;");
+        $statement = $conn->prepare("SELECT username, firstname, lastname, email, phone, address, 'account-type' FROM user;");
         $statement->execute();
         $tulos = $statement->fetchAll(PDO::FETCH_ASSOC);;
         return $tulos;
 
     } catch(PDOException $e){
+         //echo "error:" . $e->getMessage();
          return false;
-        //echo "error:" . $e->getMessage();
+
     }
 }
 
@@ -62,9 +63,10 @@ function GetEvents(){
         $tulos = $statement->fetchAll(PDO::FETCH_ASSOC);;
         return $tulos;
 
-    } catch(PDOException $e){
-         return false;
+    } catch(PDOException $e){ 
         //echo "error:" . $e->getMessage();
+        return false;
+
     }
 }
 
@@ -74,6 +76,8 @@ function SearchUsers($target){
     
     $found_users = array();
     $users = GetUsers();
+    
+    //print_r($usersArray);
     
     foreach($users as $user){
         //print_r($user);
@@ -90,6 +94,7 @@ function SearchUsers($target){
         }
         
     }
+    
     return $found_users;
 }
 

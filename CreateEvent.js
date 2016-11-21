@@ -1,5 +1,4 @@
-    
-    function AddUserToList(x){
+     function AddUserToList(x){
             console.log("addtouserlist");
             var field = document.getElementById("osallistujafield");
             
@@ -16,6 +15,13 @@
         
             console.log(selected);
             
+            var option = document.createElement("option");
+            
+            option.value = user;
+            option.textContent = user;
+            option.selected = true;
+            document.getElementById("forPHPid").appendChild(option);
+         
             var error = false;
         
             for(var x = 0; x<selected.length;x++){
@@ -69,7 +75,7 @@
             } else {
         
             $.ajax({
-                url: './API/users/search/' + user, method: "GET"
+                url: './API/php-scripts/search-user.php?user=' + user, method: "GET"
                  }).fail(function (data) {
                         console.log("fail!");
                         console.log(data.responseText);
@@ -80,8 +86,13 @@
                    
                     var array = [];
                     console.log(data);
+                    console.log(data.username);
+                
                     if(data.status === 200){
                         console.log("Data found");
+                        
+                        
+              
                         
                         for(var x = 0; x<data.data.length;x++){
                             
@@ -120,6 +131,7 @@
                         
                     } else {
                         console.log("Error or no data found");
+                        //console.log(data);
                     }
 
                     });
@@ -342,61 +354,11 @@
             if(error === false){
                 
                 var user = "testi";
-                $.ajax({
-                url: './API/users/' + user + "/events/" + otsikko + "/apikey=nice", method: "POST", data: { description: kuvaus, startdatetime: alkamisajankohta, enddatetime: loppumisajankohta, location: sijainti }
-                 }).fail(function (data) {
-                        console.log("fail!");
-                        console.log(data.responseText);
-                }).done(function (data) {
-                    console.log(data);
-                    shareTarget(shareTo, data.data.id);
-                });
-                
-        
-                
-                
                 console.log("Tapatuma luotiin");
-                
+                document.getElementById("form").submit();
                 
             } else {
                 console.log("Tapahtumaa ei luotu.")
             }
     
-    }
-
-
-    function DoesHeaderExist(){
-        
-    }
-
-    function shareTarget(toUsers, tapahtumaID){
-        
-        var user = "testi";  
-        var eventid = tapahtumaID;                                               
-        
-        console.log("id: " + eventid);
-        console.log(toUsers);
-        console.log(toUsers[0].textContent);
-        
-        for(var x = 0; x<toUsers.length;x++){
-            
-            
-            
-            
-            /*
-            ^users/([0-9a-zA-Z]+)/events/([0-9a-zA-Z]+)/share/([0-9a-zA-Z]+)/apikey=([0-9a-zA-Z]+)*$   index.php?type=Share&selecteduser=$3&eventid=$2&owner=$1&apikey=$4 [NC,L]
-            */
-            
-            
-            $.ajax({
-                url: './API/users/' + user + "/events/" + tapahtumaID + "/share/" + toUsers[x].textContent + "/apikey=nice", method: "POST"
-                 }).fail(function (data) {
-                        console.log("fail!");
-                        console.log(data.responseText);
-                }).done(function (data) {
-                    console.log(data);
-                });
-                
-        }
-        
     }
