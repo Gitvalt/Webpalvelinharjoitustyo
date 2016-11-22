@@ -11,7 +11,7 @@ https://developers.google.com/maps/documentation/javascript/examples/places-sear
 
 //mahdollisesti lisääminen luotaisiin javascriptilla
 
-require("./API/sql-connect.php");
+require("../API/sql-connect.php");
 
 ?>
 <html lang="fi">
@@ -20,10 +20,10 @@ require("./API/sql-connect.php");
         <meta charset="utf-8">
         
         <link href="style/createevent.css" type="text/css" rel="stylesheet">
-
-        <script src="jquery/jquery-3.1.0.min.js"></script>
-                <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
-        <script src="CreateEvent.js"></script>
+        
+        <script src="../jquery/jquery-3.1.0.min.js"></script>
+        <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+        <script src="javascript/CreateEvent.js"></script>
     </head>
     
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCn6UcSrDYdAiiKehVzCYy78AUQpbkFdYI&libraries=places&callback=initAutocomplete"
@@ -31,6 +31,7 @@ require("./API/sql-connect.php");
     </script>
 
     <body>
+        <?php include("navbar.php"); ?>
         <!--<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>-->
         <form action="CreateEvent.php"  method="post" id="form">
             <h1>Tapahtuman luominen</h1>
@@ -53,16 +54,16 @@ require("./API/sql-connect.php");
             <div id="time">
                 <div id="alkaa">
                     <label for="alkaa">Tapahtuma alkaa</label>
-                    <input type="date" id="alkamispaiva" name="alkudate" onchange="validatedate()"><br>
-                    <input type="time" id="alkamisaika" name="alkutime" onchange="validatetime()">
+                    <input type="date" id="alkamispaiva" name="alkudate" onchange="validateDatetime()"><br>
+                    <input type="time" id="alkamisaika" name="alkutime" onchange="validateDatetime()">
                     <label for="isallday">Kokopäivän</label><input type="checkbox" name="isallday" >
                 </div>
 
 
                 <div id="loppuu">
                     <label for="loppuu">Tapahtuma päättyy:</label>
-                    <input type="date"  id="paattymispaiva" name="loppudate" onchange="validatedate()"><br>
-                    <input type="time"  id="paattymisaika" name="lopputime" onchange="validatetime()">
+                    <input type="date"  id="paattymispaiva" name="loppudate" onchange="validateDatetime()"><br>
+                    <input type="time"  id="paattymisaika" name="lopputime" onchange="validateDatetime()">
                 </div>
                 <br>
             </div>
@@ -163,7 +164,7 @@ if(!empty($alkupaiva) or !empty($loppupaiva)){
 //---
 
 if($error_counter == 0){
-    $function = InsertEvent("testi", $otsikko, $kuvaus, $alkamisajankohta, $loppumisajankohta, $sijainti);
+    $function = InsertEvent($_COOKIE["user"], $otsikko, $kuvaus, $alkamisajankohta, $loppumisajankohta, $sijainti);
     
     if($function === false){
         $message .= "Error: Tapahtuman luominen ei onnistunut<br>";

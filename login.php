@@ -16,10 +16,12 @@ if(isset($_POST["submit"])){
               $message = "Login succefull";
               header("Location: Auth-required/index.php");
             } else {
+                //Creating token failed.
                 $message = "Login failed. Error number: 3";
             }
         } else {
-            $message = "Login failed. Error number: 2";
+            //Username or password incorrect
+            $message = "Login failed. Username or password incorrect";
         } 
     } else {
         $message = "Login failed. Username or password filed is empty";

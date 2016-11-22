@@ -384,8 +384,35 @@ function GetUserEvent($user, $id){
     }
 }
 
+    
+ //Get specific event from user. Does not include shared events.
+function GetEventsDefTime($user, $start, $end){
+     try {
+        $conn = Connect();
+        $user = htmlspecialchars($user);
+        $id = htmlspecialchars($id);
+         
+        $statement = $conn->prepare("SELECT * FROM `event` WHERE startDateTime > ? and endDateTime < ? and owner = ?");
+        
+        $statement->bindValue(1, $start, PDO::PARAM_STR);
+        $statement->bindValue(2, $end, PDO::PARAM_STR);
+        $statement->bindValue(3, $user, PDO::PARAM_STR);
+        $statement->execute();
+        
+        $tulos = $statement->fetchall(PDO::FETCH_ASSOC);;
+        
+        return $tulos;
+
+    } catch(PDOException $e){
+        //echo "error:" . $e->getMessage();
+         return false;
+    }
+}   
+    
+    
 function ShareEvent($eventID, $user){
     try {
+        
         $conn = Connect();
         $statement = $conn->prepare("INSERT INTO sharedevent(eventID, username) VALUES(?,?);");
         

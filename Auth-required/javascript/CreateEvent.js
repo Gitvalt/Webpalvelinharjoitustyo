@@ -80,7 +80,7 @@
             } else {
         
             $.ajax({
-                url: './API/php-scripts/search-user.php?user=' + user, method: "GET"
+                url: '../API/php-scripts/search-user.php?user=' + user, method: "GET"
                  }).fail(function (data) {
                         console.log("fail!");
                         console.log(data.responseText);
@@ -94,17 +94,39 @@
                     if(data.status === 200){
                         //console.log("Data found");
                 
+                            var lookfor;
+                        
+                            console.log(document.cookie);
+                            var slipcookie = document.cookie.split(";");
+                            console.log(slipcookie);
+                        
+                            //haetaan kirjautuneen käyttäjän id ja tallennetaan se.
+                            for(var int = 0; int < slipcookie["length"];int++){
+                                var parts = slipcookie[int].split("=");
+            
+                                if(parts[0].includes("user") == true){
+                                    lookfor = parts[1];
+                                }
+                                
+                            }
+                        
+                            console.log(lookfor);
+                        
                         for(var x = 0; x<data.data.length;x++){
+                            
+                            if(data.data)
                             
                             var li = document.createElement("li");
                             var a = document.createElement("a");
                             
-                        
+                            //käyttäjä ei pysty jakamaan tapahtumaa itselleen
+                            if(data.data[x].username !== lookfor){
                             
                             a.onclick = function(){
                                 console.log("click");
                                 AddUserToList(this);
                             };
+                            
                             a.href = "#";
                             a.textContent = data.data[x].username;
                             a.tagName = "option";
@@ -124,7 +146,7 @@
                             document.getElementById("users").appendChild(li);
                             
                             array.push(data.data[x].username);
-                            
+                            }
                         }
                         
                      
@@ -140,34 +162,50 @@
         
         
         
-        function validatedatetime(){
+        function validateDatetime(){
             
             var x = document.getElementById("alkamisaika");
             
             var y = document.getElementById("paattymisaika");
             
-            
             var z = document.getElementById("alkamispaiva");
             
             var w = document.getElementById("paattymispaiva");
-            /*
-            if(x.value > y.value){
-              var text = "alkaa ennen loppumista";
-            document.getElementById("message2").textContent = text;
+            
+            var checkBox = document.getElementById("isalldayID");
+            
+            console.log(z.value);
+            console.log(w.value);
+            
+            if(w.value != "" && z.value == ""){  document.getElementById("alkaa").style.border = "1px solid red";
             } else {
-            var text = "OK";
-            document.getElementById("message2").textContent = text;            
+                document.getElementById("alkaa").style.border = "";
+            }
+            
+            if(w.value == "" && z.value != ""){  document.getElementById("loppuu").style.border = "1px solid red";
+            } else {
+                document.getElementById("loppuu").style.border = "";
+            }
+            
+            if(w.value != "" && z.value != "" && z.value > w.value){
+                document.getElementById("alkaa").style.border = "1px solid red";
+                var text = "alkaa ennen päättymisen jälkeen";
+                document.getElementById("message").textContent = text;
+            } else {
+                document.getElementById("alkaa").style.border = "";
+                var text = "";
+                document.getElementById("message").textContent = text;
+            }
+            
+            /*
+            if(z.value > w.value){
+                var text = "alkaa ennen päättymisen jälkeen";
+                document.getElementById("message").textContent = text;
+                
+            } else {
+            document.getElementById("message").textContent = "";            
             }
             */
-            
-            if(x.value > y.value){
-              var text = "alkaa ennen loppumista";
-            document.getElementById("message").textContent = text;
-            } else {
-            var text = "OK";
-            document.getElementById("message").textContent = text;            
-            }
-            
         }
         
         function initAutocomplete() {

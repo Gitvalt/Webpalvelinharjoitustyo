@@ -7,11 +7,12 @@ require("../API/sql-connect.php");
     <head>
         <title>Kirjaudu Sisään</title>
         <meta charset="utf-8">
+        <link href="style/ShowEvents.css" rel="stylesheet" type="text/css">
     </head>
     <body>
         <?php include("navbar.php"); ?>
         <?php
-        $user = "testi";
+        $user = $_COOKIE["user"];
         $events = UserAllEvents($user);
         //echo "<pre>";
         //print_r($events);
@@ -22,7 +23,7 @@ require("../API/sql-connect.php");
         echo "<table>";
         
          echo "<tr>";
-                    echo "<td>" . "otsikko" . "</td>";
+                    echo "<td>" . "Otsikko" . "</td>";
                     echo "<td>" . "Kuvaus" . "</td>";
                     echo "<td>" . "Tapahtuma alkaa" . "</td>";
                     echo "<td>" . "Tapahtuma päättyy" . "</td>";

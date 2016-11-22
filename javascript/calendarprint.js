@@ -2,29 +2,52 @@ function JavaPrint(){
 
     var input = document.getElementsByName("selected_date");
     if(input.getMonth != ""){
-    input = new Date(input[0]["valueAsNumber"]);
-    var date = new Date(input);
-    PrintCalender(date);
+        
+        //input = new Date(input[0]["valueAsNumber"]);
+        //var date = new Date(input);
+        var date = new Date();
+        
+        PrintCalender(date);
 
-    document.getElementById("day").value = input.getDate();
+        document.getElementById("day").value = date.getDate();
 
-    var months = Array(12);
-    months[0] = "January"
-    months[1] = "February"
-    months[2] = "March"
-    months[3] = "April"
-    months[4] = "May"
-    months[5] = "June"
-    months[6] = "July"
-    months[7] = "August"
-    months[8] = "September"
-    months[9] = "October"
-    months[10] = "November";
-    months[11] = "December";
+        var months = Array(12);
+        months[0] = "January"
+        months[1] = "February"
+        months[2] = "March"
+        months[3] = "April"
+        months[4] = "May"
+        months[5] = "June"
+        months[6] = "July"
+        months[7] = "August"
+        months[8] = "September"
+        months[9] = "October"
+        months[10] = "November";
+        months[11] = "December";
 
-    document.getElementById("month").value = months[input.getMonth()];
-    document.getElementById("year").value = input.getFullYear();
+        document.getElementById("month").value = months[date.getMonth()];
+        document.getElementById("year").value = date.getFullYear();
     }
+}
+
+function GetLoggedInUser(){
+    var lookfor;
+                        
+    console.log(document.cookie);
+    var slipcookie = document.cookie.split(";");
+    console.log(slipcookie);
+
+    //haetaan kirjautuneen käyttäjän id ja tallennetaan se.
+    for(var int = 0; int < slipcookie["length"];int++){
+        var parts = slipcookie[int].split("=");
+
+        if(parts[0].includes("user") == true){
+            lookfor = parts[1];
+        }
+
+    }
+    
+    return lookfor;
 }
 
 function PrintCalender(date){
@@ -36,8 +59,12 @@ function PrintCalender(date){
     
     */
 
+    var CookieUser = GetLoggedInUser();
+    
+    var today = new Date();
 
     var startMonth = date.getMonth();
+    
     var index = 1;
     //var date has unchanged input date while handlerDate contains by default, first day of the input month
     var handlerDate = new Date(date.getFullYear(), date.getMonth(), index, "0", "0", "0", "0");
