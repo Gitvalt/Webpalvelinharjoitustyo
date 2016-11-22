@@ -71,7 +71,6 @@ require("./API/sql-connect.php");
             <p id="message2"></p>
             <br>
 
-            <i>Under construction:</i><br>
 
             Tapahtuman osallistujat:
             <div id="osallistujat">
@@ -85,8 +84,8 @@ require("./API/sql-connect.php");
                 <br>
             </div>
             
-            <div id="salainen" style="display:block;">
-                <select id="forPHPid" name="forPHP">
+            <div id="salainen" style="display:none;">
+                <select id="forPHPid" name="forPHP[]" multiple>
                 </select>
             </div>
             
@@ -170,9 +169,16 @@ if($error_counter == 0){
         $message .= "Error: Tapahtuman luominen ei onnistunut<br>";
     } else {
         $message .= "<b>Tapahtuman luominen onnistui!</b><br>";
-        
         $index = $function;
+        //share event
         
+        $shareusers = @$_POST["forPHP"];
+        if(!empty($shareusers)){
+            $response = ShareFunction($index, $shareusers);
+            if($response === false){
+                $message .= "Error: Tapahtuman jakaminen käyttäjille epäonnistui";
+            }
+        }
     }
     
 } else {
@@ -188,7 +194,19 @@ if(isset($_POST["otsikko"])){
 
 }
 
-function ShareFunction($id){
+function ShareFunction($id, $users){
+    
+    print_r($id);
+    print_r($users);
+    
+    if(count($users) == 0 or $id == null){
+        return false;
+    }
+    
+    foreach($users as $person){
+        ShareEvent($id["id"], $person);
+    }
+    
     return true;
 }
 

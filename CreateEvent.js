@@ -39,6 +39,9 @@
             if(error === false){
                 //console.log(document.cookie);
                 sel_users.appendChild(li);
+                emptyUsers();
+                document.getElementById("osallistujafield").value = "";
+                document.getElementById("osallistujafield").focus();
             }
         }
         
@@ -52,6 +55,8 @@
                         }
                     }
         }
+
+
     
     
         function GetUsers(parent, event){
@@ -85,15 +90,10 @@
                     //var x = data.kentta["geometry"]["location"];
                    
                     var array = [];
-                    console.log(data);
-                    console.log(data.username);
-                
+                  
                     if(data.status === 200){
-                        console.log("Data found");
-                        
-                        
-              
-                        
+                        //console.log("Data found");
+                
                         for(var x = 0; x<data.data.length;x++){
                             
                             var li = document.createElement("li");
@@ -109,7 +109,7 @@
                             a.textContent = data.data[x].username;
                             a.tagName = "option";
                             
-                            console.log(data.data[x].username);
+                            //console.log(data.data[x].username);
 
                             li.appendChild(a);
                             
@@ -140,11 +140,25 @@
         
         
         
-        function validatetime(){
+        function validatedatetime(){
             
             var x = document.getElementById("alkamisaika");
             
             var y = document.getElementById("paattymisaika");
+            
+            
+            var z = document.getElementById("alkamispaiva");
+            
+            var w = document.getElementById("paattymispaiva");
+            /*
+            if(x.value > y.value){
+              var text = "alkaa ennen loppumista";
+            document.getElementById("message2").textContent = text;
+            } else {
+            var text = "OK";
+            document.getElementById("message2").textContent = text;            
+            }
+            */
             
             if(x.value > y.value){
               var text = "alkaa ennen loppumista";
@@ -152,22 +166,6 @@
             } else {
             var text = "OK";
             document.getElementById("message").textContent = text;            
-            }
-            
-        }
-        
-        function validatedate(){
-            
-            var x = document.getElementById("alkamispaiva");
-            
-            var y = document.getElementById("paattymispaiva");
-            
-            if(x.value > y.value){
-              var text = "alkaa ennen loppumista";
-            document.getElementById("message2").textContent = text;
-            } else {
-            var text = "OK";
-            document.getElementById("message2").textContent = text;            
             }
             
         }
@@ -245,7 +243,7 @@
             });
         }
          
-
+/*
         function getEventId(eventheader){
     
         var user = document.cookie;
@@ -261,9 +259,9 @@
         );
         
         }
+*/
 
-
-    
+/*    
         function eventSubmit(){
         
         
@@ -362,3 +360,4 @@
             }
     
     }
+*/
