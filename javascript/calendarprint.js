@@ -24,30 +24,21 @@ function JavaPrint(){
         months[9] = "October"
         months[10] = "November";
         months[11] = "December";
+        var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
         document.getElementById("month").value = months[date.getMonth()];
         document.getElementById("year").value = date.getFullYear();
     }
 }
+ 
 
-function GetLoggedInUser(){
-    var lookfor;
-                        
-    console.log(document.cookie);
-    var slipcookie = document.cookie.split(";");
-    console.log(slipcookie);
 
-    //haetaan kirjautuneen käyttäjän id ja tallennetaan se.
-    for(var int = 0; int < slipcookie["length"];int++){
-        var parts = slipcookie[int].split("=");
 
-        if(parts[0].includes("user") == true){
-            lookfor = parts[1];
-        }
 
-    }
+
+//Get events from database
+function EventsfromDatabase(user, start, end){
     
-    return lookfor;
 }
 
 function PrintCalender(date){
@@ -60,15 +51,31 @@ function PrintCalender(date){
     */
 
     var CookieUser = GetLoggedInUser();
+
+    var date;
     
     var today = new Date();
-
+    
+    //aloitus kuukausi
     var startMonth = date.getMonth();
     
     var index = 1;
+    
     //var date has unchanged input date while handlerDate contains by default, first day of the input month
     var handlerDate = new Date(date.getFullYear(), date.getMonth(), index, "0", "0", "0", "0");
-
+    
+    
+    var endMonth = new Date(handlerDate.getFullYear(), date.getMonth() + 1 ,0);
+    var startMonth = new Date(handlerDate.getFullYear(), date.getMonth(), 0);
+    
+    
+    
+    /*
+    var Events = EventsfromDatabase(CookieUser, handlerDate, endMonth);
+    console.log("endMonth: " + endMonth);
+    console.log("startMonth: " + startMonth);
+    
+    
     //variables used to create table td element and its text content
     var day;
     var day_content;
@@ -89,7 +96,7 @@ function PrintCalender(date){
     Example: date.getDate() == 2 -> month = March
     */
 
-
+    /*
     var weekday = new Array(7);
     weekday[0]=  "Sunday";
     weekday[1] = "Monday";
@@ -98,7 +105,9 @@ function PrintCalender(date){
     weekday[4] = "Thursday";
     weekday[5] = "Friday";
     weekday[6] = "Saturday";
-
+    */
+    var weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+    
     var table = document.createElement("table");
     var tr = document.createElement("tr");
 
@@ -124,7 +133,7 @@ function PrintCalender(date){
 
         var one_day = 1000*60*60*24;
 
-
+        
 
         while(daystocreate != 0){
             day = document.createElement("td");

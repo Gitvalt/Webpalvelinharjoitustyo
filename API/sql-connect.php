@@ -386,25 +386,27 @@ function GetUserEvent($user, $id){
 
     
  //Get specific event from user. Does not include shared events.
-function GetEventsDefTime($user, $start, $end){
+function GetEventsDefTime($user, $start_inp, $end_inp){
      try {
         $conn = Connect();
         $user = htmlspecialchars($user);
-        $id = htmlspecialchars($id);
+        $start = htmlspecialchars($start_inp);
+        $end = htmlspecialchars($end_inp);
          
-        $statement = $conn->prepare("SELECT * FROM `event` WHERE startDateTime > ? and endDateTime < ? and owner = ?");
+         
+        $statement = $conn->prepare("SELECT * FROM event WHERE event.startDateTime > ? AND event.endDateTime <  ? AND owner = ? ");
         
         $statement->bindValue(1, $start, PDO::PARAM_STR);
         $statement->bindValue(2, $end, PDO::PARAM_STR);
         $statement->bindValue(3, $user, PDO::PARAM_STR);
         $statement->execute();
         
-        $tulos = $statement->fetchall(PDO::FETCH_ASSOC);;
+        $tulos = $statement->fetchAll(PDO::FETCH_ASSOC);;
         
         return $tulos;
 
     } catch(PDOException $e){
-        //echo "error:" . $e->getMessage();
+        echo "error:" . $e->getMessage();
          return false;
     }
 }   

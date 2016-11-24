@@ -1,6 +1,5 @@
 <?php
 require("isValidUser.php");
-require("../API/sql-connect.php");
 ?>
 
 <html lang="fi">
