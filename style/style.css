@@ -34,3 +34,7 @@
 #nav input{
     margin-right: 1%;
 }
+
+td {
+    border: 1px solid black;
+}

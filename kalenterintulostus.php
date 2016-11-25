@@ -222,6 +222,9 @@
            var helpdate;
            var week = [];
            
+           console.log(apudate);
+           console.log(CalendarEnd);
+           
            
            //index == if stuck in a loop
            var index = 0;
@@ -234,42 +237,19 @@
                 //console.log(apudate.getMonth());
                 //console.log(apudate.getDate());
                 
-                apudate = new Date(apudate.getFullYear(), apudate.getMonth(), apudate.getDate() + 1);
-                helpdate = "<td>" + apudate.getDate() + "</td>";
+               
+                helpdate = apudate.getDate();
                     
                 if(week.length == 7){
                         helpArray.push(week);    
                         week = [];
+                        week.push(helpdate);
                     } else {
                         week.push(helpdate);
                 }
              
+                 apudate = new Date(apudate.getFullYear(), apudate.getMonth(), apudate.getDate() + 1);
              
-                                        /*
-
-                                        //Creating dates and adding content
-                                        if(index_date == 0){
-
-
-
-
-                                            console.log(week);
-
-                                            //index_date++;
-                                        } else {
-
-                                            if(index_date == 7){
-                                                    helpdate = "<td>" + apudate.getDate() + "</td>";
-                                                    helpArray.push(helpdate);
-                                                    index_date = 0;
-                                                } else {                
-                                                    helpdate = "<td>" + apudate.getDate() + "</td>";
-                                                    helpArray.push(helpdate);
-                                                    index_date++;
-                                            }
-
-                                        }
-                                        */
                 
                 if(index > 1000){
                     console.log("Loop!");
@@ -280,7 +260,7 @@
                 
            }
            
-           console.log(helpArray);
+           //console.log(helpArray);
            
            
            //Remaining dates left for month
@@ -288,40 +268,32 @@
                 
                 //console.log(apudate.getFullYear());
                 //console.log(apudate.getMonth());
-                //console.log(apudate.getDate());
+                console.log("Date: " + apudate.getDate());
+                console.log("Lenght: " + week.length);
+                console.log(week);
                 
-                apudate = new Date(apudate.getFullYear(), apudate.getMonth(), apudate.getDate() + 1);
-                helpdate = "<td>" + apudate.getDate() + "</td>";
+                helpdate = apudate.getDate();
                 
-                if(week.length == 7){
-                        helpArray.push(week);    
-                        week = [];
-                    } else {
-                        week.push(helpdate);
-                }
-                
-          
-                
-                /*
-                //Creating dates and adding content
-                if(index_date == 0){
-                    helpdate = "<td>" + apudate.getDate() + "</td>";
-                    helpArray.push(helpdate);
-                    index_date++;
+                if(apudate.getDate() == CalendarEnd.getDate()){
+                    week.push(helpdate);
+                    helpArray.push(week);
+                    break;
                 } else {
-                
-                    if(index_date == 7){
-                            helpdate = "<td>" + apudate.getDate() + "</td>";
-                            helpArray.push(helpdate);
-                            index_date = 0;
-                        } else {                
-                            helpdate = "<td>" + apudate.getDate() + "</td>";
-                            helpArray.push(helpdate);
-                            index_date++;
+
+
+                    if(week.length == 7){
+                            console.log("WEEKK");
+                            helpArray.push(week);    
+
+                            week = [];
+                            week.push(helpdate);
+
+                        } else {
+                            week.push(helpdate);
                     }
+
+                    apudate = new Date(apudate.getFullYear(), apudate.getMonth(), apudate.getDate() + 1);
                 }
-                
-                */    
                 
                 if(index > 1000){
                     console.log("Loop!");
@@ -337,43 +309,46 @@
            //state --> formatedDates
            
                         },
-                        /*
-                        var items = this.state.inputs2.map(function(item, key) {
-                                            console.log(item[0]);
-                                            return (
-                                                <tr>
-                                                <td>{item[0]}</td>
-                                                <td>{item[1]}</td>
-                                                <td>{item[2]}</td>
-                                                <td>{item[3]}</td>
-                                                </tr>
-                                            );
-                                        }.bind(this));
-                        */
+                        
        render: function(){
        
                     var target = this.state.formatedDates.map(function(key, value){
+                    
+                        var i = 0;
                         
-                        return(
                         
-                        <tr>{key}</tr>
                         
-                        );
+                         return(
+                                <tr>
+                                    <td>{key[0]}</td>
+                                    <td>{key[1]}</td>
+                                    <td>{key[2]}</td>
+                                    <td>{key[3]}</td>
+                                    <td>{key[4]}</td>
+                                    <td>{key[5]}</td>
+                                    <td>{key[6]}</td>
+                                </tr>
+                                );
+                        
                     }.bind(this));
                     
                     return(
                     <div>
                         <table>
-                            <tr>
-                                <td>Maanantai</td>
-                                <td>Tiistai</td>
-                                <td>Keskiviikko</td>
-                                <td>Torstai</td>
-                                <td>Perjantai</td>
-                                <td>Lauantai</td>
-                                <td>Sunnuntai</td>
-                            </tr>
-                            {target}
+                            <thead>
+                                <tr>
+                                    <td>Maanantai</td>
+                                    <td>Tiistai</td>
+                                    <td>Keskiviikko</td>
+                                    <td>Torstai</td>
+                                    <td>Perjantai</td>
+                                    <td>Lauantai</td>
+                                    <td>Sunnuntai</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {target}
+                            </tbody>
                         </table>
                     </div>
                     );
