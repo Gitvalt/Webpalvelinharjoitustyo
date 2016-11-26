@@ -198,7 +198,10 @@
            
            console.log("inputStart");
            console.log(inputEnd);
-           
+            
+           if(user == null){
+            console.log("!!!!Error!!!!");
+           }
         
            console.log(user);
            var request = $.ajax({
@@ -209,26 +212,100 @@
                  console.log(data.data);
                  this.setState({dates: data.data});
                  
+                 var formated = this.state.formatedDates;
+                 var EventsAdded = formated;
+                 console.log(data);
+                 
+                 //käy läpi jokainen kalenterin rivi
+                 for(var i = 0; i < formated.length; i++){
+                     
+                     //row values
+                     var foo = formated[i];
+                     
+                     //käy läpikäytävän rivin jokainen elementti läpi
+                     for(var i2 = 0; i2 < foo.length; i2++){
+                        
+                        //foo[i] = day
+                        var bar = this.state.dates;
+                        
+                        var foundEventsForDay = [];
+                        
+                        //käy läpi ajaxilla haetut tapahtumat.
+                        for(var i3 = 0; i3 < bar.length; i3++){
+                            //console.log(bar[i3].startDateTime);
+                            
+                            var day = bar[i3].startDateTime;
+                            var splittime = day.split(" ");
+                            
+                            //console.log("splittime:");
+                            //console.log(splittime[0]);
+                            var variable = "";
+                            
+                            //console.log("combined:");
+                            
+                            var dayvalue = "0";
+                            
+                            if(parseInt(foo[i2][2]) < 10){
+                                dayvalue = "0" + foo[i2][2];
+                            } else {
+                                dayvalue = foo[i2][2];
+                            }
+                            
+                            var combined = variable.concat(foo[i2][0], "-", (foo[i2][1]+1), "-", dayvalue);
+                            
+                            //console.log(combined);
+                            
+                            
+                            if(combined == splittime[0]){
+                            
+                                console.log("ping");
+                                
+                                foundEventsForDay.push(bar[i3]);
+                            
+                            } else {
+                               
+                                
+                                if(foundEventsForDay.length == 0){
+                                    foundEventsForDay.push("");
+                                } else {
+                                    //do not add new null values
+                                }
+                                
+                            }
+                            
+                        }
+                        EventsAdded[i][i2].push(foundEventsForDay);
+                        
+                        
+                     }  
+                 }
+                 
+                 this.setState({formatedDates: EventsAdded});
+                 
 		      }.bind(this)
             });
            
             request.fail(function( jqXHR, textStatus ) {
               alert( "Request failed: " + textStatus );
             });
-                  
-          
+        
+           var index = 0;
            var apudate = start;
            var helpArray = [];
            var helpdate;
            var week = [];
+           
+           var element = [];
            
            console.log(apudate);
            console.log(CalendarEnd);
            
            
            //index == if stuck in a loop
-           var index = 0;
-           var index_date = 0;
+           //var index = 0;
+           //var index_date = 0;
+           
+           
            
            //first all date of the selected month
            while(apudate.getMonth() != CalendarEnd.getMonth()){
@@ -239,13 +316,24 @@
                 
                
                 helpdate = apudate.getDate();
-                    
+           
                 if(week.length == 7){
                         helpArray.push(week);    
                         week = [];
-                        week.push(helpdate);
+                        element.push(apudate.getFullYear());
+                        element.push(apudate.getMonth());
+                        element.push(apudate.getDate());
+                        
+                        week.push(element);
+                        element = [];
+                        
                     } else {
-                        week.push(helpdate);
+                        element.push(apudate.getFullYear());
+                        element.push(apudate.getMonth());
+                        element.push(apudate.getDate());
+                        
+                        week.push(element);
+                        element = [];
                 }
              
                  apudate = new Date(apudate.getFullYear(), apudate.getMonth(), apudate.getDate() + 1);
@@ -268,29 +356,46 @@
                 
                 //console.log(apudate.getFullYear());
                 //console.log(apudate.getMonth());
-                console.log("Date: " + apudate.getDate());
-                console.log("Lenght: " + week.length);
-                console.log(week);
+                //console.log("Date: " + apudate.getDate());
+                //console.log("Lenght: " + week.length);
+                //console.log(week);
                 
                 helpdate = apudate.getDate();
+       
+                
+                
                 
                 if(apudate.getDate() == CalendarEnd.getDate()){
-                    week.push(helpdate);
+                    element.push(apudate.getFullYear());
+                        element.push(apudate.getMonth());
+                        element.push(apudate.getDate());
+                        
+                        week.push(element);
                     helpArray.push(week);
                     break;
+                    
                 } else {
 
 
-                    if(week.length == 7){
-                            console.log("WEEKK");
-                            helpArray.push(week);    
-
-                            week = [];
-                            week.push(helpdate);
-
-                        } else {
-                            week.push(helpdate);
-                    }
+                     if(week.length == 7){
+                        helpArray.push(week);    
+                        week = [];
+                        element.push(apudate.getFullYear());
+                        element.push(apudate.getMonth());
+                        element.push(apudate.getDate());
+                        
+                        week.push(element);
+                        element = [];
+                        
+                    } else {
+                        element.push(apudate.getFullYear());
+                        element.push(apudate.getMonth());
+                        element.push(apudate.getDate());
+                        
+                        week.push(element);
+                        element = [];
+                }
+             
 
                     apudate = new Date(apudate.getFullYear(), apudate.getMonth(), apudate.getDate() + 1);
                 }
@@ -311,22 +416,77 @@
                         },
                         
        render: function(){
-       
+                    console.log(this.state.formatedDates);
                     var target = this.state.formatedDates.map(function(key, value){
                     
-                        var i = 0;
-                        
-                        
-                        
+                         var i = 0;
+                         console.log(key[value]);
+                         var events = "";
+                         
+                         //if events are defined, [4] contains array of events or [4][0] == ""
+                        if(key[value].length > 3) {
+                             console.log(key[value].length);
+                             console.log(key[value][3].length);
+                             
+                             /*
+                             on olemassa eventtejä
+                             [0]=""->palauta tyhjä
+                             [1]=""->käy läpi eventit ja palauta otsikot
+                             */
+                             
+                             //if is not only null value
+                             if(key[value][3].length >= 2){
+                                
+                                console.log("!2!");
+                                
+                                var foobar = key[value][3].map(function(test, test2){
+                                    console.log(test);
+                                    if(test != null){
+                                        return test.header;
+                                    }
+                                        
+                                }.bind(this));
+                                
+                                console.log(foobar);
+                                events = foobar;
+                             } else {
+                                events = key[value][3][0];
+                             }
+                        } else {
+                            events = ""; 
+                        }
+              
                          return(
                                 <tr>
-                                    <td>{key[0]}</td>
-                                    <td>{key[1]}</td>
-                                    <td>{key[2]}</td>
-                                    <td>{key[3]}</td>
-                                    <td>{key[4]}</td>
-                                    <td>{key[5]}</td>
-                                    <td>{key[6]}</td>
+                                    <td>
+                                    {key[0][2]}<br/>
+                                    {events}
+                                    </td>
+                                    
+                                    <td>
+                                    {key[1][2]}<br/>
+                                    {events}
+                                    </td>
+                                    <td>
+                                    {key[2][2]}<br/>
+                                    {events}
+                                    </td>
+                                    <td>
+                                    {key[3][2]}<br/>
+                                    {events}
+                                    </td>
+                                    <td>
+                                    {key[4][2]}<br/>
+                                    {events}
+                                    </td>
+                                    <td>
+                                    {key[5][2]}<br/>
+                                    {events}
+                                    </td>
+                                    <td>
+                                    {key[6][2]}<br/>
+                                    {events}
+                                    </td>
                                 </tr>
                                 );
                         
