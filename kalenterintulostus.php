@@ -209,7 +209,7 @@
               method: "GET",
               dataType: "json",
               success: function(data) {
-                 console.log(data.data);
+                 //console.log(data.data);
                  this.setState({dates: data.data});
                  
                  var formated = this.state.formatedDates;
@@ -416,77 +416,241 @@
                         },
                         
        render: function(){
+                    console.log("Formateddates:");
                     console.log(this.state.formatedDates);
-                    var target = this.state.formatedDates.map(function(key, value){
-                    
-                         var i = 0;
-                         console.log(key[value]);
-                         var events = "";
+                    var apuContainer = [];
                          
+                    var target = this.state.formatedDates.map(function(key, value){
+                        
+                         var i = 0;
+                         //key == viikko
+                         console.log("key");
+                         console.log(key);
+                         var events = [];
+                         
+                         //events.push(key);
+                         //console.log(events);
+                         
+                         
+                         if(key.length != 0){
+                            
+                            //käydään jokainen viikonpäivä läpi
+                            for(var x = 0; x < key.length; x++){
+                            
+                                //jos päivälle on haeutta tapahtumia (ajax on päättynyt)
+                                if(key[x].length == 4){
+                                    //console.log("key x");
+                                    //console.log(key[x]);
+                                    
+                                    //käydään läpi jokainen eventti
+                                    var param = [];
+                                    for(var y = 0; y < key[x][3].length; y++){
+                                        //console.log(key[x][3].length);
+                                        var events_length = key[x][3].length;
+                                        
+                                        var test = document.createElement("br");
+                                        
+                                        if(events_length > 1){
+                                                console.log(events_length);
+                                                //ei oteta ensimmäistä tyhjää mukaan
+                                                if(y != 0){
+                                                    param.push(key[x][3][y].header);
+                                                }
+                
+                                            } else {
+                                                //jos tapahtumaa ei ole siirretään tyhjä.
+                                                param.push("");
+                                            
+                                        }
+                                        
+                                    }
+                                    console.log(param);
+                                    events.push(param);
+                                }
+                                
+                            }
+                             
+                            
+                         }
+                         
+                        
+                        console.log("events::"); 
+                        console.log(events); 
+                         
+                         
+                         
+                        // ------------------------------
+                         
+                         /*
                          //if events are defined, [4] contains array of events or [4][0] == ""
                         if(key[value].length > 3) {
-                             console.log(key[value].length);
-                             console.log(key[value][3].length);
+                             //console.log(key[value].length);
+                             //console.log(key[value][3].length);
+                             
                              
                              /*
                              on olemassa eventtejä
                              [0]=""->palauta tyhjä
                              [1]=""->käy läpi eventit ja palauta otsikot
                              */
-                             
+                             /*
                              //if is not only null value
                              if(key[value][3].length >= 2){
                                 
-                                console.log("!2!");
+                                //console.log("!2!");
                                 
                                 var foobar = key[value][3].map(function(test, test2){
-                                    console.log(test);
+                                    
+                                    //console.log(test);
+                                    
                                     if(test != null){
                                         return test.header;
                                     }
                                         
                                 }.bind(this));
                                 
-                                console.log(foobar);
-                                events = foobar;
+                                //console.log(foobar);
+                                events.push(foobar);
                              } else {
-                                events = key[value][3][0];
+                                events.push(key[value][3][0]);
                              }
                         } else {
-                            events = ""; 
+                            events.push(""); 
                         }
-              
-                         return(
+                      */
+                        
+                        var monday = "";
+                        var tuesday = "";
+                        var wendsday = "";
+                        var thursday = "";
+                        var friday = "";
+                        var saturday = "";
+                        var sunday = "";
+                        
+                        
+                        if(events.length != 0){
+                           monday = events[0].map(function(key, value){
+                                return(
+                                <div>
+                                    {key}
+                                    <br/>
+                                </div>
+                                );
+                            }.bind(this));
+                            
+                            tuesday = events[1].map(function(key, value){
+                                return(
+                                <div>
+                                    {key}
+                                    <br/>
+                                </div>
+                                );
+                            }.bind(this));
+                            
+                            wendsday = events[2].map(function(key, value){
+                                return(
+                                <div>
+                                    {key}
+                                    <br/>
+                                </div>
+                                );
+                            }.bind(this));
+                            
+                            thursday = events[3].map(function(key, value){
+                                return(
+                                <div>
+                                    {key}
+                                    <br/>
+                                </div>
+                                );
+                            }.bind(this));
+                            
+                            friday = events[4].map(function(key, value){
+                                return(
+                                <div>
+                                    {key}
+                                    <br/>
+                                </div>
+                                );
+                            }.bind(this));
+                            
+                            saturday = events[5].map(function(key, value){
+                                return(
+                                <div>
+                                    {key}
+                                    <br/>
+                                </div>
+                                );
+                            }.bind(this));
+                            
+                            sunday = events[6].map(function(key, value){
+                                return(
+                                <div>
+                                    {key}
+                                    <br/>
+                                </div>
+                                );
+                            }.bind(this));
+                            
+                            
+                        }
+                        
+                        //Kalenterin tulostaminen ------------------------------
+                    
+                        //console.log("events");
+                        //console.log(events);
+                        return(
                                 <tr>
+                                
                                     <td>
                                     {key[0][2]}<br/>
-                                    {events}
+                                    <hr/>
+                                    Tapahtumat:<br/>
+                                    {monday}
                                     </td>
                                     
                                     <td>
                                     {key[1][2]}<br/>
-                                    {events}
+                                    <hr/>
+                                    Tapahtumat:<br/>
+                                    {tuesday}
                                     </td>
+                                    
                                     <td>
                                     {key[2][2]}<br/>
-                                    {events}
+                                    <hr/>
+                                    Tapahtumat:<br/>
+                                    {wendsday}
                                     </td>
+                                    
                                     <td>
                                     {key[3][2]}<br/>
-                                    {events}
+                                    <hr/>
+                                    Tapahtumat:<br/>
+                                    {thursday}
                                     </td>
+                                    
                                     <td>
                                     {key[4][2]}<br/>
-                                    {events}
+                                    <hr/>
+                                    Tapahtumat:<br/>
+                                    {friday}
                                     </td>
+                                    
                                     <td>
                                     {key[5][2]}<br/>
-                                    {events}
+                                    <hr/>
+                                    Tapahtumat:<br/>
+                                    {saturday}
                                     </td>
+                                    
                                     <td>
                                     {key[6][2]}<br/>
-                                    {events}
+                                    <hr/>
+                                    Tapahtumat:<br/>
+                                    {sunday}
                                     </td>
+                                    
                                 </tr>
                                 );
                         
