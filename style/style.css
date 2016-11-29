@@ -1,17 +1,11 @@
 #output {
-    border: 5px lightgray solid;
+    
     background: white;
-
-    width: auto;
-    height: auto;
-
-    display: flex;
-
-    flex-wrap: wrap;
-    flex-direction: row;
-    align-content: flex-start;
 }
 
+table {
+    border: 5px lightgray solid;
+}
 
 .calendar_day, .calendar_day_outofrange {
     text-align: left;
@@ -37,7 +31,11 @@
 
 td {
     border: 1px solid black;
-    width: 40px;
+    width: auto;
     height: 40px;
     padding-right: 50px;
+    padding-left: 20px;
+    padding-top: 5px;
+    
+    
 }

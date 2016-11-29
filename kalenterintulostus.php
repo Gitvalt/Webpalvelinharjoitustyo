@@ -19,21 +19,12 @@
         <script type="text/babel">
         
     var CalendarController = React.createClass({
-        getInitialState: function(){
-            
-            var dateNow = new Date();
-            
-            return {Month: dateNow};
-        },
-        componentDidMount : function(){
-           
-           
-           
-        },
        render: function(){    
                     return (
                     <div>
-                            
+                            <button onClick={this.props.response} value="left"> "left" </button>
+                            <button onClick={this.props.response} value="now"> "now" </button>
+                            <button onClick={this.props.response} value="right"> "right" </button>
                     </div>
                     );
                     
@@ -45,7 +36,6 @@
     
     var Calendar = React.createClass({
         getInitialState: function(){
-            
             var dateNow = new Date();
             
             return {PinDate: dateNow, dates: [], formatedDates: []};
@@ -71,12 +61,55 @@
             return lookfor;
         },
         componentDidMount : function(){
+            console.log("didmount");
+           
+           this.fetchEvents();
+           
+                        },
+        ChangePinDate: function(value){
+            //console.log("value");
+            //console.log(value.target.attributes.value.nodeValue);
+            console.log("PinDate oli: " + this.state.PinDate);
+            
+            var button = value.target.attributes.value.nodeValue;
+            
+            var apuDate = this.state.PinDate;
+            var resultDate = "";
+            
+            
+            
+            switch(button){
+                case "left":
+                    //console.log("left");
+                    resultDate = new Date(apuDate.getFullYear(), apuDate.getMonth() - 1, apuDate.getDate());
+                break;
+                
+                case "right":
+                    //console.log("right");
+                    resultDate = new Date(apuDate.getFullYear(), apuDate.getMonth() + 1, apuDate.getDate());
+                break;
+                
+                case "now":
+                    //console.log("now");
+                    resultDate = new Date();
+                break;
+            }
+            
+            //setstate takes time to change
+            
+            console.log("ResultDate: " + resultDate);
+                this.setState({PinDate: resultDate}, function(){this.fetchEvents()});
+            //console.log("Set new pin: " + this.state.PinDate);
+            //this.fetchEvents();
+        },  
+        fetchEvents: function(){
+            console.log("fetchEvent Activated");
            var pinDate = this.state.PinDate;
            var month = pinDate.getMonth();
            
            //var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
            
-           console.log(month);
+           console.log("pindate: " + pinDate);
            
            var start = new Date(pinDate.getFullYear(), pinDate.getMonth(), 0);
            
@@ -98,35 +131,35 @@
            switch(start.getDay()){
                 //first day of the month is sunday
                 case 0:
-                    fillerStart = "0";
+                    fillerStart = "6";
                 break;
                 
                 //first day of the month is monday
                 case 1:
-                    fillerStart = "1";
+                    fillerStart = "0";
                 break;
                 
                 case 2:
-                    fillerStart = "2";
+                    fillerStart = "1";
                 break;
                 
                 case 3:
-                    fillerStart = "3";
+                    fillerStart = "2";
                 break;
                 
                 case 4:
-                    fillerStart = "4";
+                    fillerStart = "3";
                 break;
                 
                 case 5:
-                    fillerStart = "5";
+                    fillerStart = "4";
                 break;
                 
                 case 6:
-                    fillerStart = "6";
+                    fillerStart = "5";
                 break;
            }
-           
+           console.log("Filler: " + fillerStart);
            //lastday of the month filler
            switch(end.getDay()){
                 //last day of the month is sunday
@@ -160,13 +193,25 @@
                 break;
            }
             
-            console.log("end before end: " + end);
+            var dayapu_start = parseInt(start.getDate());
+            var day_start = dayapu_start - parseInt(fillerStart);
+            var CalendarStart = new Date(start.getFullYear(), start.getMonth(), day_start);
+            
+            
             var dayapu = parseInt(end.getDate());
             var day = dayapu + parseInt(fillerEnd);
-            console.log("day: " + day);
+            //console.log("day: " + day);
             
             //getDay = viikonpaiva, getDate = päivän arvo
             var CalendarEnd = new Date(end.getFullYear(), end.getMonth(), day);
+            
+            /*
+            var CalendarStart = start;
+            var CalendarEnd = end;
+            */
+            
+            console.log("CalendarStart");
+            console.log(CalendarStart);
             
             console.log("CalendarEnd");
             console.log(CalendarEnd);
@@ -176,10 +221,10 @@
            var day_value = "";
            var day_value_end = "";
            
-           if(start.getDate() < 10){
-                day_value = "0" + start.getDate();
+           if(CalendarStart.getDate() < 10){
+                day_value = "0" + CalendarStart.getDate();
            } else {
-            day_value = start.getDate();
+            day_value = CalendarStart.getDate();
            }
            
            if(CalendarEnd.getDate() < 10){
@@ -190,20 +235,24 @@
            
            
            //lokakuu = 9 because tammikuu = 0
-           var inputStart = start.getFullYear() + "-" + (start.getMonth() + 1)+ "-" + day_value + " 00:00:00";
+           var inputStart = CalendarStart.getFullYear() + "-" + (CalendarStart.getMonth() + 1)+ "-" + day_value + " 00:00:00";
            
-           console.log(CalendarEnd.getDay());
+           //console.log(CalendarStart.getDay());
+           //console.log(CalendarEnd.getDay());
            
            var inputEnd = CalendarEnd.getFullYear() + "-" + (CalendarEnd.getMonth() + 1) + "-" + day_value_end + " 00:00:00";
            
            console.log("inputStart");
+           console.log(inputStart);
+            
+           console.log("inputEnd");
            console.log(inputEnd);
             
            if(user == null){
             console.log("!!!!Error!!!!");
            }
         
-           console.log(user);
+           //console.log(user);
            var request = $.ajax({
               url: "API/php-scripts/get-user-events.php?user=" + user + "&start_span=" + inputStart + "&end_span=" + inputEnd,
               method: "GET",
@@ -212,9 +261,15 @@
                  //console.log(data.data);
                  this.setState({dates: data.data});
                  
+                 
                  var formated = this.state.formatedDates;
+                 console.log("formated");
+                 console.log(formated);
+                 
+                 //var formated = [];
+                 
                  var EventsAdded = formated;
-                 console.log(data);
+                 //console.log(data);
                  
                  //käy läpi jokainen kalenterin rivi
                  for(var i = 0; i < formated.length; i++){
@@ -290,15 +345,15 @@
             });
         
            var index = 0;
-           var apudate = start;
+           var apudate = CalendarStart;
            var helpArray = [];
            var helpdate;
            var week = [];
            
            var element = [];
            
-           console.log(apudate);
-           console.log(CalendarEnd);
+           //console.log(apudate);
+           //console.log(CalendarEnd);
            
            
            //index == if stuck in a loop
@@ -401,7 +456,7 @@
                 }
                 
                 if(index > 1000){
-                    console.log("Loop!");
+                    //console.log("Loop!");
                     break;
                 }
                 
@@ -413,19 +468,26 @@
            this.setState({formatedDates: helpArray});
            //state --> formatedDates
            
-                        },
-                        
+        },
        render: function(){
-                    console.log("Formateddates:");
-                    console.log(this.state.formatedDates);
+                    
+                    
+       
+                    //console.log("Formateddates:");
+                    //console.log(this.state.formatedDates);
                     var apuContainer = [];
-                         
+                    
+                    var month = this.state.PinDate.getMonth();
+                    var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+                    
                     var target = this.state.formatedDates.map(function(key, value){
+                        
+                        
                         
                          var i = 0;
                          //key == viikko
-                         console.log("key");
-                         console.log(key);
+                         //console.log("key");
+                         //console.log(key);
                          var events = [];
                          
                          //events.push(key);
@@ -451,7 +513,7 @@
                                         var test = document.createElement("br");
                                         
                                         if(events_length > 1){
-                                                console.log(events_length);
+                                                //console.log(events_length);
                                                 //ei oteta ensimmäistä tyhjää mukaan
                                                 if(y != 0){
                                                     param.push(key[x][3][y].header);
@@ -464,7 +526,7 @@
                                         }
                                         
                                     }
-                                    console.log(param);
+                                    //console.log(param);
                                     events.push(param);
                                 }
                                 
@@ -474,8 +536,8 @@
                          }
                          
                         
-                        console.log("events::"); 
-                        console.log(events); 
+                        //console.log("events::"); 
+                        //console.log(events); 
                          
                          
                          
@@ -599,6 +661,8 @@
                     
                         //console.log("events");
                         //console.log(events);
+                        console.log(key);
+                        
                         return(
                                 <tr>
                                 
@@ -658,8 +722,13 @@
                     
                     return(
                     <div>
+                    
                         <table>
                             <thead>
+                                <tr>
+                                    <td colSpan="5">{this.state.PinDate.getFullYear()}, {months[month]}</td>
+                                    <td colSpan="2"><CalendarController response={this.ChangePinDate} /></td>
+                                </tr>
                                 <tr>
                                     <td>Maanantai</td>
                                     <td>Tiistai</td>
@@ -680,7 +749,7 @@
             }   
     });
 
-    
+     
         ReactDOM.render(<Calendar />, document.getElementById('output'));
         </script>
         
