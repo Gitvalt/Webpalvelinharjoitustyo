@@ -1,4 +1,9 @@
 <?php
+require_once("isValidUser.php");
+require_once("../API/sql-connect.php");
+
+
+?><?php
 /*
 Header
 what happens
@@ -9,9 +14,6 @@ with whom i am whit
 https://developers.google.com/maps/documentation/javascript/examples/places-searchbox
 */
 
-
-
-require("../API/sql-connect.php");
 
 
 

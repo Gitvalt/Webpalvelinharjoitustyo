@@ -8,33 +8,33 @@ SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
 
 -- -----------------------------------------------------
--- Schema testdatabase
+-- Schema K1967_3
 -- -----------------------------------------------------
-DROP SCHEMA IF EXISTS `testdatabase` ;
+DROP SCHEMA IF EXISTS `K1967_3` ;
 
 -- -----------------------------------------------------
--- Schema testdatabase
+-- Schema K1967_3
 -- -----------------------------------------------------
-CREATE SCHEMA IF NOT EXISTS `testdatabase` DEFAULT CHARACTER SET utf8 ;
-USE `testdatabase` ;
+CREATE SCHEMA IF NOT EXISTS `K1967_3` DEFAULT CHARACTER SET utf8 ;
+USE `K1967_3` ;
 
 -- -----------------------------------------------------
--- Table `testdatabase`.`accounttype`
+-- Table `K1967_3`.`accounttype`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `testdatabase`.`accounttype` ;
+DROP TABLE IF EXISTS `K1967_3`.`accounttype` ;
 
-CREATE TABLE IF NOT EXISTS `testdatabase`.`accounttype` (
+CREATE TABLE IF NOT EXISTS `K1967_3`.`accounttype` (
   `type` VARCHAR(20) NOT NULL,
   PRIMARY KEY (`type`))
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `testdatabase`.`user`
+-- Table `K1967_3`.`user`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `testdatabase`.`user` ;
+DROP TABLE IF EXISTS `K1967_3`.`user` ;
 
-CREATE TABLE IF NOT EXISTS `testdatabase`.`user` (
+CREATE TABLE IF NOT EXISTS `K1967_3`.`user` (
   `username` VARCHAR(20) NOT NULL,
   `password` VARCHAR(45) NOT NULL,
   `firstname` VARCHAR(45) NULL,
@@ -48,18 +48,18 @@ CREATE TABLE IF NOT EXISTS `testdatabase`.`user` (
   INDEX `fk_account_type_idx` (`account-type` ASC),
   CONSTRAINT `fk_account_type`
     FOREIGN KEY (`account-type`)
-    REFERENCES `testdatabase`.`accounttype` (`type`)
+    REFERENCES `K1967_3`.`accounttype` (`type`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `testdatabase`.`event`
+-- Table `K1967_3`.`event`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `testdatabase`.`event` ;
+DROP TABLE IF EXISTS `K1967_3`.`event` ;
 
-CREATE TABLE IF NOT EXISTS `testdatabase`.`event` (
+CREATE TABLE IF NOT EXISTS `K1967_3`.`event` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `header` VARCHAR(45) NOT NULL,
   `description` VARCHAR(45) NULL,
@@ -71,18 +71,18 @@ CREATE TABLE IF NOT EXISTS `testdatabase`.`event` (
   INDEX `Owner_idx` (`owner` ASC),
   CONSTRAINT `Owner`
     FOREIGN KEY (`owner`)
-    REFERENCES `testdatabase`.`user` (`username`)
+    REFERENCES `K1967_3`.`user` (`username`)
     ON DELETE CASCADE
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `testdatabase`.`sharedevent`
+-- Table `K1967_3`.`sharedevent`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `testdatabase`.`sharedevent` ;
+DROP TABLE IF EXISTS `K1967_3`.`sharedevent` ;
 
-CREATE TABLE IF NOT EXISTS `testdatabase`.`sharedevent` (
+CREATE TABLE IF NOT EXISTS `K1967_3`.`sharedevent` (
   `ShareID` INT NOT NULL AUTO_INCREMENT,
   `eventID` INT NOT NULL,
   `username` VARCHAR(20) NOT NULL,
@@ -91,30 +91,30 @@ CREATE TABLE IF NOT EXISTS `testdatabase`.`sharedevent` (
   PRIMARY KEY (`ShareID`),
   CONSTRAINT `eventid`
     FOREIGN KEY (`eventID`)
-    REFERENCES `testdatabase`.`event` (`id`)
+    REFERENCES `K1967_3`.`event` (`id`)
     ON DELETE CASCADE
     ON UPDATE NO ACTION,
   CONSTRAINT `shared_with_fk`
     FOREIGN KEY (`username`)
-    REFERENCES `testdatabase`.`user` (`username`)
+    REFERENCES `K1967_3`.`user` (`username`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `testdatabase`.`useraccess`
+-- Table `K1967_3`.`useraccess`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `testdatabase`.`useraccess` ;
+DROP TABLE IF EXISTS `K1967_3`.`useraccess` ;
 
-CREATE TABLE IF NOT EXISTS `testdatabase`.`useraccess` (
+CREATE TABLE IF NOT EXISTS `K1967_3`.`useraccess` (
   `username` VARCHAR(20) NOT NULL,
   `token` VARCHAR(45) NOT NULL,
   `createdToken` DATETIME NOT NULL,
   PRIMARY KEY (`username`),
   CONSTRAINT `username`
     FOREIGN KEY (`username`)
-    REFERENCES `testdatabase`.`user` (`username`)
+    REFERENCES `K1967_3`.`user` (`username`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;

@@ -412,7 +412,7 @@ function GetEventsDefTime($user, $start_inp, $end_inp){
         $end = htmlspecialchars($end_inp);
          
          
-        $statement = $conn->prepare("SELECT * FROM event WHERE event.startDateTime > ? AND event.endDateTime <  ? AND owner = ?;");
+        $statement = $conn->prepare("SELECT * FROM event WHERE event.startDateTime > ? AND event.startDateTime <  ? AND owner = ?;");
         
         $statement->bindValue(1, $start, PDO::PARAM_STR);
         $statement->bindValue(2, $end, PDO::PARAM_STR);
@@ -536,7 +536,7 @@ function Login($user, $pass){
         $conn = Connect();
         $user = htmlspecialchars($user);
         $pass = htmlspecialchars($pass);
-        
+        $pass = sha1($pass);
         $statement = $conn->prepare("SELECT username, password FROM user where username=? and password=?;");
         $statement->bindValue(1, $user, PDO::PARAM_STR);
         $statement->bindValue(2, $pass, PDO::PARAM_STR);

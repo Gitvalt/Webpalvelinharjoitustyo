@@ -377,8 +377,8 @@ if(empty($_GET["type"])){
                             
                             if(!empty(@$_POST["password"])){
                                     //! ENCRYPTAUS
-                                    $password = $_POST["password"];
-
+                                    $password = sha1($_POST["password"]);
+                                    
                             } else {
                                     Response(404, "password not defined", null);
                             }
