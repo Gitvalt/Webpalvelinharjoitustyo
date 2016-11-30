@@ -153,6 +153,24 @@ function GetEventDataHeader($eventheader, $user){
         //echo "error:" . $e->getMessage();
     }
 }
+
+//display event with name made by user
+function GetSpecificEventDataHeader($event, $user){
+     try {
+        $conn = Connect();
+        $event = htmlspecialchars($event);
+        $statement = $conn->prepare("SELECT * FROM event where header=? and owner=?;");
+        $statement->bindValue(1, $event, PDO::PARAM_STR);
+        $statement->bindValue(2, $user, PDO::PARAM_STR);
+        $statement->execute();
+        $tulos = $statement->fetch(PDO::FETCH_ASSOC);;
+        return $tulos;
+
+    } catch(PDOException $e){
+        //echo "error:" . $e->getMessage();
+    }
+}
+
 //includes shared events
 function UserAllEvents($user){
     
@@ -385,7 +403,7 @@ function GetUserEvent($user, $id){
 }
 
     
- //Get specific event from user. Does not include shared events.
+ //Get events from certain timeframe
 function GetEventsDefTime($user, $start_inp, $end_inp){
      try {
         $conn = Connect();
@@ -394,7 +412,7 @@ function GetEventsDefTime($user, $start_inp, $end_inp){
         $end = htmlspecialchars($end_inp);
          
          
-        $statement = $conn->prepare("SELECT * FROM event WHERE event.startDateTime > ? AND event.endDateTime <  ? AND owner = ? ");
+        $statement = $conn->prepare("SELECT * FROM event WHERE event.startDateTime > ? AND event.endDateTime <  ? AND owner = ?;");
         
         $statement->bindValue(1, $start, PDO::PARAM_STR);
         $statement->bindValue(2, $end, PDO::PARAM_STR);
@@ -473,10 +491,10 @@ function ModifyUser($username, $password, $firstname, $lastname, $email, $phone,
 }
 
 //Modify event
-function ModifyUserEvent($id, $header, $desc, $Start, $Ends, $location, $owner){
+function ModifyUserEvent($header, $desc, $Start, $Ends, $location, $owner){
     try {
         $conn = Connect();
-        $statement = $conn->prepare("UPDATE event SET header=?, description=?, startDateTime=?, endDateTime=?, location=?, owner=? WHERE id=?;");
+        $statement = $conn->prepare("UPDATE event SET header=?, description=?, startDateTime=?, endDateTime=?, location=? WHERE owner=?");
         
         $statement->bindValue(1, $header, PDO::PARAM_STR);
         $statement->bindValue(2, $desc, PDO::PARAM_STR);
@@ -484,7 +502,6 @@ function ModifyUserEvent($id, $header, $desc, $Start, $Ends, $location, $owner){
         $statement->bindValue(4, $Ends, PDO::PARAM_STR);
         $statement->bindValue(5, $location, PDO::PARAM_STR);
         $statement->bindValue(6, $owner, PDO::PARAM_STR);
-        $statement->bindValue(7, $id, PDO::PARAM_INT);
         
         $statement->execute();
         
@@ -519,8 +536,6 @@ function Login($user, $pass){
         $conn = Connect();
         $user = htmlspecialchars($user);
         $pass = htmlspecialchars($pass);
-        
-        //!!!!CREATE PASSWORD ENCRYPTION!!!!
         
         $statement = $conn->prepare("SELECT username, password FROM user where username=? and password=?;");
         $statement->bindValue(1, $user, PDO::PARAM_STR);
@@ -610,7 +625,7 @@ function Logout($token){
         $statement->bindValue(1, $token, PDO::PARAM_STR);
         $statement->execute();
         setcookie("token", "", time() - 3600);
-        setcookie("user", "", time()-3600);
+        setcookie("user", "", time() - 3600);
         return true;
 
     } catch(PDOException $e){

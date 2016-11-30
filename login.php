@@ -13,18 +13,18 @@ if(isset($_POST["submit"])){
     if(!empty($user) or !empty($pass)){
         if(Login($user, $pass) != false){
             if(CreateAccessToken($user) != false){
-              $message = "Login succefull";
+              $message = "Kirjautuminen onnistui!";
               header("Location: Auth-required/index.php");
             } else {
                 //Creating token failed.
-                $message = "Login failed. Error number: 3";
+                $message = "Kirjautuminen ei onnistunut. Error numero: 3";
             }
         } else {
             //Username or password incorrect
-            $message = "Login failed. Username or password incorrect";
+            $message = "Kirjautuminen ei onnistunut. Käyttäjätunnus tai salasana väärin!";
         } 
     } else {
-        $message = "Login failed. Username or password filed is empty";
+        $message = "Kirjautuminen ei onnistunut. Käyttäjätunnus tai salasana lomake tyhjä.";
     }
 }
 
@@ -34,6 +34,8 @@ if(isset($_POST["submit"])){
         <title>Kirjaudu Sisään</title>
         <meta charset="utf-8">
         <script src="jquery/jquery-3.1.0.min.js"></script>
+        <link href="style/default.css" rel="stylesheet" type="text/css">
+        <link href="style/frontpage.css" rel="stylesheet" type="text/css">
     </head>
     
     <script>
@@ -80,11 +82,15 @@ if(isset($_POST["submit"])){
                 </tr>
             </table>
             <input type="submit" name="submit" value="Kirjaudu">
+            
         </form>
+        
+        <?php
+        echo @$_SESSION["token"] . "<br>";
+        echo $message . "<br><br>";
+        ?>
+
+        <a href="index.php">Takaisin etusivulle</a>
         <!--footer.php-->
     </body>
 </html>
-<?php
-echo @$_SESSION["token"] . "<br>";
-echo $message . "<br>";
-?>

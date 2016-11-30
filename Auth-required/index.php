@@ -9,13 +9,10 @@ require("isValidUser.php");
     </head>
     <body>
         <?php include("navbar.php"); ?>
-        Kirjauduit onnistuneesti sisään palveluun.<br>
+        <?php echo $_COOKIE["user"]; ?>! Kirjauduit onnistuneesti palveluun.<br>
+        <hr>
+        <a href="php-syntax-highlighter.php">php-syntax-highlighter</a>
         
-        <?php
-        
-        echo $_COOKIE["user"] . "<br>";
-        echo $_COOKIE["token"] . "<br>";
-        ?>
         <!--footer.php-->
     </body>
 </html>

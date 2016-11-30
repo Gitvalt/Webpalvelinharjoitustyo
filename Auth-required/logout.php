@@ -1,5 +1,5 @@
 <?php
 require("../API/sql-connect.php");
-//Logout();
+Logout($_COOKIE["token"]);
 header("Location: ../login.php");
 ?>

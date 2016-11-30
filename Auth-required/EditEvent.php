@@ -1,4 +1,3 @@
-
 <?php
 /*
 Header
@@ -10,15 +9,16 @@ with whom i am whit
 https://developers.google.com/maps/documentation/javascript/examples/places-searchbox
 */
 
-//mahdollisesti lisääminen luotaisiin javascriptilla
+
 
 require("../API/sql-connect.php");
-require("isValidUser.php");
+
+
 
 ?>
 <html lang="fi">
     <head>
-        <title>CreateEvent</title>
+        <title>Tapahtuman</title>
         <meta charset="utf-8">
         
         <link href="style/createevent.css" type="text/css" rel="stylesheet">
@@ -33,22 +33,50 @@ require("isValidUser.php");
     </script>
 
     <body>
+        
         <?php include("navbar.php"); ?>
+        
+        <?php 
+        if(isset($_GET["header"]) or isset($_POST["otsikko"])){
+        
+            $header = @$_GET["header"];
+            
+            if(isset($_POST["otsikko"])){
+                $header = $_POST["otsikko"];
+            }
+            
+            echo $header;
+            $response = GetSpecificEventDataHeader($header, $_COOKIE["user"]);
+            //print_r($response);
+            if(empty($response)){
+                echo "Null";
+            } else {
+                
+            //value="<?php echo $response["header"];\?\>"
+            $startDateTime = explode(" ", $response["startDateTime"]);
+            $endDateTime = explode(" ", $response["endDateTime"]);
+                
+                
+                
+        ?>
+        
+
         <!--<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>-->
-        <form action="CreateEvent.php"  method="post" id="form">
+        
+        <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>"  method="post" id="form">
             <h1>Tapahtuman luominen</h1>
 
             Otsikko:
-            <input type="text" id="otsikko" name="otsikko">
+            <input type="text" id="otsikko" name="otsikko" value="<?php echo $response["header"];?>">
             <br>
 
             <label for="kuvaus">Kuvaus:</label>
-            <textarea cols="50" rows="10" id="kuvaus" name="kuvaus"></textarea>
+            <textarea cols="50" rows="10" id="kuvaus" name="kuvaus"><?php echo $response["description"];?></textarea>
             <br>
 
             <div id="sijainti_style">
                 Sijainti:
-                <input type="text" id="sijainti" name="sijainti" onkeyup="GoogleApiAutocomplete(this, event)" onblur="onAutocompleteBlur()">
+                <input type="text" id="sijainti" name="sijainti" onkeyup="GoogleApiAutocomplete(this, event)" onblur="onAutocompleteBlur()" value="<?php echo $response["location"];?>">
                 <div id="map"></div>
             </div>
             <br>
@@ -56,16 +84,16 @@ require("isValidUser.php");
             <div id="time">
                 <div id="alkaa">
                     <label for="alkaa">Tapahtuma alkaa</label>
-                    <input type="date" id="alkamispaiva" name="alkudate" onchange="validateDatetime()"><br>
-                    <input type="time" id="alkamisaika" name="alkutime" onchange="validateDatetime()">
+                    <input type="date" id="alkamispaiva" name="alkudate" onchange="validateDatetime()" value="<?php echo $startDateTime[0];?>"><br>
+                    <input type="time" id="alkamisaika" name="alkutime" onchange="validateDatetime()" value="<?php echo $startDateTime[1];?>">
                     <label for="isallday">Kokopäivän</label><input type="checkbox" name="isallday" >
                 </div>
 
 
                 <div id="loppuu">
                     <label for="loppuu">Tapahtuma päättyy:</label>
-                    <input type="date"  id="paattymispaiva" name="loppudate" onchange="validateDatetime()"><br>
-                    <input type="time"  id="paattymisaika" name="lopputime" onchange="validateDatetime()">
+                    <input type="date"  id="paattymispaiva" name="loppudate" onchange="validateDatetime()" value="<?php echo $endDateTime[0];?>"><br>
+                    <input type="time"  id="paattymisaika" name="lopputime" onchange="validateDatetime()" value="<?php echo $endDateTime[1];?>">
                 </div>
                 <br>
             </div>
@@ -74,7 +102,7 @@ require("isValidUser.php");
             <p id="message2"></p>
             <br>
 
-
+            
             Tapahtuman osallistujat:
             <div id="osallistujat">
                 <input type="text" id="osallistujafield"  onkeyup="GetUsers(this, event)">
@@ -95,6 +123,13 @@ require("isValidUser.php");
             <!--<input type="submit" name="submit">-->
             <button onclick="submitEvent()">Tallenna tapahtuma</button>
         </form>
+        <?php
+        }
+                
+        } else {
+            echo "Tapahtumaa ei ole määriteltynä";
+        } 
+        ?>
     </body>
 </html>
 
@@ -166,12 +201,13 @@ if(!empty($alkupaiva) or !empty($loppupaiva)){
 //---
 
 if($error_counter == 0){
-    $function = InsertEvent($_COOKIE["user"], $otsikko, $kuvaus, $alkamisajankohta, $loppumisajankohta, $sijainti);
     
+    $function = ModifyUserEvent($otsikko, $kuvaus, $alkamisajankohta, $loppumisajankohta, $sijainti, $_COOKIE["user"]);
+
     if($function === false){
-        $message .= "Error: Tapahtuman luominen ei onnistunut<br>";
+        $message .= "Error: Tapahtuman muokkaaminen ei onnistunut<br>";
     } else {
-        $message .= "<b>Tapahtuman luominen onnistui!</b><br>";
+        $message .= "<b>Tapahtuman muokkaaminen onnistui!</b><br>";
         $index = $function;
         //share event
         

@@ -1,11 +1,12 @@
+<?php
+require("isValidUser.php");
+?>
 <html lang="en">
     <head>
         <title>Calendarprinting</title>
         <meta charset="utf-8">
         <meta description="This is calender printing test">
-        <link href="style/style.css" rel="stylesheet" type="text/css">
-        
-        <script src="javascript/calendarprint.js" type="text/babel"></script>
+        <link href="../style/style.css" rel="stylesheet" type="text/css">
         
           <!-- Reactin pääkirjasto -->
         <script src="https://unpkg.com/react@15.3.2/dist/react.js"></script>
@@ -14,21 +15,28 @@
         <!-- JSX support -->
         <script src="https://unpkg.com/babel-core@5.8.38/browser.min.js"></script>
         
-        <script src="jquery/jquery-3.1.0.min.js"></script>
+        <script src="../jquery/jquery-3.1.0.min.js"></script>
         
         <script type="text/babel">
         
     var CalendarController = React.createClass({
-       render: function(){    
+       render: function(){ 
+                    //<input type="date" ref="value" onChange={this.DetectNewDate} />
                     return (
                     <div>
-                            <button onClick={this.props.response} value="left"> "left" </button>
-                            <button onClick={this.props.response} value="now"> "now" </button>
-                            <button onClick={this.props.response} value="right"> "right" </button>
+                            
+                            <button onClick={this.props.response} value="left"> "Edellinen kuukausi" </button>
+                            <button onClick={this.props.response} value="now"> "Nyt" </button>
+                            <button onClick={this.props.response} value="right"> "Seuraava kuukausi" </button>
                     </div>
                     );
                     
-            }   
+            }, DetectNewDate: function(value){
+                value.preventDefault();
+                console.log("Input: " + this.refs.value);
+                this.props.onFormSubmit({item: this.refs.value});
+               
+            }
     });
 
 
@@ -67,7 +75,9 @@
            
                         },
         ChangePinDate: function(value){
+            
             //console.log("value");
+            //console.log(value);
             //console.log(value.target.attributes.value.nodeValue);
             console.log("PinDate oli: " + this.state.PinDate);
             
@@ -93,12 +103,17 @@
                     //console.log("now");
                     resultDate = new Date();
                 break;
+                
+                default:
+                    console.log("value: " + value);
+                    //resultDate = new Date(value);
+                break;
             }
             
             //setstate takes time to change
             
             console.log("ResultDate: " + resultDate);
-                this.setState({PinDate: resultDate}, function(){this.fetchEvents()});
+            this.setState({PinDate: resultDate}, function(){this.fetchEvents()});
             //console.log("Set new pin: " + this.state.PinDate);
             //this.fetchEvents();
         },  
@@ -254,11 +269,11 @@
         
            //console.log(user);
            var request = $.ajax({
-              url: "API/php-scripts/get-user-events.php?user=" + user + "&start_span=" + inputStart + "&end_span=" + inputEnd,
+              url: "../API/php-scripts/get-user-events.php?user=" + user + "&start_span=" + inputStart + "&end_span=" + inputEnd,
               method: "GET",
               dataType: "json",
               success: function(data) {
-                 //console.log(data.data);
+                 console.log(data.data);
                  this.setState({dates: data.data});
                  
                  
@@ -269,7 +284,7 @@
                  //var formated = [];
                  
                  var EventsAdded = formated;
-                 //console.log(data);
+                 console.log(data);
                  
                  //käy läpi jokainen kalenterin rivi
                  for(var i = 0; i < formated.length; i++){
@@ -592,63 +607,71 @@
                         
                         if(events.length != 0){
                            monday = events[0].map(function(key, value){
+                                var link = "EditEvent.php?header=" + key;
                                 return(
                                 <div>
-                                    {key}
+                                    <a href={link}>{key}</a>
                                     <br/>
                                 </div>
                                 );
                             }.bind(this));
                             
                             tuesday = events[1].map(function(key, value){
+                                var link = "EditEvent.php?header=" + key;
+                                console.log(key);
                                 return(
                                 <div>
-                                    {key}
+                                    <a href={link}>{key}</a>
                                     <br/>
                                 </div>
                                 );
                             }.bind(this));
                             
                             wendsday = events[2].map(function(key, value){
+                                var link = "EditEvent.php?header=" + key;
                                 return(
                                 <div>
-                                    {key}
+                                    <a href={link}>{key}</a>
                                     <br/>
                                 </div>
                                 );
                             }.bind(this));
                             
                             thursday = events[3].map(function(key, value){
+                                var link = "EditEvent.php?header=" + key;
                                 return(
                                 <div>
-                                    {key}
+                                    <a href={link}>{key}</a>
                                     <br/>
                                 </div>
                                 );
                             }.bind(this));
                             
                             friday = events[4].map(function(key, value){
+                                var link = "EditEvent.php?header=" + key;
                                 return(
                                 <div>
-                                    {key}
+                                    <a href={link}>{key}</a>
                                     <br/>
                                 </div>
                                 );
                             }.bind(this));
                             
                             saturday = events[5].map(function(key, value){
+                                var link = "EditEvent.php?header=" + key;
                                 return(
                                 <div>
-                                    {key}
+                                    <a href={link}>{key}</a>
                                     <br/>
                                 </div>
                                 );
                             }.bind(this));
                             
                             sunday = events[6].map(function(key, value){
+                                var link = "EditEvent.php?header=" + key;
                                 return(
                                 <div>
-                                    {key}
+                                    <a href={link}>{key}</a>
                                     <br/>
                                 </div>
                                 );
@@ -669,49 +692,42 @@
                                     <td>
                                     {key[0][2]}<br/>
                                     <hr/>
-                                    Tapahtumat:<br/>
                                     {monday}
                                     </td>
                                     
                                     <td>
                                     {key[1][2]}<br/>
                                     <hr/>
-                                    Tapahtumat:<br/>
                                     {tuesday}
                                     </td>
                                     
                                     <td>
                                     {key[2][2]}<br/>
                                     <hr/>
-                                    Tapahtumat:<br/>
                                     {wendsday}
                                     </td>
                                     
                                     <td>
                                     {key[3][2]}<br/>
                                     <hr/>
-                                    Tapahtumat:<br/>
                                     {thursday}
                                     </td>
                                     
                                     <td>
                                     {key[4][2]}<br/>
                                     <hr/>
-                                    Tapahtumat:<br/>
                                     {friday}
                                     </td>
                                     
                                     <td>
                                     {key[5][2]}<br/>
                                     <hr/>
-                                    Tapahtumat:<br/>
                                     {saturday}
                                     </td>
                                     
                                     <td>
                                     {key[6][2]}<br/>
                                     <hr/>
-                                    Tapahtumat:<br/>
                                     {sunday}
                                     </td>
                                     
@@ -726,8 +742,8 @@
                         <table>
                             <thead>
                                 <tr>
-                                    <td colSpan="5">{this.state.PinDate.getFullYear()}, {months[month]}</td>
-                                    <td colSpan="2"><CalendarController response={this.ChangePinDate} /></td>
+                                    <td colSpan="3">{this.state.PinDate.getFullYear()}, {months[month]}</td>
+                                    <td colSpan="4"><CalendarController response={this.ChangePinDate} onFormSubmit={this.specificDate} /></td>
                                 </tr>
                                 <tr>
                                     <td>Maanantai</td>
@@ -746,6 +762,13 @@
                     </div>
                     );
                     
+            }, specificDate: function(value){
+                console.log(value);
+                
+                console.log(value.item.valueAsDate);
+                var date = value.item.valueAsDate;
+                this.setState({PinDate: date, function(){this.fetchEvents()}});
+                
             }   
     });
 
@@ -755,21 +778,8 @@
         
     </head>
     <body>
-
-        <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
-            <input type="date" name="selected_date" value="">
-            <hr>
-
-            Javascript CalendarPrint<br>
-            <div id="nav">
-            <input type="button" value="JavaScript" onclick="JavaPrint()">
-
-            <input type="text" id="day" readonly>
-            <input type="text" id="month" readonly>
-            <input type="text" id="year" readonly>
-
-            </div>
-        </form>
+        <?php include("navbar.php"); ?>
+        
         <div id="output">
 
         </div>

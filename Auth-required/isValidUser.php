@@ -1,5 +1,5 @@
 <?php
-require("../API/sql-connect.php");
+require_once("../API/sql-connect.php");
 $token = $_COOKIE["token"];
 
 if(empty($token)){

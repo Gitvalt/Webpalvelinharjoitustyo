@@ -1,10 +1,10 @@
 #map {
   height: 30%;
-  width: 100%;
+  width: 50%;
 }
 
 #sijainti_style {
-    border: 1px solid black;
+
     margin-top: 10px;
     margin-bottom: 10px;
     max-width: 30%:

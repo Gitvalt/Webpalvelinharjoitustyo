@@ -5,8 +5,33 @@
 	<meta charset="UTF-8">
 	<title>database testi</title>
     <script>
+        
+        function GetCookies(){
+
+            var lookfor;
+
+            //console.log(document.cookie);
+            var slipcookie = document.cookie.split(";");
+        
+            return slipcookie;
+        }
+        
+        var cookies = GetCookies();
+        console.log(cookies);
+        
+        var help1 = cookies[1].split("=");
+        var apikey = help1[1];
+        
+        var help2 = cookies[2].split("=");
+        var user = help2[1];
+        
+        console.log(apikey);
+        console.log(user);
+        
 		var api = "http://192.168.100.51/harkkatyo/API/";
-		
+		//index = username, apikey = cookie.token
+        //./API/index.php?type=user&index=$1&apikey=$2
+        
 		function getUsers(){
 			var out = document.getElementById("output");
 			var xhttp = new XMLHttpRequest();
