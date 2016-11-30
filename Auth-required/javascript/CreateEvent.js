@@ -1,13 +1,67 @@
-     function AddUserToList(x){
+    /*
+    Functions for CreateEvent and EditEvent pages
+    */
+
+
+    function RemoveUser(value){
+        console.log("RemoveUser");
+        console.log(value);
+    
+        var targetUser = value.srcElement.innerHTML;
+        
+        var selected = document.getElementsByName("selected_user");
+        
+        /*
+        console.log(selected);
+        console.log(selected.children);
+        console.log("<hr>");
+        console.log(selected[0]);
+        console.log(selected[0].children);
+        */
+        
+        //käydään läpi lapsielementit ja poistetaan listasta
+        for(var x = 0; x < selected.length; x++){
+            
+            
+                //(console.log(selected[x].children[0]);
+                
+                  if(selected[x].children[0].innerHTML == targetUser){
+                    document.getElementById("sel_users").removeChild(selected[x]);
+                }
+               
+        }
+        var secret = document.getElementById("forPHPid");
+        for(var x = 0; x < secret.children.length; x++){
+            if(secret.children[x].value == targetUser){
+            secret.removeChild(secret.children[x]);
+                                
+            }
+        }
+        
+        //console.log(selected);
+        //console.log(secret);
+        
+    }
+
+
+    function AddUserToList(x){
+            var user = x.textContent;
+            SelectedUsersList(user);
+        }
+        
+    function SelectedUsersList(user){
             console.log("addtouserlist");
             var field = document.getElementById("osallistujafield");
             
             var sel_users = document.getElementById("sel_users");
             
-            var user = x.textContent;
-            
             var li = document.createElement("li");
-            li.textContent = user;
+         
+            var a = document.createElement("a");
+            a.textContent = user;
+            a.onclick = RemoveUser;
+         
+            li.appendChild(a);
             li.setAttribute("name", "selected_user");
         
         
@@ -44,8 +98,7 @@
                 document.getElementById("osallistujafield").focus();
             }
         }
-        
-
+    
         function emptyUsers(){
             var ul = document.getElementById("users");
 
@@ -280,122 +333,59 @@
                 }
             });
         }
-         
-/*
-        function getEventId(eventheader){
-    
-        var user = document.cookie;
-        console.log(user);
-    
-            $.ajax({
-        url: './API/users/' + user + '/events/' + eventheader + "apikey=notimplemented", method: "GET"
-         }).fail(function () {
-                console.log("Creating event failed!");
-        }).done(function (data) {
-               console.log(data); 
-            }
-        );
-        
-        }
-*/
+    function GetCookies(){
 
-/*    
-        function eventSubmit(){
+            var lookfor;
+
+            //console.log(document.cookie);
+            var slipcookie = document.cookie.split(";");
         
-        
-            
-        var otsikko = document.getElementById("otsikko").value;
-        
-        var kuvaus = document.getElementById("kuvaus").value;
-        
-        var sijainti = document.getElementById("sijainti").value;
-        
-        var alkamispaiva = document.getElementById("alkamispaiva").value;
-        
-        var alkamisaika = document.getElementById("alkamisaika").value;
-        
-        var loppumispaiva = document.getElementById("paattymispaiva").value;
-        
-        var loppumisaika = document.getElementById("paattymisaika").value;
-        
-        if(alkamisaika != "" || alkamispaiva != ""){
-            var alkamisajankohta = alkamispaiva + " " + alkamisaika + ":00";    
-        } else {
-            var alkamisajankohta = "";
-        
-        }
-            
-        if(loppumisaika != "" || loppumispaiva != ""){
-            var loppumisajankohta = loppumispaiva + " " + loppumisaika + ":00";    
-        } else {
-            var loppumisajankohta = "";
-        
+            return slipcookie;
         }
         
-        //console.log(alkamisajankohta);
+  
         
-        //otsikko cant contain space
-       
-        var shareTo = document.getElementsByName("selected_user");    
-            
-        var error = false;
-            
-            
-        if(otsikko == ""){
-            console.log("otsikko ei ole määriteltynä");
-            document.getElementById("otsikko").style.border = "1px solid red";
-            error = true;
-        }
-            
-            
-            
+
+    function getSharedUser(){
         
-            
-            
-        if(alkamispaiva == "" && loppumispaiva == ""){
-            console.log("Päivämäärä ei ole määritelty.");
-        } else {
-            
-            if(alkamispaiva > loppumispaiva){
-                console.log("tapahtuma alkaisi ennen sen loppumista");
-                document.getElementById("alkamispaiva").style.border = "1px solid red";
-                error = true;
-            } 
-            
-            if(alkamispaiva < loppumispaiva){
-                 console.log("päivä ok");
-                 document.getElementById("alkamispaiva").style.border = "";
-                 document.getElementById("paattymispaiva").style.border = "";
-                 error = true;
-            } 
-            
-            
-            if(alkamispaiva == loppumispaiva){
-                    
-                    console.log(alkamispaiva + ";" + loppumispaiva);
+        var header = document.getElementById("otsikko").value;
+        
+        var cookies = GetCookies();
+        console.log(cookies);
+        
+        var help1 = cookies[1].split("=");
+        var apikey = help1[1];
+        
+        var help2 = cookies[2].split("=");
+        var user = help2[1];
+        
+        console.log(apikey);
+        console.log(user);
+        
+            $.ajax({
+                url: '../API/index.php?type=EventsSharedTo&index=' + user + '&apikey=' + apikey + '&header=' + header, method: "GET"
+                 }).fail(function (data) {
+                        console.log("fail!");
+                        console.log(data.responseText);
+                        
+                }).done(function (data) {
+
+                    //var x = data.kentta["geometry"]["location"];
+                   
+                    var array = [];
                 
-                    if(alkamisaika >= loppumisaika){
-                        console.log("tapahtuma alkaisi ennen sen loppumista");
-                        document.getElementById("alkamisaika").style.border = "1px solid red";
-                        document.getElementById("paattymisaika").style.border = "1px solid red";
-                        error = true;
-                    } else {
-                        document.getElementById("alkamisaika").style.border = "";
-                        document.getElementById("paattymisaika").style.border = "";
+                    //if events found
+                    if(data.status === 200){
+                        console.log("Data found");
+                        console.log(data);
+                        
+                        //käydään löydetyt jaetut tapahtumat läpi
+                        for(var y = 0; y < data.data.length; y++){
+                            console.log(data.data[y].username);
+                            SelectedUsersList(data.data[y].username);
+                        }
+                        
                     }
-            }  
-        }
-            
- 
-            if(error === false){
-                
-                var user = "testi";
-                console.log("Tapatuma luotiin");
-                document.getElementById("form").submit();
-                
-            } else {
-                console.log("Tapahtumaa ei luotu.")
+            });
+        
             }
-    
-    }
-*/

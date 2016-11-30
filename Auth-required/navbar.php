@@ -6,9 +6,12 @@
     <li><a href="ShowEvents.php">Tapahtumien katseleminen</a></li>
     <li><a href="CreateEvent.php">Tapahtumien lisääminen</a></li>
     <li><a href="profile.php">Oma profiili</a></li>
-    
-    <li><i>Käyttäjä: [<?php echo $_COOKIE["user"];?>]</i></li>
-    <li><a href="logout.php">Kirjaudu ulos</a></li>
-    
+    <div id="right">
+        <li><i>Käyttäjä: [<?php echo $_COOKIE["user"];?>]</i></li>
+        <li><a href="logout.php">Kirjaudu ulos</a></li>
+    </div>
+
 </ul>
+
+
 <hr>

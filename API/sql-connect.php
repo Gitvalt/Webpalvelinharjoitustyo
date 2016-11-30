@@ -8,7 +8,6 @@ function Connect(){
         $user = "root";
         $password = "";
         
-
         $conn = new PDO("mysql:host=$host;dbname=$database", $user, $password);
         $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         $conn->exec("SET CHARACTER SET utf8");
@@ -37,6 +36,43 @@ function GetTableData($table){
     }
 }
 */
+
+function ReadLog($type, $desc, $user){
+     
+    try {
+        $conn = Connect();
+        $statement = $conn->prepare("INSERT INTO log(type, description, targetUser) VALUE(?, ?, ?);");
+                
+        $statement->bindValue(1, $type, PDO::PARAM_STR);
+        $statement->bindValue(2, $desc, PDO::PARAM_STR);
+        $statement->bindValue(3, $user, PDO::PARAM_STR);
+        
+        $statement->execute(); 
+        return true;
+        
+    } catch(PDOException $e){
+        return false;
+    }
+}
+
+
+function CreateLog($type, $desc, $user){
+     
+    try {
+        $conn = Connect();
+        $statement = $conn->prepare("INSERT INTO log(type, description, targetUser) VALUE(?, ?, ?);");
+                
+        $statement->bindValue(1, $type, PDO::PARAM_STR);
+        $statement->bindValue(2, $desc, PDO::PARAM_STR);
+        $statement->bindValue(3, $user, PDO::PARAM_STR);
+        
+        $statement->execute(); 
+        return true;
+        
+    } catch(PDOException $e){
+        return false;
+    }
+}
 
 function GetUsers(){
      try {
@@ -325,7 +361,30 @@ function GetSharedEvents($user){
     }
 }
 
-//Get events shared to others
+function EventSharedToUsers($event_header, $owner){
+     
+    try {
+
+        $conn = Connect();    
+        $statement = $conn->prepare("SELECT username FROM sharedevent INNER JOIN event ON event.id = sharedevent.eventID WHERE event.header = ? AND owner = ?;");
+                
+        $statement->bindValue(1, $event_header, PDO::PARAM_STR);
+        $statement->bindValue(2, $owner, PDO::PARAM_STR);
+        $statement->execute();
+        $var = $statement->fetchAll(PDO::FETCH_ASSOC);
+        if(empty($var)){
+            return null;
+        } else {
+            return $var;
+        }
+        
+    } catch(PDOException $e){
+        return false;
+    }
+}
+
+
+//Get events that user has made and shared to others
 function GetEventsSharedByUser($user){
      
     try {
@@ -351,7 +410,7 @@ function GetUserEvents($user){
         $conn = Connect();
         $user = htmlspecialchars($user);
          
-        $statement = $conn->prepare("SELECT * FROM event where owner=?;");
+        $statement = $conn->prepare("SELECT * FROM event where owner=? ORDER BY startDateTime ASC;");
         
         $statement->bindValue(1, $user, PDO::PARAM_STR);
         $statement->execute();
@@ -412,7 +471,7 @@ function GetEventsDefTime($user, $start_inp, $end_inp){
         $end = htmlspecialchars($end_inp);
          
          
-        $statement = $conn->prepare("SELECT * FROM event WHERE event.startDateTime > ? AND event.startDateTime <  ? AND owner = ?;");
+        $statement = $conn->prepare("SELECT * FROM event WHERE event.startDateTime > ? AND event.startDateTime <  ? AND owner = ? ORDER BY event.startDateTime ASC;");
         
         $statement->bindValue(1, $start, PDO::PARAM_STR);
         $statement->bindValue(2, $end, PDO::PARAM_STR);
@@ -434,6 +493,17 @@ function ShareEvent($eventID, $user){
     try {
         
         $conn = Connect();
+        
+        $conn->beginTransaction();
+        
+        
+        //first empty then reenter
+        $statement = $conn->prepare("DELETE FROM sharedevent WHERE eventID = ?;");
+        
+        $statement->bindValue(1, $eventID, PDO::PARAM_INT);
+        
+        $statement->execute();
+        
         $statement = $conn->prepare("INSERT INTO sharedevent(eventID, username) VALUES(?,?);");
         
         $statement->bindValue(1, $eventID, PDO::PARAM_INT);
@@ -441,11 +511,52 @@ function ShareEvent($eventID, $user){
         
         $statement->execute();
         
+        $conn->commit();
         return true;
 
     } catch(PDOException $e){
         //echo "error:" . $e->getMessage();
-         return false;
+        $conn->rollBack();
+        return false;
+        
+    }
+}
+
+//Delete old replace new
+function ShareReplace($eventID, $users){
+    try {
+        
+        $conn = Connect();
+        
+        $conn->beginTransaction();
+        
+        //first empty then reenter
+        $statement = $conn->prepare("DELETE FROM sharedevent WHERE eventID = ?;");
+        
+        $statement->bindValue(1, $eventID, PDO::PARAM_INT);
+        
+        $statement->execute();
+        if(count($users) == 0){
+            
+        } else {
+            foreach($users as $user){
+                $statement = $conn->prepare("INSERT INTO sharedevent(eventID, username) VALUES(?,?);");
+
+                $statement->bindValue(1, $eventID, PDO::PARAM_INT);
+                $statement->bindValue(2, $user, PDO::PARAM_STR);
+
+                $statement->execute();
+            }
+        }
+        
+        $conn->commit();
+        return true;
+
+    } catch(PDOException $e){
+        //return "error:" . $e->getMessage();
+        $conn->rollBack();
+        return false;
+        
     }
 }
 
@@ -491,10 +602,10 @@ function ModifyUser($username, $password, $firstname, $lastname, $email, $phone,
 }
 
 //Modify event
-function ModifyUserEvent($header, $desc, $Start, $Ends, $location, $owner){
+function ModifyUserEvent($header, $desc, $Start, $Ends, $location, $owner, $id){
     try {
         $conn = Connect();
-        $statement = $conn->prepare("UPDATE event SET header=?, description=?, startDateTime=?, endDateTime=?, location=? WHERE owner=?");
+        $statement = $conn->prepare("UPDATE event SET header=?, description=?, startDateTime=?, endDateTime=?, location=? WHERE owner=? AND id=?");
         
         $statement->bindValue(1, $header, PDO::PARAM_STR);
         $statement->bindValue(2, $desc, PDO::PARAM_STR);
@@ -502,10 +613,34 @@ function ModifyUserEvent($header, $desc, $Start, $Ends, $location, $owner){
         $statement->bindValue(4, $Ends, PDO::PARAM_STR);
         $statement->bindValue(5, $location, PDO::PARAM_STR);
         $statement->bindValue(6, $owner, PDO::PARAM_STR);
+        $statement->bindValue(7, $id, PDO::PARAM_STR);
         
         $statement->execute();
-        
+        $statement = $conn->prepare("SELECT id FROM event WHERE owner=? AND");
         return true;
+
+    } catch(PDOException $e){
+        //echo "error:" . $e->getMessage();
+         return $e;
+    }
+}
+
+function GetEventId($header, $owner){
+    try {
+        $conn = Connect();
+        $statement = $conn->prepare("SELECT id FROM event WHERE owner=? AND header=?");
+        
+        $statement->bindValue(1, $owner, PDO::PARAM_STR);
+        $statement->bindValue(2, $header, PDO::PARAM_STR);
+        
+        $statement->execute();
+        $tulos = $statement->fetch(PDO::FETCH_ASSOC);
+        
+         if(empty($tulos)){
+            return false;
+        } else {
+            return $tulos;    
+        }
 
     } catch(PDOException $e){
         //echo "error:" . $e->getMessage();
@@ -521,8 +656,13 @@ function GetUserData($user){
         $statement = $conn->prepare("SELECT username, password, firstname, lastname, phone, email, address FROM user where username=?;");
         $statement->bindValue(1, $user, PDO::PARAM_STR);
         $statement->execute();
-        $tulos = $statement->fetch(PDO::FETCH_ASSOC);;
-        return $tulos;
+        $tulos = $statement->fetch(PDO::FETCH_ASSOC);
+         
+         if(empty($tulos)){
+            return false;
+        } else {
+            return $tulos;    
+        }
 
     } catch(PDOException $e){
         //echo "error:" . $e->getMessage();
@@ -542,6 +682,8 @@ function Login($user, $pass){
         $statement->bindValue(2, $pass, PDO::PARAM_STR);
         $statement->execute();
         $tulos = $statement->fetch(PDO::FETCH_ASSOC);;
+        
+        CreateLog("Login", "User logged in", $user);
         
         if(empty($tulos)){
             return false;
@@ -624,8 +766,13 @@ function Logout($token){
         $statement = $conn->prepare("DELETE from useraccess where token = ?;");
         $statement->bindValue(1, $token, PDO::PARAM_STR);
         $statement->execute();
+        
+        $user = $_COOKIE["user"];
         setcookie("token", "", time() - 3600);
         setcookie("user", "", time() - 3600);
+        
+        CreateLog("Logout", "User logged out", $user);
+        
         return true;
 
     } catch(PDOException $e){

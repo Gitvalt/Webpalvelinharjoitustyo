@@ -267,18 +267,26 @@ if(empty($_GET["type"])){
                         }
 
                         $owner = $_GET["user"];
-
-                        //if any changes are detected.
-                        if($counter != 0){
-                        $result = ModifyUserEvent($_GET["index"], $header, $description, $startDateTime, $endDateTime, $location, $owner);
+                            
+                        $id = GetEventId($header, $owner);
+                        if($id === false){
+                            
+                            Response(400, "Modification failure", "id not found"); 
+                            
                         } else {
-                            Response(400, "No changes defined", null);
-                        }
+                            
+                            //if any changes are detected.
+                            if($counter != 0){
+                            $result = ModifyUserEvent($_GET["index"], $header, $description, $startDateTime, $endDateTime, $location, $owner, $id);
+                            } else {
+                                Response(400, "No changes defined", null);
+                            }
 
-                        if($result === true){
-                            Response(200, "Modified user", GetUserEvent($_GET["user"], $_GET["index"]));    
-                        } else {
-                            Response(400, "Modification failure", $result);    
+                            if($result === true){
+                                Response(200, "Modified user", GetUserEvent($_GET["user"], $_GET["index"]));    
+                            } else {
+                                Response(400, "Modification failure", $result);    
+                            }
                         }
                     }
                     }
@@ -521,7 +529,7 @@ if(empty($_GET["type"])){
             
             break;
             
-        case "SharedToMe":
+        case "EventsSharedTo":
              /*
 		    if($_GET["index"] != $_COOKIE["user"]){
 		    	Response("404", "You can only look for your own data", null);
@@ -530,7 +538,33 @@ if(empty($_GET["type"])){
 		    */
 		    
             if($_SERVER['REQUEST_METHOD'] == "GET"){
+                //user we want
+                $user = $_GET["index"];
+                $event_header = $_GET["header"];
+                $usernames = EventSharedToUsers($event_header, $user);
                 
+                if(empty($usernames)){
+                    Response(404, "Event is not shared to anyone", null);    
+                } elseif($usernames !== false) {
+                    Response(200, "Shared events found", $usernames);
+                } else {
+                    Response(400, "Something went wrong", null);
+                }
+                
+            } else {
+                Response(404, "Invalid http type", null);
+            }
+            break;
+            case "SharedToMe":
+             /*
+		    if($_GET["index"] != $_COOKIE["user"]){
+		    	Response("404", "You can only look for your own data", null);
+			break;
+		    }
+		    */
+		    
+            if($_SERVER['REQUEST_METHOD'] == "GET"){
+                //user we want
                 $user = $_GET["index"];
                 $events = GetSharedEvents($user);
                 
@@ -593,6 +627,24 @@ if(empty($_GET["type"])){
 						Response(404, "Input incorrect", null);
 					}
 				break;
+                    
+                case "PUT":
+					$eventids = GetInput();
+                    /*
+					if(!empty($target_user)){
+						if(ShareEvent($eventID, $target_user) == true){
+							Response(200, "Event shared with $target_user", null);
+						}
+						else {
+							Response(400, "sharing the event failed", null);
+						}
+					} else {
+						Response(404, "Input incorrect", null);
+					}
+                    */
+                    Response(404, "Input incorrect", $eventids);
+				break;
+                    
 				case "DELETE":
 					if(!empty($target_user)){
 						if(UnShareEvent($eventID, $target_user) == true){

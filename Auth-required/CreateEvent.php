@@ -81,8 +81,9 @@ require("isValidUser.php");
                 <div id="users"></div>
                 <br>
             </div>
-
+            
             <div id="valituthenkilot">
+            Jaetaan käyttäjille:
                 <div id="sel_users"></div>
                 <br>
             </div>

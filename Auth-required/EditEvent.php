@@ -20,7 +20,7 @@ https://developers.google.com/maps/documentation/javascript/examples/places-sear
 ?>
 <html lang="fi">
     <head>
-        <title>Tapahtuman</title>
+        <title>Tapahtuman muokkaaminen</title>
         <meta charset="utf-8">
         
         <link href="style/createevent.css" type="text/css" rel="stylesheet">
@@ -66,7 +66,7 @@ https://developers.google.com/maps/documentation/javascript/examples/places-sear
         <!--<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>-->
         
         <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>"  method="post" id="form">
-            <h1>Tapahtuman luominen</h1>
+            <h1>Tapahtuman muokkaaminen</h1>
 
             Otsikko:
             <input type="text" id="otsikko" name="otsikko" value="<?php echo $response["header"];?>">
@@ -121,6 +121,12 @@ https://developers.google.com/maps/documentation/javascript/examples/places-sear
                 <select id="forPHPid" name="forPHP[]" multiple>
                 </select>
             </div>
+            
+            <script>
+            
+            getSharedUser();
+            
+            </script>
             
             <!--<input type="submit" name="submit">-->
             <button onclick="submitEvent()">Tallenna tapahtuma</button>
@@ -204,7 +210,14 @@ if(!empty($alkupaiva) or !empty($loppupaiva)){
 
 if($error_counter == 0){
     
-    $function = ModifyUserEvent($otsikko, $kuvaus, $alkamisajankohta, $loppumisajankohta, $sijainti, $_COOKIE["user"]);
+    $id = GetEventId($otsikko, $_COOKIE["user"]);
+    
+    print_r($id);
+    
+    if($id === false){
+         $message .= "Error: Tapahtuman id ei löydetty<br>";
+    } else {
+    $function = ModifyUserEvent($otsikko, $kuvaus, $alkamisajankohta, $loppumisajankohta, $sijainti, $_COOKIE["user"], $id["id"]);
 
     if($function === false){
         $message .= "Error: Tapahtuman muokkaaminen ei onnistunut<br>";
@@ -214,14 +227,14 @@ if($error_counter == 0){
         //share event
         
         $shareusers = @$_POST["forPHP"];
-        if(!empty($shareusers)){
-            $response = ShareFunction($index, $shareusers);
-            if($response === false){
-                $message .= "Error: Tapahtuman jakaminen käyttäjille epäonnistui";
-            }
+
+        $response = ShareFunction($id["id"], $shareusers);
+        if($response === false){
+            $message .= "Error: Tapahtuman jakaminen käyttäjille epäonnistui";
         }
+
     }
-    
+    }
 } else {
     
 }
@@ -237,16 +250,15 @@ if(isset($_POST["otsikko"])){
 
 function ShareFunction($id, $users){
     
-    print_r($id);
-    print_r($users);
+    //print_r($id);
+    //print_r($users);
     
-    if(count($users) == 0 or $id == null){
+    //jos käyttäjiä ei ole määriteltynä tai id on tyhjä.
+    if($id == null){
         return false;
     }
-    
-    foreach($users as $person){
-        ShareEvent($id["id"], $person);
-    }
+
+    ShareReplace($id, $users);
     
     return true;
 }

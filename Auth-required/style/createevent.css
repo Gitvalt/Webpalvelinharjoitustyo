@@ -58,11 +58,11 @@
 }
 
 #osallistujat, #valituthenkilot {
-    width: 50%;
+    width: 80px;
 }
 
 #osallistujat li, #valituthenkilot li{
-    width: 50%;
+    width: 80px;
     list-style: none;
     padding: 0px;
     margin: 0px;

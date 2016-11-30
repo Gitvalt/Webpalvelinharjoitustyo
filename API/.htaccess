@@ -28,8 +28,11 @@ RewriteRule    ^users/([0-9a-zA-Z]+)/events/apikey=([0-9a-zA-Z]+)*$   index.php?
 #show events shared to you
 RewriteRule    ^users/([0-9a-zA-Z]+)/events/shared/ToMeapikey=([0-9a-zA-Z]+)$   index.php?type=SharedToMe&index=$1&apikey=$2 [NC,L]
 
+#show users to whom event is shared
+RewriteRule    ^users/([0-9a-zA-Z]+)/events/([0-9a-zA-Z]+)/SharedTo/apikey=([0-9a-zA-Z]+)$   index.php?type=EventsSharedTo&index=$1&header=$2&apikey=$3 [NC,L]
+
 #show events shared BY you
-RewriteRule    ^users/([0-9a-zA-Z]+)/events/shared/ToOthersapikey=([0-9a-zA-Z]+)$   index.php?type=SharedEvents&index=$1&apikey=$2 [NC,L]
+RewriteRule    ^users/([0-9a-zA-Z]+)/events/shared/ToOthers/apikey=([0-9a-zA-Z]+)$   index.php?type=SharedEvents&index=$1&apikey=$2 [NC,L]
 
 #shareEvent
 RewriteRule    ^users/([0-9a-zA-Z]+)/events/([0-9a-zA-Z]+)/share/([0-9a-zA-Z]+)/apikey=([0-9a-zA-Z]+)*$   index.php?type=Share&selecteduser=$3&eventid=$2&owner=$1&apikey=$4 [NC,L]
