@@ -33,7 +33,7 @@
     
     float: left;
     width: 30%;
-    height: 10%;
+    height: 15%;
     border: 1px solid black;
 }
 
@@ -41,6 +41,7 @@
     margin-left: 2%;
     clear: right;
     margin-right: auto;
+    padding-right: auto;
 }
 
 
@@ -51,7 +52,8 @@
 }
 
 #time {
-    width: 100%;
+    
+    height: auto;
     float: left;
     clear: both;
     margin-bottom: 10px;

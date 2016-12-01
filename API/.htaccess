@@ -37,16 +37,23 @@ RewriteRule    ^users/([0-9a-zA-Z]+)/events/shared/ToOthers/apikey=([0-9a-zA-Z]+
 #shareEvent
 RewriteRule    ^users/([0-9a-zA-Z]+)/events/([0-9a-zA-Z]+)/share/([0-9a-zA-Z]+)/apikey=([0-9a-zA-Z]+)*$   index.php?type=Share&selecteduser=$3&eventid=$2&owner=$1&apikey=$4 [NC,L]
 
-
+#find user
 RewriteRule    ^users/search/([0-9a-zA-Z]+)*$    index.php?type=search_user&param=$1 [NC,L]
 
+#find event
 RewriteRule    ^users/([0-9a-zA-Z]+)/events/search/([0-9a-zA-Z]+)/apikey=([0-9a-zA-Z]+)*$    index.php?type=search_event&user=$1&header=$2&apikey=$3 [NC,L]
+
+#find event id
+RewriteRule    ^users/([0-9a-zA-Z]+)/events/search/id/([0-9a-zA-Z]+)/([0-9a-zA-Z]+)*$    index.php?type=eventID&user=$1&eventheader=$2&apikey=$3 [NC,L]
+
+#read log
+RewriteRule    ^users/([0-9a-zA-Z]+)/log/([0-9a-zA-Z]+)/apikey=([0-9a-zA-Z]+)$   index.php?type=log&logtype=$2&user=$1&apikey=$3 [NC,L]
+
 
 
 #show specific event made by user
 RewriteRule    ^users/([0-9a-zA-Z]+)/events/([0-9a-zA-Z]+)/apikey=([0-9a-zA-Z]+)$   index.php?type=userEvent&index=$2&user=$1&apikey=$3 [NC,L]
 #GET EVENT
-
 
 #create event with name {index}
 #POST EVENT

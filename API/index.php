@@ -40,9 +40,23 @@ if(empty($_GET["type"])){
     $parameter;
 
     switch($_GET["type"]){
+        
+        case "log":
+            //ReadLog($type, $user)
+            $requestMethod = $_SERVER['REQUEST_METHOD'];
+            $user = $_GET["user"];
+            $type = $_GET["logtype"];
             
+            $readLog = ReadLog($type, $user);
+            
+            if($readLog == false){
+                Response(404, "No logs found", $user . $type);
+            } else {
+                Response(200, "Logs found", $readLog);
+            }
+            break;
         case "search_event":
-            
+            $requestMethod = $_SERVER['REQUEST_METHOD'];
             $user = $_GET["user"];
             $header = $_GET["header"];
             $found_event = SearchEvent($header, $user);
@@ -122,6 +136,29 @@ if(empty($_GET["type"])){
                     
                     break;
             }
+            break;
+        case "eventID":
+            //index.php?type=eventID&user=$1&eventheader=$2&apikey=$3
+            $requestMethod = $_SERVER['REQUEST_METHOD'];
+            
+            $user = $_GET["user"];
+            $header = $_GET["eventheader"];
+            $token = $_GET["apikey"];
+            
+            
+            if($requestMethod == "GET"){
+              $id = GetEventId($header, $user);
+              if($id === false){
+                Response(404, "Event not found", $header);  
+              } else {
+                Response(200, "Found event id", $id);      
+              }
+            
+            } else {
+                Response(400, "Incorrect http header", null);
+            }
+            
+            //GetEventId
             break;
         case "userEvent":
             //API/users/{username}/events/{eventid}
@@ -295,12 +332,12 @@ if(empty($_GET["type"])){
             
                 case "DELETE":
 			  
-			     /*
-		    if($_GET["user"] != $_COOKIE["user"]){
-		    	Response("404", "You can only delete events you have created.", null);
-			break;
-		    }
-		    */
+                             /*
+                        if($_GET["user"] != $_COOKIE["user"]){
+                            Response("404", "You can only delete events you have created.", null);
+                        break;
+                        }
+                        */
 			   
                         $result = DeleteEvent($_GET["user"], $_GET["index"]);
 

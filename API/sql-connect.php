@@ -37,18 +37,23 @@ function GetTableData($table){
 }
 */
 
-function ReadLog($type, $desc, $user){
+function ReadLog($type, $user){
      
     try {
         $conn = Connect();
-        $statement = $conn->prepare("INSERT INTO log(type, description, targetUser) VALUE(?, ?, ?);");
+        $statement = $conn->prepare("Select * From log WHERE targetUser = ? AND type = ? ORDER BY log_timestamp ASC;");
                 
-        $statement->bindValue(1, $type, PDO::PARAM_STR);
-        $statement->bindValue(2, $desc, PDO::PARAM_STR);
-        $statement->bindValue(3, $user, PDO::PARAM_STR);
+        $statement->bindValue(1, $user, PDO::PARAM_STR);
+        $statement->bindValue(2, $type, PDO::PARAM_STR);
+
+        $statement->execute();
+        $tulos = $statement->fetchAll(PDO::FETCH_ASSOC);
         
-        $statement->execute(); 
-        return true;
+        if(empty($tulos)){
+            return false;
+        } else {
+            return $tulos;
+        }
         
     } catch(PDOException $e){
         return false;
@@ -99,6 +104,29 @@ function GetEvents(){
         $tulos = $statement->fetchAll(PDO::FETCH_ASSOC);;
         return $tulos;
 
+    } catch(PDOException $e){ 
+        //echo "error:" . $e->getMessage();
+        return false;
+
+    }
+}
+
+function DoesHeaderExist($header, $owner){
+     try {
+        $conn = Connect();
+        
+        $statement = $conn->prepare("SELECT * FROM event WHERE header=? AND owner=?;");
+        $statement->bindValue(1, $header, PDO::PARAM_STR);
+        $statement->bindValue(2, $owner, PDO::PARAM_STR);
+        $statement->execute();
+        $tulos = $statement->fetch(PDO::FETCH_ASSOC);;
+        
+        if(empty($tulos)){
+            return false;
+        } else {
+            return true;
+        }
+         
     } catch(PDOException $e){ 
         //echo "error:" . $e->getMessage();
         return false;
@@ -262,6 +290,9 @@ function InsertEvent($user, $header, $description, $startDateTime, $endDateTime,
         $statement->execute();
         
         $tulos = $statement->fetch(PDO::FETCH_ASSOC);;
+        
+        CreateLog("Create Event", "User created a event: $header", $user);
+        
         if($tulos != null){
             return $tulos;
         } else {
@@ -287,6 +318,7 @@ function DeleteEvent($user, $id){
         
         $statement->execute();
         
+        CreateLog("Delete Event", "User deleted a event with id: $id", $user);
         return true;
 
     } catch(PDOException $e){
@@ -313,6 +345,8 @@ function InsertUser($user, $pass, $firstname, $lastname, $email, $phone, $addres
         $statement->bindValue(6, $phone, PDO::PARAM_STR);
         $statement->bindValue(7, $address, PDO::PARAM_STR);
         
+        CreateLog("Create User", "User: $user, was created", $user);
+        
         $statement->execute();
         
         return true;
@@ -331,6 +365,8 @@ function DeleteUser($user){
         $statement = $conn->prepare("DELETE FROM user WHERE username=? ;");
         
         $statement->bindValue(1, $user, PDO::PARAM_STR);
+        
+        CreateLog("Delete user", "User: $user, was deleted", $user);
         
         $statement->execute();
         
@@ -511,6 +547,7 @@ function ShareEvent($eventID, $user){
         
         $statement->execute();
         
+        CreateLog("Share event", "Event $eventID was shared to user $user", $user);
         $conn->commit();
         return true;
 
@@ -569,7 +606,7 @@ function UnShareEvent($eventID, $user){
         $statement->bindValue(2, $user, PDO::PARAM_STR);
         
         $statement->execute();
-        
+        CreateLog("UnShare event", "event $eventID no longer shared to user $user", $user);
         return true;
 
     } catch(PDOException $e){
@@ -592,7 +629,7 @@ function ModifyUser($username, $password, $firstname, $lastname, $email, $phone,
         $statement->bindValue(7, $username, PDO::PARAM_STR);
         
         $statement->execute();
-        
+        CreateLog("Modify user", "$username was modified", $username);
         return GetUserData($username);
 
     } catch(PDOException $e){
@@ -616,7 +653,8 @@ function ModifyUserEvent($header, $desc, $Start, $Ends, $location, $owner, $id){
         $statement->bindValue(7, $id, PDO::PARAM_STR);
         
         $statement->execute();
-        $statement = $conn->prepare("SELECT id FROM event WHERE owner=? AND");
+        
+        CreateLog("Modify Event", "Event $header was modified", $owner);
         return true;
 
     } catch(PDOException $e){
@@ -829,58 +867,4 @@ function CreateAccessToken($user){
     }
 }
 
-/*
-function ShowGroup($id){
-    
-    try {
-        $conn = Connect();
-        $statement = $conn->prepare("SELECT * FROM group_table where id=?;");
-        $statement->bindValue(1, $id, PDO::PARAM_INT);
-        $statement->execute();
-    
-        $tulos = $statement->fetch(PDO::FETCH_ASSOC);;
-        return $tulos;
-    } catch (PDOException $e){
-        return false;
-    }
-}
-
-function ModifyGroup($id, $name, $owner){
-        try{
-        $conn = Connect();
-        $user = htmlspecialchars($user);
-        $statement = $conn->prepare("UPDATE group_table set groupName=?, owner=? where id=?;");
-        
-        $statement->bindValue(1, $name, PDO::PARAM_STR);
-        $statement->bindValue(2, $owner, PDO::PARAM_STR);
-        $statement->bindValue(3, $id, PDO::PARAM_INT);
-        
-        $statement->execute();
-        return "Success";
-            
-        } catch(PDOException $e){
-            return false;
-        }
-}
-
-function CreateGroup($name, $owner){
-    try {
-        $conn = Connect();
-        $user = htmlspecialchars($user);
-        $statement = $conn->prepare("INSERT INTO group(groupName, creationDate, owner) VALUES(?,?,?);");
-        
-        $statement->bindValue(1, $name, PDO::PARAM_STR);
-        $statement->bindValue(2, date("Y-m-d"), PDO::PARAM_STR);
-        $statement->bindValue(3, $owner, PDO::PARAM_STR);
-        
-        $statement->execute();
-        $tulos = $statement->fetch(PDO::FETCH_ASSOC);;
-        return $tulos;
-
-    } catch(PDOException $e){
-        //echo "error:" . $e->getMessage();
-         return $e->getMessage();
-    }
-}
-*/
 ?>
