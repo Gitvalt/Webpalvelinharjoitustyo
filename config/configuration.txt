@@ -1,0 +1,4 @@
+server:localhost
+database:testdatabase
+server_user:root
+server_pass:

@@ -52,9 +52,9 @@ require("isValidUser.php");
 
             var lookfor;
 
-            console.log(document.cookie);
+            //console.log(document.cookie);
             var slipcookie = document.cookie.split(";");
-            console.log(slipcookie);
+            //console.log(slipcookie);
 
             //haetaan kirjautuneen käyttäjän id ja tallennetaan se.
             for(var int = 0; int < slipcookie["length"];int++){
@@ -70,16 +70,15 @@ require("isValidUser.php");
         },
         componentDidMount : function(){
             console.log("didmount");
-           
-           this.fetchEvents();
-           
-                        },
+            this.fetchEvents();
+            setInterval(this.fetchEvents, 30000);
+       },
         ChangePinDate: function(value){
             
             //console.log("value");
             //console.log(value);
             //console.log(value.target.attributes.value.nodeValue);
-            console.log("PinDate oli: " + this.state.PinDate);
+            //console.log("PinDate oli: " + this.state.PinDate);
             
             var button = value.target.attributes.value.nodeValue;
             
@@ -112,26 +111,27 @@ require("isValidUser.php");
             
             //setstate takes time to change
             
-            console.log("ResultDate: " + resultDate);
+            //console.log("ResultDate: " + resultDate);
             this.setState({PinDate: resultDate}, function(){this.fetchEvents()});
             //console.log("Set new pin: " + this.state.PinDate);
             //this.fetchEvents();
-        },  
+        },
         fetchEvents: function(){
+        
             console.log("fetchEvent Activated");
            var pinDate = this.state.PinDate;
            var month = pinDate.getMonth();
            
            //var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
            
-           console.log("pindate: " + pinDate);
+           //console.log("pindate: " + pinDate);
            
            var start = new Date(pinDate.getFullYear(), pinDate.getMonth(), 0);
            
            var end = new Date(pinDate.getFullYear(), pinDate.getMonth() + 1, 0);
            
-           console.log("start" + start);
-           console.log("end" + end);
+           //console.log("start" + start);
+           //console.log("end" + end);
            
            var weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
            
@@ -139,7 +139,7 @@ require("isValidUser.php");
            var fillerStart = "";
            var fillerEnd = "";
            
-           console.log(start.getDate());
+           //console.log(start.getDate());
            
            
            //first of month sunday
@@ -174,7 +174,7 @@ require("isValidUser.php");
                     fillerStart = "5";
                 break;
            }
-           console.log("Filler: " + fillerStart);
+           //console.log("Filler: " + fillerStart);
            //lastday of the month filler
            switch(end.getDay()){
                 //last day of the month is sunday
@@ -225,11 +225,11 @@ require("isValidUser.php");
             var CalendarEnd = end;
             */
             
-            console.log("CalendarStart");
-            console.log(CalendarStart);
+            //console.log("CalendarStart");
+            //console.log(CalendarStart);
             
-            console.log("CalendarEnd");
-            console.log(CalendarEnd);
+            //console.log("CalendarEnd");
+            //console.log(CalendarEnd);
             
            var user = this.GetUser();
            
@@ -257,11 +257,11 @@ require("isValidUser.php");
            
            var inputEnd = CalendarEnd.getFullYear() + "-" + (CalendarEnd.getMonth() + 1) + "-" + day_value_end + " 00:00:00";
            
-           console.log("inputStart");
-           console.log(inputStart);
+           //console.log("inputStart");
+           //console.log(inputStart);
             
-           console.log("inputEnd");
-           console.log(inputEnd);
+           //console.log("inputEnd");
+           //console.log(inputEnd);
             
            if(user == null){
             console.log("!!!!Error!!!!");
@@ -278,13 +278,13 @@ require("isValidUser.php");
                  
                  
                  var formated = this.state.formatedDates;
-                 console.log("formated");
-                 console.log(formated);
+                 //console.log("formated");
+                 //console.log(formated);
                  
                  //var formated = [];
                  
                  var EventsAdded = formated;
-                 console.log(data);
+                 //console.log(data);
                  
                  //käy läpi jokainen kalenterin rivi
                  for(var i = 0; i < formated.length; i++){
@@ -513,7 +513,7 @@ require("isValidUser.php");
                             
                             //käydään jokainen viikonpäivä läpi
                             for(var x = 0; x < key.length; x++){
-                            
+                                
                                 //jos päivälle on haeutta tapahtumia (ajax on päättynyt)
                                 if(key[x].length == 4){
                                     //console.log("key x");
@@ -528,11 +528,15 @@ require("isValidUser.php");
                                         var test = document.createElement("br");
                                         
                                         if(events_length > 1){
+                                                
                                                 //console.log(events_length);
                                                 //ei oteta ensimmäistä tyhjää mukaan
-                                                if(y != 0){
-                                                    param.push(key[x][3][y].header);
-                                                }
+                                                //console.log(key[x][3]);
+                                                //console.log(key[x][3][y].header);
+                                                //console.log(param);
+                                                param.push(key[x][3][y].header);
+                                                
+                                                
                 
                                             } else {
                                                 //jos tapahtumaa ei ole siirretään tyhjä.
@@ -558,43 +562,7 @@ require("isValidUser.php");
                          
                         // ------------------------------
                          
-                         /*
-                         //if events are defined, [4] contains array of events or [4][0] == ""
-                        if(key[value].length > 3) {
-                             //console.log(key[value].length);
-                             //console.log(key[value][3].length);
-                             
-                             
-                             /*
-                             on olemassa eventtejä
-                             [0]=""->palauta tyhjä
-                             [1]=""->käy läpi eventit ja palauta otsikot
-                             */
-                             /*
-                             //if is not only null value
-                             if(key[value][3].length >= 2){
-                                
-                                //console.log("!2!");
-                                
-                                var foobar = key[value][3].map(function(test, test2){
-                                    
-                                    //console.log(test);
-                                    
-                                    if(test != null){
-                                        return test.header;
-                                    }
-                                        
-                                }.bind(this));
-                                
-                                //console.log(foobar);
-                                events.push(foobar);
-                             } else {
-                                events.push(key[value][3][0]);
-                             }
-                        } else {
-                            events.push(""); 
-                        }
-                      */
+                        //console.log(events);
                         
                         var monday = "";
                         var tuesday = "";
@@ -618,7 +586,7 @@ require("isValidUser.php");
                             
                             tuesday = events[1].map(function(key, value){
                                 var link = "EditEvent.php?header=" + key;
-                                console.log(key);
+                                //console.log(key);
                                 return(
                                 <div>
                                     <a href={link}>{key}</a>
@@ -684,7 +652,8 @@ require("isValidUser.php");
                     
                         //console.log("events");
                         //console.log(events);
-                        console.log(key);
+                        //console.log(key);
+                        //console.log(key);
                         
                         return(
                                 <tr>

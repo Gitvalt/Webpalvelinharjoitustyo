@@ -11,7 +11,9 @@ if(isset($_POST["submit"])){
     $pass = htmlspecialchars(@$_POST["password"]);
     
     if(!empty($user) or !empty($pass)){
+
         if(Login($user, $pass) != false){
+
             if(CreateAccessToken($user) != false){
               $message = "Kirjautuminen onnistui!";
               header("Location: Auth-required/index.php");

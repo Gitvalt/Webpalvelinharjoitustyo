@@ -1,11 +1,14 @@
 ./ = URL
 
 !{x} = ei ole tehtynä
+!HUOM loppuun apikey={apikey}
 
 --
+
 Only if admin
 ./API/users <---> display all users
 ./API/events <---> display all events
+
 
 ---for user---
 GET ./API/users/{user} <---> Display user information
@@ -34,3 +37,11 @@ GET ./API/login/{token} <---> is current session valid? (has user logged in?)
 POST ./API/login/{username} <---> Login
 
 DELETE ./API/login/{token} <---> Logout
+
+GET ./API/users/{username}/events/search/{start}&{end}/{apikey} <---> Events that start at {start} and end by {end}
+
+GET ./API/users/{username}/events/search/id/{id}/{apikey} <---> find event with id
+
+GET ./API/users/{username}/log/{log_type}/{apikey} <---> users read log
+
+GET ./API/users/{username}/events/{id}/SharedTo/{apikey} <---> find to whom event is shared to

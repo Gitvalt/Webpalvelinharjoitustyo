@@ -2,12 +2,39 @@
 session_start();
 function Connect(){
     try {
+        /*
+        $file = fopen("./config/configuration.txt", "r");
+        //print_r($file);
+        $read = fread($file, filesize("./config/configuration.txt"));
+        $variables = explode("\r", $read);
+        
+        $list = array();
+        
+        foreach($variables as $var){
+            $parts = explode(":", $var);
+            array_push($list, $parts[1]);
+        }
+        */
         
         $host = "localhost";
         $database = "testdatabase";
         $user = "root";
         $password = "";
         
+        
+        /*
+        $host = $list[0];
+        $database = $list[1];
+        $user = $list[2];
+        $password = $list[3];
+        
+        echo "<hr>";
+        echo "\"" . $host . "\"" . "<br>";
+        echo "\"" . $database . "\"" . "<br>";
+        echo "\"" . $user . "\"" . "<br>";
+        echo "\"" . $password . "\"" . "<br>";
+        echo "<hr>";
+        */
         $conn = new PDO("mysql:host=$host;dbname=$database", $user, $password);
         $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         $conn->exec("SET CHARACTER SET utf8");
@@ -17,6 +44,7 @@ function Connect(){
         echo $ex->getMessage();
     }
 }
+
 /*
 //get data from table x
 function GetTableData($table){
@@ -507,7 +535,7 @@ function GetEventsDefTime($user, $start_inp, $end_inp){
         $end = htmlspecialchars($end_inp);
          
          
-        $statement = $conn->prepare("SELECT * FROM event WHERE event.startDateTime > ? AND event.startDateTime <  ? AND owner = ? ORDER BY event.startDateTime ASC;");
+        $statement = $conn->prepare("SELECT * FROM event WHERE event.startDateTime >= ? AND event.startDateTime <=  ? AND owner = ? ORDER BY event.startDateTime ASC;");
         
         $statement->bindValue(1, $start, PDO::PARAM_STR);
         $statement->bindValue(2, $end, PDO::PARAM_STR);

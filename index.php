@@ -10,14 +10,25 @@
         <?php //include("navbar.php"); ?>
         <h1>Tervetuloa kalenteri sovellukseen!</h1>
         <ul>
-            <li><a href="Auth-required/index.php">Kirjaudu sisään</a>
+            <li>
+                <a href="Auth-required/index.php">Kirjaudu sisään</a>
             </li>
             
             <li>
-            <a href="php-syntax-highlighter.php">php-syntax-highlighter</a><br>
+                <a href="php-syntax-highlighter.php">php-syntax-highlighter</a><br>
             </li>
+            
+            <li>
+                <a href="loppuraportti.html">loppuraportti</a><br>
+            </li>
+            
             
         </ul>
         <!--footer.php-->
     </body>
 </html>
+
+<?php
+
+
+?>

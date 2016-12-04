@@ -640,7 +640,26 @@ if(empty($_GET["type"])){
                 Response(404, "Invalid http type", null);
             }
             break;
-        
+        case "eventSpef":
+            
+            if($_SERVER['REQUEST_METHOD'] == "GET"){
+                //index.php?type=eventSpef&user=$1&start=$2&end=$3apikey=$4
+                $start = $_GET["start"];
+                $end = $_GET["end"];
+                $user = $_GET["user"];
+
+                $events = GetEventsDefTime($user, $start, $end);
+                
+                if($events === false or empty($events)){
+                    Response("404", "No events found", false);
+                } else {
+                    Response("200", "Events found", $events);
+                }
+
+            } else {
+                Response("400", "Invalid http header", false);
+            }
+            break;
         case "Share":
 			
             //event id = eventid, user whos event is shared 

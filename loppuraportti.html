@@ -1,0 +1,78 @@
+<!DOCTYPE html5>
+<html lang="fi">
+    <head>
+        <title>Etusivu</title>
+        <meta charset="utf-8">
+        <link href="style/default.css" rel="stylesheet" type="text/css">
+    </head>
+    <body>
+        <h1>Kalenterisovellus harjoitustyödokumentaatio</h1>
+             <div>
+                Linkki toimivaan toteutukseen:<br>
+                Zip-paketin voit ladata tästä.
+            </div>
+            <div>
+                <h2>Yleistietoja projektista</h2>
+                    <h3>Palautus ja kuvaus</h3>
+                    <p>Tämä työ on webohjelmointi(ttms0500) ja webpalvelinohjelminti(ttms0900) kursseja varten tehty yhdistelmä harjoitustyö. Työ esiteltiin 30.11.2016 ja palautettiin opettajalle 6.12.2016</p>
+                    <h3>Tekijät</h3>
+                    <ul>
+                        <li>Valtteri Seuranen, K1967</li>
+                        <li>Syri Kasper, K1786</li>
+                        <li>Juha-Pekka Tiirikainen, K2049</li>
+                    </ul>
+                    <h3>Tehtävän kuvaus</h3>
+                    <p>Harjoitustyön tehtävänä oli luoda php ja javascript-ohjelmointikielillä valitusta aiheesta toimiva sovellus, jonka avulla voitaisiin demonstroida opiskelijoiden taitoja kursilla opituista taidoista.</p>
+                    
+                    <p>Me valitsimme projektin aiheeksi eräänlaisen kalenterisovelluksen kehittämisen. Kalenteriin käyttäjä pystyy luomaan oman tunnuksensa ja luomaan itselleen tapahtumia, jotka sitten näytettäisiin javascriptillä generoidussa kalenterissa käyttäjälle. Käyttäjä voisi sitten halutessaan muokata tapahtumia tai omia tietojaan, jakaa luomiaan tapahtumia muille rekisteröityneille käyttäjille.</p> 
+                   
+            </div>
+        
+            <div>
+            <h2>Käytännön toteutus</h2>
+                <h3>Toteutus</h3>
+                    
+                    <p>Sivuston toimintojen käyttämiseksi loimme REST-rajapintaa, jonka avulla voitaisiin kalenterin toimintoja käyttää ja mahdollisesti tulevaisuudessa kehittää käytettäväksi muiden sovellusten avulla.</p>
+                
+                <h3>MySQL-tietokanta</h3>
+                    <b>log</b><p>Taulu, johon kirjataan sisään/uloskirjautumiset, tapahtumien ja käyttäjien lisäykset, muokkaukset, poistot. targetUser määrittää keneen loki vaikuttaa.</p>
+                
+                    <b>event</b><p>Event-taulu sisältää kaikki käyttäjien luomat tapahtumat. Foreing key omistajan ja käyttäjän käyttäjätunnuksen kanssa.</p>
+                
+                    <b>user</b>
+                    <p>Sisältää kaikki käyttäjän profiili tiedot. "Tunnuksen tyyppi"-kenttää ei ole käytetty projektissa.</p>
+                
+                    <b>useraccess</b>
+                    <p>UserAccess-taulun tietoja käytetään sivuston sisäänkirjautumisen yhteydessä. Jos käyttäjä on kirjautunut sisään, tämä taulu sisältää käyttäjän "avaimen" ja avaimen luontiajan. Avaimen avulla käyttäjä pystyy käyttämään palvelua.</p>
+                
+                    <b>accounttype</b>
+                    <p>Määrittää käyttäjätunnuksen oikeudet järjestelmään. Oletuksena on kaksi tyyppiä "Default" ja "Admin". Tämän taulun tietoje ei olla käytetty projektissa.</p>
+                    
+                    <b>sharedevent</b>
+                    <p>Määrittää tapahtumia, joille käyttäjällä on oikeus, vaikka käyttäjä itse ei tapahtumaa ole luonut. Taulu sisältää tapahtuman id:n, jota jaetaan ja käyttäjä jolle tapahtuma jaetaan,</p>
+                    
+                    <img src="dokumentaatio/database_illustration.PNG" alt="database">
+                <h3>Rest-api</h3>
+                <a href="dokumentaatio/REST-API.txt">RestAPI funktiot</a>
+                <h3>PHP-funktiot ja kirjautuminen</h3>
+                <img src="dokumentaatio/kuvia/login.JPG" alt="Login">
+                <h3>Javascript funktiot</h3>
+                <p>Javascriptiä harjoitustyössä pääsääntöisesti käytettiin kalenterin generoimiseen ja input-elementtien tietojen varmistamiseen. "CreateEvent.php"ja "EditEvent.php" käyttävät javascript/CreateEvent.js scriptejä tapahtuman tietojen varmentamiseen. 
+                </p>
+                <p>Tapahtumia luodessa tai muokatessa javascriptillä haetaan googlen map apia käyttäen kartta, joka näyttää käyttäjän määrittämän sijainnin. Lisäksi ajaxilla varmistetaan ettei tapahtuman otsikko ole jo määriteltynä ja ajaxilla haetaan mahdollisia käyttäjiä, joille tapahtuma voitaisiin jakaa.</p>
+                <p>Kalenterin luomiseksi käytimme React JS ympäristöä. Kalenteri tarkistaa joka 30s onko uusia tapahtumia määriteltynä. Voi selailla eri kuukauksien tapahtumia navigointipainikkeiden avulla.</p>
+                <h4>Tietojen tarkistaminen</h4>
+                
+            </div>
+        
+            <h2>Lähdekoodi ja asennus</h2>
+            <h3>Asennus</h3>
+            <ul>
+                <li>Vaihda tietokanta/import.sql tiedostossa "testdatabase" haluamaksesi tietokannan nimeksi</li>
+                <li>Suorita tietokantapalvelimelle tietokanta/import.sql</li>
+                <li>Määritä config/config.txt tiedostoon oikeat palvelimen tiedot</li>
+            </ul>
+            <h2>Ajankäyttö</h2>
+            <h2>Itsearvionti</h2>
+    </body>
+</html>
