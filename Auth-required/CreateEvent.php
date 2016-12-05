@@ -213,7 +213,7 @@ require("isValidUser.php");
                 <!--<button id="submit" onclick="HandleSubmit(this)">Tallenna tapahtuma</button>-->
             </form>
         <?php
-        if(isset($_POST)){
+        if(isset($_POST["otsikko"])){
                 echo "<hr>";
                 echo "<h2>Palvelimen vastaus:</h2>";
                 echo $message;

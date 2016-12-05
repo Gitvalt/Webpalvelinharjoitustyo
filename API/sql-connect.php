@@ -2,39 +2,13 @@
 session_start();
 function Connect(){
     try {
-        /*
-        $file = fopen("./config/configuration.txt", "r");
-        //print_r($file);
-        $read = fread($file, filesize("./config/configuration.txt"));
-        $variables = explode("\r", $read);
         
-        $list = array();
-        
-        foreach($variables as $var){
-            $parts = explode(":", $var);
-            array_push($list, $parts[1]);
-        }
-        */
         
         $host = "localhost";
         $database = "testdatabase";
         $user = "root";
         $password = "";
-        
-        
-        /*
-        $host = $list[0];
-        $database = $list[1];
-        $user = $list[2];
-        $password = $list[3];
-        
-        echo "<hr>";
-        echo "\"" . $host . "\"" . "<br>";
-        echo "\"" . $database . "\"" . "<br>";
-        echo "\"" . $user . "\"" . "<br>";
-        echo "\"" . $password . "\"" . "<br>";
-        echo "<hr>";
-        */
+    
         $conn = new PDO("mysql:host=$host;dbname=$database", $user, $password);
         $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         $conn->exec("SET CHARACTER SET utf8");
@@ -412,7 +386,7 @@ function GetSharedEvents($user){
     try {
 
         $conn = Connect();    
-        $statement = $conn->prepare("Select id, header, description, startDateTime, endDateTime, location, owner from event INNER JOIN sharedevent on event.id=sharedevent.eventID WHERE username=?;");
+        $statement = $conn->prepare("Select id, header, description, startDateTime, endDateTime, location, owner from event INNER JOIN sharedevent on event.id = sharedevent.eventID WHERE username=?;");
                 
         $statement->bindValue(1, $user, PDO::PARAM_STR);
         $statement->execute();
@@ -473,7 +447,6 @@ function GetUserEvents($user){
      try {
         $conn = Connect();
         $user = htmlspecialchars($user);
-         
         $statement = $conn->prepare("SELECT * FROM event where owner=? ORDER BY startDateTime ASC;");
         
         $statement->bindValue(1, $user, PDO::PARAM_STR);
@@ -481,6 +454,7 @@ function GetUserEvents($user){
         
         $tulos = $statement->fetchAll(PDO::FETCH_ASSOC);
         
+         /*
         //Start handling shared events
         $shared = GetSharedEvents($user); 
         //return $shared;
@@ -492,7 +466,7 @@ function GetUserEvents($user){
         }
        //End handling shared events
         sort($tulos);
-         
+         */
         return $tulos;
 
     } catch(PDOException $e){
@@ -525,26 +499,87 @@ function GetUserEvent($user, $id){
     }
 }
 
-    
- //Get events from certain timeframe
-function GetEventsDefTime($user, $start_inp, $end_inp){
-     try {
+function GetSpecificSharedEvent($header, $user){
+    try {
         $conn = Connect();
         $user = htmlspecialchars($user);
-        $start = htmlspecialchars($start_inp);
-        $end = htmlspecialchars($end_inp);
+        $header = htmlspecialchars($header);
          
-         
-        $statement = $conn->prepare("SELECT * FROM event WHERE event.startDateTime >= ? AND event.startDateTime <=  ? AND owner = ? ORDER BY event.startDateTime ASC;");
+        $statement = $conn->prepare("SELECT * FROM event INNER JOIN sharedevent ON event.id = sharedevent.eventID where sharedevent.username=? and event.header=?;");
         
-        $statement->bindValue(1, $start, PDO::PARAM_STR);
-        $statement->bindValue(2, $end, PDO::PARAM_STR);
-        $statement->bindValue(3, $user, PDO::PARAM_STR);
+        $statement->bindValue(1, $user, PDO::PARAM_STR);
+        $statement->bindValue(2, $header, PDO::PARAM_INT);
         $statement->execute();
         
         $tulos = $statement->fetchAll(PDO::FETCH_ASSOC);;
         
         return $tulos;
+
+    } catch(PDOException $e){
+        //echo "error:" . $e->getMessage();
+         return false;
+    }
+}
+ 
+ //Get events from certain timeframe
+function GetEventsDefTime($user, $start_inp, $end_inp, $param){
+     try {
+        $conn = Connect();
+        $user = htmlspecialchars($user);
+        $start = htmlspecialchars($start_inp);
+        $end = htmlspecialchars($end_inp);
+        
+         switch($param){
+             case "all":
+                  $statement = $conn->prepare("SELECT * FROM event WHERE event.startDateTime >= ? AND event.endDateTime <=  ? AND owner = ? ORDER BY event.startDateTime ASC;");
+                 
+                    $statement->bindValue(1, $start, PDO::PARAM_STR);
+                    $statement->bindValue(2, $end, PDO::PARAM_STR);
+                    $statement->bindValue(3, $user, PDO::PARAM_STR);
+                 
+                  $statement->execute();
+                  $tulos_1 = $statement->fetchAll(PDO::FETCH_ASSOC);
+                 
+                  $statement = $conn->prepare("SELECT * FROM event INNER JOIN sharedevent ON event.id = sharedevent.eventID WHERE event.startDateTime >= ? AND event.endDateTime <=  ? AND sharedevent.username = ? ORDER BY event.startDateTime ASC");
+                    $statement->bindValue(1, $start, PDO::PARAM_STR);
+                    $statement->bindValue(2, $end, PDO::PARAM_STR);
+                    $statement->bindValue(3, $user, PDO::PARAM_STR);
+                  $statement->execute();
+                  $tulos_2 = $statement->fetchAll(PDO::FETCH_ASSOC);
+                 
+                  if(empty($tulos_1)){
+                      return $tulos_1;
+                  } else {
+                      foreach($tulos_1 as $result){
+                          array_push($tulos_2, $result);
+                      }
+                      
+                      return $tulos_2;
+                  }
+                 
+                 break;
+             case "shared":
+                 $statement = $conn->prepare("SELECT * FROM event INNER JOIN sharedevent ON event.id = sharedevent.eventID WHERE event.startDateTime >= ? AND event.endDateTime <=  ? AND sharedevent.username = ? ORDER BY event.startDateTime ASC");
+                    $statement->bindValue(1, $start, PDO::PARAM_STR);
+                    $statement->bindValue(2, $end, PDO::PARAM_STR);
+                    $statement->bindValue(3, $user, PDO::PARAM_STR);
+                 $statement->execute();
+                 $tulos_2 = $statement->fetchAll(PDO::FETCH_ASSOC);
+                 return $tulos_2;
+                 break;
+             case "own":
+                 $statement = $conn->prepare("SELECT * FROM event WHERE event.startDateTime >= ? AND event.endDateTime <=  ? AND owner = ? ORDER BY event.startDateTime ASC;");
+                    $statement->bindValue(1, $start, PDO::PARAM_STR);
+                    $statement->bindValue(2, $end, PDO::PARAM_STR);
+                    $statement->bindValue(3, $user, PDO::PARAM_STR);
+                  $statement->execute();
+                  $tulos_1 = $statement->fetchAll(PDO::FETCH_ASSOC);
+                 return $tulos_1;
+                 break;
+             default:
+                 return false;
+                 break;
+         }
 
     } catch(PDOException $e){
         echo "error:" . $e->getMessage();

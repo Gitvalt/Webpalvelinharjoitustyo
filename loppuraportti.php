@@ -1,9 +1,24 @@
-<!DOCTYPE html5>
+<!DOCTYPE php>
 <html lang="fi">
     <head>
         <title>Etusivu</title>
         <meta charset="utf-8">
         <link href="style/default.css" rel="stylesheet" type="text/css">
+        
+        <style>
+        html {
+            background: #f7faff;
+        }
+        body {
+            background: white;
+            padding: 20px;
+        }
+            div {
+                border: 1px solid black;
+                padding: 10px;
+            }
+        </style>
+        
     </head>
     <body>
         <h1>Kalenterisovellus harjoitustyödokumentaatio</h1>
@@ -11,6 +26,7 @@
                 Linkki toimivaan toteutukseen:<br>
                 Zip-paketin voit ladata tästä.
             </div>
+            
             <div>
                 <h2>Yleistietoja projektista</h2>
                     <h3>Palautus ja kuvaus</h3>
@@ -62,17 +78,33 @@
                 <p>Tapahtumia luodessa tai muokatessa javascriptillä haetaan googlen map apia käyttäen kartta, joka näyttää käyttäjän määrittämän sijainnin. Lisäksi ajaxilla varmistetaan ettei tapahtuman otsikko ole jo määriteltynä ja ajaxilla haetaan mahdollisia käyttäjiä, joille tapahtuma voitaisiin jakaa.</p>
                 <p>Kalenterin luomiseksi käytimme React JS ympäristöä. Kalenteri tarkistaa joka 30s onko uusia tapahtumia määriteltynä. Voi selailla eri kuukauksien tapahtumia navigointipainikkeiden avulla.</p>
                 <h4>Tietojen tarkistaminen</h4>
+                <p>Javascriptillä tarkistetaan tapahtumia ja käyttäjiä luodessa ja muokatessa tietojen validointi. Kun kaikki lomakkeen tiedot ovat hyväksyttäviä niin suoritetaan php-submit. PHP-suorittaa toisen tarkistuksen lomakkeen tiedoille, jonka jälkeen tietojen luominen tai muokkaaminen tapahtuu.</p>
                 
             </div>
-        
-            <h2>Lähdekoodi ja asennus</h2>
-            <h3>Asennus</h3>
-            <ul>
-                <li>Vaihda tietokanta/import.sql tiedostossa "testdatabase" haluamaksesi tietokannan nimeksi</li>
-                <li>Suorita tietokantapalvelimelle tietokanta/import.sql</li>
-                <li>Määritä config/config.txt tiedostoon oikeat palvelimen tiedot</li>
-            </ul>
-            <h2>Ajankäyttö</h2>
+            <div>
+                <h2>Lähdekoodi ja asennus</h2>
+                
+                <h3>Projektin lataus</h3>
+                    
+                <h3>Asennus</h3>
+                <ul>
+                    <li>Vaihda tietokanta/import.sql tiedostossa "testdatabase" haluamaksesi tietokannan nimeksi</li>
+                    <li>Suorita tietokantapalvelimelle tietokanta/import.sql</li>
+                    <li>Määritä API/sql-connect.php tiedostoon funktioon Connect oikeat arvot, joilla haluamasi palvelimelle otetaan yhteyttä.</li>
+                </ul>
+                <h3>Toimivan työn katselmointi</h3>
+                <a href="http://student.labranet.jamk.fi/~K1967/web-palvelinohjelmointi/harjoitustyo/">Linkki verkkosivulle</a>
+            </div>
+            
+            <div>
+            <h2>Ajankäyttö</h2>   
+                <h3>Valtteri Seuranen</h3>
+                <ul>
+                    <li>REST-rajapinta 60%</li>
+                    <li>React JS Kalenteri 30%</li>
+                    <li>Tapahtumien generointi 10%</li>
+                </ul>
+            </div>
             <h2>Itsearvionti</h2>
     </body>
 </html>

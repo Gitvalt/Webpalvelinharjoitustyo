@@ -14,8 +14,7 @@ with whom i am whit
 https://developers.google.com/maps/documentation/javascript/examples/places-searchbox
 */
 
-
-
+$message = "";
 
 ?>
 <html lang="fi">
@@ -38,7 +37,10 @@ https://developers.google.com/maps/documentation/javascript/examples/places-sear
         
         <?php include("navbar.php"); ?>
         
-        <?php 
+        <?php
+        
+        $shared = false;
+        
         if(isset($_GET["header"]) or isset($_POST["otsikko"])){
         
             $header = @$_GET["header"];
@@ -48,13 +50,44 @@ https://developers.google.com/maps/documentation/javascript/examples/places-sear
             }
             
             
-            $response = GetSpecificEventDataHeader($header, $_COOKIE["user"]);
-           
-            //print_r($header);
-            if(empty($response)){
-                $message .= "Error: Emme löytäneet tapahtumaa $header tietokannasta!";
+            $response = GetEventData($_GET["id"]);
+            
+            $validator = GetSharedEvents($_COOKIE["user"]);
+            $foo = false;
+            
+            echo "<pre>";
+            
+            //print_r($response);
+            //print_r($validator);
+            
+            echo "</pre>";
+            
+            if(empty($validator) and $_COOKIE["user"] != $response["owner"]){
+                
+                if($_COOKIE["user"] != $response["owner"]){
+                    die("Error: Sinulla ei ole oikeuksia katselle tapahtumaa nimellä: $header");
+                }
+                
             } else {
-					
+                
+                foreach($validator as $line){
+               
+                    if($line["id"] == $response["id"]){
+                        
+                        $foo = true;
+                    }
+                
+                }
+                
+                if($foo == false and $response["owner"] != $_COOKIE["user"]){
+                    die("Error: Sinulla ei ole oikeuksia katselle tapahtumaa nimellä: $header");
+                }
+                
+            }
+            
+            //echo $foo;
+            //print_r($header);
+		
 				//value="<?php echo $response["header"];\?\>"
 				$startDateTime = explode(" ", $response["startDateTime"]);
 				$endDateTime = explode(" ", $response["endDateTime"]);
@@ -164,7 +197,6 @@ https://developers.google.com/maps/documentation/javascript/examples/places-sear
 				
 				  }//end of if isset post otsikko
                 
-            } // response is empty end
             
             
             if(!empty($_POST["otsikko"])){
@@ -250,21 +282,31 @@ https://developers.google.com/maps/documentation/javascript/examples/places-sear
             <!--<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>-->
 
             <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>"  method="post" id="form">
-                <h1>Tapahtuman muokkaaminen</h1>
-
+                <?php 
+                if($foo == true){ 
+                    echo "<h1>Tapahtuma: $header</h1>"; 
+                } else {
+                    echo "<h1>Tapahtuman muokkaaminen</h1>";
+                }
+                ?>
+                
+                <input type="hidden" name="shareTester" id="share" value="<?php echo $shared;?>">
+                
+                
+                
                 Otsikko:
-                <input type="hidden" name="original" id="original" value="<?php echo $response["header"];?>">
-                <input type="text" id="otsikko" name="otsikko" onkeyup="doesHeaderExist()" value="<?php echo $response["header"];?>">
+                <input type="hidden" name="original" id="original" <?php if($foo == true){ echo "readonly"; }?> value="<?php echo $response["header"];?>">
+                <input type="text" id="otsikko" name="otsikko" <?php if($foo == true){ echo "readonly"; }?> onkeyup="doesHeaderExist()" value="<?php echo $response["header"];?>">
                 <p id="error_otsikko"></p>
                 <br>
 
                 <label for="kuvaus">Kuvaus:</label>
-                <textarea cols="50" rows="10" id="kuvaus" name="kuvaus"><?php echo $response["description"];?></textarea>
+                <textarea cols="50" rows="10" id="kuvaus" name="kuvaus" <?php if($foo == true){ echo "readonly"; }?>><?php echo $response["description"];?></textarea>
                 <br>
 
                 <div id="sijainti_style">
                     Sijainti:
-                    <input type="text" id="sijainti" name="sijainti" onkeyup="GoogleApiAutocomplete(this, event)" value="<?php echo $response["location"];?>">
+                    <input type="text" id="sijainti" name="sijainti" <?php if($foo == true){ echo "readonly"; }?> onkeyup="GoogleApiAutocomplete(this, event)" <?php if($shared == true){ echo "readonly"; } ?> value="<?php echo $response["location"];?>">
                     <div id="map"></div>
                 </div>
                 <br>
@@ -272,16 +314,16 @@ https://developers.google.com/maps/documentation/javascript/examples/places-sear
                 <div id="time">
                     <div id="alkaa">
                         <label for="alkaa">Tapahtuma alkaa</label>
-                        <input type="date" id="alkamispaiva" name="alkudate" onchange="validateDatetime()" value="<?php echo $startDateTime[0];?>"><br>
-                        <input type="time" id="alkamisaika" name="alkutime" onchange="validateDatetime()" value="<?php echo $startDateTime[1];?>">
-                        <label for="isallday">Kokopäivän</label><input type="checkbox" name="isallday" >
+                        <input type="date" id="alkamispaiva" name="alkudate" <?php if($foo == true){ echo "readonly"; }?> onchange="validateDatetime()" value="<?php echo $startDateTime[0];?>"><br>
+                        <input type="time" id="alkamisaika" name="alkutime" <?php if($foo == true){ echo "readonly"; }?> onchange="validateDatetime()" value="<?php echo $startDateTime[1];?>">
+                        <label for="isallday">Kokopäivän</label><input type="checkbox" name="isallday" <?php if($foo == true){ echo "readonly"; }?> >
                     </div>
 
 
                     <div id="loppuu">
                         <label for="loppuu">Tapahtuma päättyy:</label>
-                        <input type="date"  id="paattymispaiva" name="loppudate" onchange="validateDatetime()" value="<?php echo $endDateTime[0];?>"><br>
-                        <input type="time"  id="paattymisaika" name="lopputime" onchange="validateDatetime()" value="<?php echo $endDateTime[1];?>">
+                        <input type="date"  id="paattymispaiva" name="loppudate" <?php if($foo == true){ echo "readonly"; }?> onchange="validateDatetime()" value="<?php echo $endDateTime[0];?>"><br>
+                        <input type="time"  id="paattymisaika" name="lopputime" <?php if($foo == true){ echo "readonly"; }?> onchange="validateDatetime()" value="<?php echo $endDateTime[1];?>">
                     </div>
                     <br>
                 </div>
@@ -293,7 +335,7 @@ https://developers.google.com/maps/documentation/javascript/examples/places-sear
 
                 Tapahtuman osallistujat:
                 <div id="osallistujat">
-                    <input type="text" id="osallistujafield"  onkeyup="GetUsers(this, event)">
+                    <input type="text" id="osallistujafield" <?php if($foo == true){ echo "readonly"; }?> onkeyup="GetUsers(this, event)">
                     <div id="users"></div>
                     <br>
                 </div>
@@ -314,13 +356,19 @@ https://developers.google.com/maps/documentation/javascript/examples/places-sear
 
                 </script>
 
+                <?php 
+                if($foo != true){ 
+                ?>
+                
                 <input type="button" name="button_submit" onclick="HandleSubmit(this);" value="Tallenna muutokset">
                 <!--<button id="submit" onclick="HandleSubmit(this)">Tallenna tapahtuma</button>-->
 
                 <div id="remove">
                     <input type="button" name="remove_button" onclick="HandleRemove(this);" value="Poista tapahtuma">
                 </div>
-        
+                <?php
+                }
+                ?>
         </form>
             <?php
             }
@@ -329,10 +377,10 @@ https://developers.google.com/maps/documentation/javascript/examples/places-sear
                 echo "Tapahtumaa ei ole määriteltynä";
             }
             
-            if(isset($_POST["button_submit"])){
+            if($message != null){
                 echo "<hr>";
                 echo "<h2>Palvelimen vastaus:</h2>";
-                echo $message;
+                echo @$message;
             }    
         ?>
         

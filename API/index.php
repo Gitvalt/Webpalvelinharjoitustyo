@@ -643,13 +643,34 @@ if(empty($_GET["type"])){
         case "eventSpef":
             
             if($_SERVER['REQUEST_METHOD'] == "GET"){
-                //index.php?type=eventSpef&user=$1&start=$2&end=$3apikey=$4
+                //index.php?type=eventSpef&user=$1&start=$2&end=$3search_type=$3&apikey=$4
                 $start = $_GET["start"];
                 $end = $_GET["end"];
                 $user = $_GET["user"];
-
-                $events = GetEventsDefTime($user, $start, $end);
+                $type = @$_GET["search_type"];
                 
+                
+                switch($type){
+                    case "all":
+                        $events = GetEventsDefTime($user, $start, $end, "all");
+                        break;
+                    case "shared":
+                        $events = GetEventsDefTime($user, $start, $end, "shared");
+                        break;
+                    case "own":
+                        $events = GetEventsDefTime($user, $start, $end, "own");
+                        break;
+                    default:
+                        if($type == null){
+                            $events = GetEventsDefTime($user, $start, $end, "all");    
+                        } else {
+                            Response("400", "Invalid search_type", false);
+                        }
+                        
+                        break;
+                }
+                
+  
                 if($events === false or empty($events)){
                     Response("404", "No events found", false);
                 } else {

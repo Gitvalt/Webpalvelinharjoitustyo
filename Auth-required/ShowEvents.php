@@ -26,45 +26,68 @@ require("isValidUser.php");
                     echo "<td>" . "Tapahtuma alkaa" . "</td>";
                     echo "<td>" . "Tapahtuma päättyy" . "</td>";
                     echo "<td>" . "Tapahtuman sijainti" . "</td>";
-                echo "</tr>";
+                    echo "<td>" . "Omistaja" . "</td>";
+            
+        
+        echo "</tr>";
+        echo "<pre>";
+        //print_r($events);
+        echo "</pre>";
         if(!empty($events)){
         foreach($events as $eventtype){
             //0 made by user
             //1 shared to user
             
+                $style = 'class="sharedevent"';
+                $style_2 = 'class="sharedevent2"';
+            
                 $index = 0;
                 foreach($eventtype as $event){
                     if($index == 0){
-                        $now = date("Y-m-d");
+                            $now = date("Y-m-d");
                         
-                    echo "<tr>";
-                        echo "<td>" . "<a href=\"EditEvent.php?header=" . $event["header"] . "\">" . $event["header"] . "</a></td>";
-                        echo "<td>" . $event["description"] . "</td>";
-                        echo "<td>" . $event["startDateTime"] . "</td>";
-                        
-                        if($event["endDateTime"] < $now){
-                            echo "<td style='background: red;'>" . $event["endDateTime"] . "</td>";
+                        if($event["owner"] == $_COOKIE["user"]){
+                            echo "<tr " . $style . " >";    
                         } else {
-                            echo "<td>" . $event["endDateTime"] . "</td>";
+                             echo "<tr " . $style_2 . " >";    
                         }
-                        echo "<td>" . $event["location"] . "</td>";
-                    echo "</tr>";
+                            echo "<td>" . "<a href=\"EditEvent.php?header=" . $event["header"] . "&id=" , $event["id"] .  "\">" . $event["header"] . "</a></td>";
+                            echo "<td>" . $event["description"] . "</td>";
+                            echo "<td>" . $event["startDateTime"] . "</td>";
+
+                            if($event["endDateTime"] < $now){
+                                echo "<td style='background: red;'>" . $event["endDateTime"] . "</td>";
+                            } else {
+                                echo "<td>" . $event["endDateTime"] . "</td>";
+                            }
+                            echo "<td>" . $event["location"] . "</td>";
+                            echo "<td>" . $event["owner"] . "</td>";
                         
-                        $index++;
+                        echo "</tr>";
+
+                            $index++;
                     } else {
-                    echo "<tr style='background: lightgray;'>";
-                        echo "<td>" . "<a href=\"EditEvent.php?header=" . $event["header"] . "\">" . $event["header"] . "</a></td>";
-                        echo "<td>" . $event["description"] . "</td>";
-                        echo "<td>" . $event["startDateTime"] . "</td>";
-                        if($event["endDateTime"] < $now){
-                            echo "<td style='background: red;'>" . $event["endDateTime"] . "</td>";
-                        } else {
-                            echo "<td>" . $event["endDateTime"] . "</td>";
-                        }
-                        echo "<td>" . $event["location"] . "</td>";
-                    echo "</tr>";
                         
-                        $index = 0;
+                        if($event["owner"] == $_COOKIE["user"]){
+                            echo "<tr " . $style . " >";    
+                        } else {
+                             echo "<tr " . $style_2 . " >";    
+                        }
+                    
+                            echo "<td>" . "<a href=\"EditEvent.php?header=" . $event["header"] . "\">" . $event["header"] . "</a></td>";
+                            echo "<td>" . $event["description"] . "</td>";
+                            echo "<td>" . $event["startDateTime"] . "</td>";
+                            if($event["endDateTime"] < $now){
+                                echo "<td style='background: red;'>" . $event["endDateTime"] . "</td>";
+                            } else {
+                                echo "<td>" . $event["endDateTime"] . "</td>";
+                            }
+                            echo "<td>" . $event["location"] . "</td>";
+                            echo "<td>" . $event["owner"] . "</td>";
+                        
+                        echo "</tr>";
+
+                            $index = 0;
                     }
                 }
             } 

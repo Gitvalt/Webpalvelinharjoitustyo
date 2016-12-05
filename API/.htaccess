@@ -42,7 +42,7 @@ RewriteRule    ^users/search/([0-9a-zA-Z]+)*$    index.php?type=search_user&para
 RewriteRule    ^users/([0-9a-zA-Z]+)/events/search/([0-9a-zA-Z]+)/apikey=([0-9a-zA-Z]+)*$    index.php?type=search_event&user=$1&header=$2&apikey=$3 [NC,L]
 
 #find specific start and end
-RewriteRule    ^users/([0-9a-zA-Z]+)/events/search/([0-9a-zA-Z]+)&([0-9a-zA-Z]+)/apikey=([0-9a-zA-Z]+)*$    index.php?type=eventSpef&user=$1&start=$2&end=$3apikey=$4 [NC,L]
+RewriteRule    ^users/([0-9a-zA-Z]+)/events/search/([0-9a-zA-Z]+)&([0-9a-zA-Z]+)&([0-9a-zA-Z]+)/apikey=([0-9a-zA-Z]+)*$    index.php?type=eventSpef&user=$1&start=$2&end=$3&search_type=$4&apikey=$5 [NC,L]
 
 
 #find event id
