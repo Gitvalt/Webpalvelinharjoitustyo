@@ -95,7 +95,7 @@ function EventsEnding(){
         
                     //Elements that end today
                     for(var t = 0; t < paattyytanaan.length; t++){
-                            li.textContent = "Tapahtuma " + paattyytanaan[t] + " päättyy";
+                            li.textContent = "Tapahtuma " + paattyytanaan[t] + " päättyy " + data.data[q].endDateTime;
                             ul.appendChild(li);
                             li = document.createElement("li");
                     }
@@ -116,7 +116,7 @@ function EventsEnding(){
     
                     //Elements that end during next week
                     for(var q = 0; q < paattyyviikko.length; q++){
-                        li.textContent = "Tapahtuma " + paattyytanaan[q] + " päättyy " + data.data[q].endDateTime;
+                        li.textContent = "Tapahtuma " + paattyyviikko[q] + " päättyy " + data.data[q].endDateTime;
                         ul.appendChild(li);
                     }
         

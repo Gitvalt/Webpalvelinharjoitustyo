@@ -190,9 +190,9 @@ require("isValidUser.php");
                 <br>
 
 
-                Tapahtuman osallistujat:
+                <label for="osallistujafield">Tapahtuman osallistujat:</label>
                 <div id="osallistujat">
-                    <input type="text" id="osallistujafield"  onkeyup="GetUsers(this, event)">
+                    <input type="text" name="osallitujafield" id="osallistujafield"  onkeyup="GetUsers(this, event)">
                     <div id="users"></div>
                     <br>
                 </div>

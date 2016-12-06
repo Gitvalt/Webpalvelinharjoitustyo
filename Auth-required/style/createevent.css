@@ -57,6 +57,7 @@
     float: left;
     clear: both;
     margin-bottom: 10px;
+    width: 100%;
 }
 
 #osallistujat, #valituthenkilot {
@@ -69,6 +70,10 @@
     padding: 0px;
     margin: 0px;
     
+}
+
+#osallistujat {
+    margin-top: 200px;
 }
 
 #osallistujat ul{

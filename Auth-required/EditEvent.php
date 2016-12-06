@@ -221,7 +221,7 @@ $message = "";
                     <div id="map"></div>
                 </div>
                 <br>
-
+                
                 <div id="time">
                     <div id="alkaa">
                         <label for="alkaa">Tapahtuma alkaa</label>

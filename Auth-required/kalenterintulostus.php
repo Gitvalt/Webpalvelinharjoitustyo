@@ -327,7 +327,10 @@ require("isValidUser.php");
                             //console.log(bar[i3].startDateTime);
                             
                             var day = bar[i3].startDateTime;
+                            var endDay = bar[i3].endDateTime;
+                            
                             var splittime = day.split(" ");
+                            var splittime2 = endDay.split(" ");
                             
                             //console.log("splittime:");
                             //console.log(splittime[0]);
@@ -343,11 +346,12 @@ require("isValidUser.php");
                                 dayvalue = foo[i2][2];
                             }
                             
+                            //luodaan käsiteltävä päivämäärä
                             var combined = variable.concat(foo[i2][0], "-", (foo[i2][1]+1), "-", dayvalue);
                             
                             //console.log(combined);
                             
-                            
+                            //jos tapahtuma on tälle päivälle
                             if(combined == splittime[0]){
                             
                                 console.log("ping");
@@ -356,6 +360,9 @@ require("isValidUser.php");
                             
                             } else {
                                
+                                if(combined == splittime2[0]){
+                                
+                                }
                                 
                                 if(foundEventsForDay.length == 0){
                                     foundEventsForDay.push("");

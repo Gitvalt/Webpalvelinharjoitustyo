@@ -241,9 +241,6 @@
                 }
     }
 
-
-
-
     function GetUsers(parent, event){
 
         try{
@@ -345,8 +342,6 @@
             }
     }
 
-
-
     function validateDatetime(){
 
         var x = document.getElementById("alkamisaika");
@@ -406,7 +401,7 @@
       mapTypeId: 'roadmap'
     });
 
-
+    refreshmap();
 
     }
 

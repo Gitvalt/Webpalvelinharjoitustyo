@@ -43,11 +43,18 @@ function ReadLog($type, $user){
      
     try {
         $conn = Connect();
-        $statement = $conn->prepare("Select * From log WHERE targetUser = ? AND type = ? ORDER BY log_timestamp ASC;");
-                
-        $statement->bindValue(1, $user, PDO::PARAM_STR);
-        $statement->bindValue(2, $type, PDO::PARAM_STR);
+        
+        if($type == "*"){
+            $statement = $conn->prepare("Select * From log WHERE targetUser = ? ORDER BY log_timestamp ASC;");    
+            $statement->bindValue(1, $user, PDO::PARAM_STR);                
+            
+        } else {
+            $statement = $conn->prepare("Select * From log WHERE targetUser = ? AND type = ? ORDER BY log_timestamp ASC;");
+            $statement->bindValue(1, $user, PDO::PARAM_STR);                
+            $statement->bindValue(2, $type, PDO::PARAM_STR);
 
+        }
+        
         $statement->execute();
         $tulos = $statement->fetchAll(PDO::FETCH_ASSOC);
         
