@@ -295,7 +295,7 @@ require("isValidUser.php");
               method: "GET",
               dataType: "json",
               success: function(data) {
-                 console.log(data.data);
+                 //console.log(data.data);
                  this.setState({dates: data.data});
                  
                  
@@ -355,13 +355,20 @@ require("isValidUser.php");
                             if(combined == splittime[0]){
                             
                                 console.log("ping");
-                                
-                                foundEventsForDay.push(bar[i3]);
+                                //console.log(bar[i3]);
+                                var test = bar[i3];
+                                //is event starting or ending
+                                test.start = true;
+                                foundEventsForDay.push(test);
                             
                             } else {
                                
                                 if(combined == splittime2[0]){
-                                
+                                    console.log("End ping");
+                                    var test = bar[i3];
+                                    test.start = false;
+                                    foundEventsForDay.push(test);
+                                    
                                 }
                                 
                                 if(foundEventsForDay.length == 0){
@@ -385,7 +392,14 @@ require("isValidUser.php");
             });
            
             request.fail(function( jqXHR, textStatus ) {
-              alert( "Request failed: " + textStatus );
+              if(jqXHR.status == 404){
+                console.log("No events found!");
+              } else {
+              
+                 alert( "Request failed: " + textStatus );
+                 console.log(jqXHR);
+              }
+              
             });
         
            var index = 0;
@@ -555,15 +569,37 @@ require("isValidUser.php");
                                         var events_length = key[x][3].length;
                                         
                                         var test = document.createElement("br");
-                                        
+                                        //jos tapahtumia on enemmän kuin 1 ([0] on aina tyhjä, jos [1] on määriteltynä, niin on olemassa tapahtumia)
                                         if(events_length > 1){
                                                 var t = [];
                                                 //console.log(events_length);
+                                                
                                                 //ei oteta ensimmäistä tyhjää mukaan
+                                                
                                                 //console.log(key[x][3]);
                                                 //console.log(key[x][3][y].header);
-                                                t.push(key[x][3][y].header);
+                                                var otsikko = "";
+                                                
+                                                
+                                                switch(key[x][3][y].start){
+                                                    case true:
+                                                        otsikko = key[x][3][y].header + " alkaa";
+                                                    break;
+                                                    
+                                                    case false:
+                                                        otsikko = key[x][3][y].header + " päättyy";
+                                                    break;
+                                                    
+                                                    default:
+                                                        otsikko = "";
+                                                    break;
+                                                }
+                                                
+                                                //console.log(otsikko);
+                                                
+                                                t.push(otsikko);
                                                 t.push(key[x][3][y].id);
+                                                
                                                 //console.log(param);
                                                 param.push(t);
                                                 
@@ -587,7 +623,7 @@ require("isValidUser.php");
                          
                         
                         //console.log("events::"); 
-                        console.log(events); 
+                        //console.log(events); 
                          
                          
                          
@@ -606,7 +642,8 @@ require("isValidUser.php");
                         
                         if(events.length != 0){
                            monday = events[0].map(function(key, value){
-                                var link = "EditEvent.php?header=" + key[0] + "&id=" + key[1];
+                                
+                                var link = "EditEvent.php?id=" + key[1];
                                 return(
                                 <div>
                                     <a href={link}>{key[0]}</a>
@@ -616,7 +653,7 @@ require("isValidUser.php");
                             }.bind(this));
                             
                             tuesday = events[1].map(function(key, value){
-                                var link = "EditEvent.php?header=" + key[0] + "&id=" + key[1];
+                                var link = "EditEvent.php?id=" + key[1];
                                 //console.log(key);
                                 return(
                                 <div>
@@ -627,7 +664,7 @@ require("isValidUser.php");
                             }.bind(this));
                             
                             wendsday = events[2].map(function(key, value){
-                                var link = "EditEvent.php?header=" + key[0] + "&id=" + key[1];
+                                var link = "EditEvent.php?id=" + key[1];
                                 return(
                                 <div>
                                     <a href={link}>{key[0]}</a>
@@ -637,7 +674,7 @@ require("isValidUser.php");
                             }.bind(this));
                             
                             thursday = events[3].map(function(key, value){
-                                var link = "EditEvent.php?header=" + key[0] + "&id=" + key[1];
+                                var link = "EditEvent.php?id=" + key[1];
                                 return(
                                 <div>
                                     <a href={link}>{key[0]}</a>
@@ -647,7 +684,7 @@ require("isValidUser.php");
                             }.bind(this));
                             
                             friday = events[4].map(function(key, value){
-                                var link = "EditEvent.php?header=" + key[0] + "&id=" + key[1];
+                                var link = "EditEvent.php?id=" + key[1];
                                 return(
                                 <div>
                                     <a href={link}>{key[0]}</a>
@@ -657,7 +694,7 @@ require("isValidUser.php");
                             }.bind(this));
                             
                             saturday = events[5].map(function(key, value){
-                                var link = "EditEvent.php?header=" + key[0] + "&id=" + key[1];
+                                var link = "EditEvent.php?id=" + key[1];
                                 return(
                                 <div>
                                     <a href={link}>{key[0]}</a>
@@ -667,7 +704,7 @@ require("isValidUser.php");
                             }.bind(this));
                             
                             sunday = events[6].map(function(key, value){
-                                var link = "EditEvent.php?header=" + key[0] + "&id=" + key[1];
+                                var link = "EditEvent.php?id=" + key[1];
                                 return(
                                 <div>
                                     <a href={link}>{key[0]}</a>

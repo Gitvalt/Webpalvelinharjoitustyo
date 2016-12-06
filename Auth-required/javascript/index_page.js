@@ -59,7 +59,7 @@ function EventsEnding(){
     console.log(enddate);
     
     $.ajax({
-            url: '../API/index.php?type=eventSpef&user=' + CookieList[0] + '&start=' + datenow + '&end=' + enddate + '&apikey=' + CookieList[1], method: "GET"
+            url: '../API/index.php?type=eventSpef&search_type=all&user=' + CookieList[0] + '&start=' + datenow + '&end=' + enddate + '&apikey=' + CookieList[1], method: "GET"
                  }).fail(function (data) {
                         console.log("fail!");
                         console.log(data.responseText);

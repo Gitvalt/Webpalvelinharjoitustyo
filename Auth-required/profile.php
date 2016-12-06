@@ -45,10 +45,11 @@ require("isValidUser.php");
         <?php
         
         $log = ReadLog("*", $user);
+        echo "<label for=loki>Käyttäjäloki:</label>";
+        echo '<div id="loki">';
+        echo '<table>';
         
-        echo '<table id="loki">';
-        
-        echo "<tr>";
+        echo '<tr style="border-bottom: 1px solid black">';
         echo "<td>" . "Tapahtuman tyyppi" . "</td>";
         echo "<td>" . "Kuvaus" . "</td>";
         echo "<td>" . "Tapahtuma-aika" . "</td>";

@@ -41,16 +41,21 @@ $message = "";
         
         $shared = false;
         
-        if(isset($_GET["header"]) or isset($_POST["otsikko"])){
+        if(isset($_GET["id"]) or isset($_POST["otsikko"])){
         
-            $header = @$_GET["header"];
+            $response = GetEventData($_GET["id"]);
+            
+            if(empty($response)){
+                die("Tapahtumaa ei löydetty!");
+            } else {
+                $header = $response["header"];    
+            }
             
             if(isset($_POST["otsikko"])){
                 $header = $_POST["original"];
             }
             
             
-            $response = GetEventData($_GET["id"]);
             
             $validator = GetSharedEvents($_COOKIE["user"]);
             $foo = false;

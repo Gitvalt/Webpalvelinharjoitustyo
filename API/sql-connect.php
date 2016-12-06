@@ -584,7 +584,7 @@ function GetEventsDefTime($user, $start_inp, $end_inp, $param){
                  return $tulos_1;
                  break;
              default:
-                 return false;
+                 return "error!";
                  break;
          }
 
@@ -830,9 +830,13 @@ function DoesUserHaveToken($user){
 
 function isValidToken($token){
     try {
+        $user = $_COOKIE["user"];
         $conn = Connect();
-        $statement = $conn->prepare("Select token from useraccess where token = ?;");
+        
+        $statement = $conn->prepare("Select token from useraccess where token = ? and username = ?;");
         $statement->bindValue(1, $token, PDO::PARAM_STR);
+        $statement->bindValue(2, $user, PDO::PARAM_STR);
+        
         $statement->execute();
         $result = $statement->fetch(PDO::FETCH_ASSOC);
         
@@ -852,7 +856,7 @@ function isUserAdmin($username){
     try {
         $conn = Connect();
         $statement = $conn->prepare("Select account-type from useraccess where username = ?;");
-        $statement->bindValue(1, $username, PDO::PARAM_STR);
+        $statement->bindValue(1, htmlspecialchars($username), PDO::PARAM_STR);
         $statement->execute();
         $result = $statement->fetch(PDO::FETCH_ASSOC);
         

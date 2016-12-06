@@ -15,10 +15,10 @@ require("isValidUser.php");
         $events = UserAllEvents($user);
         //echo "<pre>";
         //print_r($events);
-        
+        echo '<label for="tapahtumalista">Päättymispäivä punaisella taustalla = päättynyt tapahtuma, </label>';
         //echo "<h1>Käyttäjä: $user</h1>";
         echo "<h2>Tapahtumat:</h2>";
-        echo "<table>";
+        echo '<table id="tapahtumalista">';
         
          echo "<tr>";
                     echo "<td>" . "Otsikko" . "</td>";

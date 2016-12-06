@@ -17,6 +17,11 @@ if(empty($_GET["type"])){
     Response(400,"Response fail, no data input", null);
 } else {
     
+    
+    
+    
+    
+    
     /*
     
     if(isUserAdmin($_COOKIE["user"]) == false){
@@ -24,17 +29,29 @@ if(empty($_GET["type"])){
     } else {
     
     }
+    */    
     
-    
-    if(empty($_GET["apikey"]) and $_GET["type"] == "login"){
-    
+    if(empty($_GET["apikey"]) == true){
+        
+        
+        switch($_GET["type"]){
+            case "login":
+                break;
+            case "user":
+                break;
+            default:
+                Response(404, "For creating a user, user POST header", null);
+                die();
+                break;
+        }
+        
     }
     
-    Jos käyttäjä on kirjautunut sisään
+    //Jos käyttäjä on kirjautunut sisään
     if(isValidToken($_GET["apikey"]) == false){
         Response(400, "You have to login", null);
-    } else {
-    */    
+        die();
+    }
     
     
     $parameter;
@@ -44,9 +61,14 @@ if(empty($_GET["type"])){
         case "log":
             //ReadLog($type, $user)
             $requestMethod = $_SERVER['REQUEST_METHOD'];
-            $user = $_GET["user"];
-            $type = $_GET["logtype"];
+            $user = htmlspecialchars($_GET["user"]);
+            $type = htmlspecialchars($_GET["logtype"]);
             
+            //hakeeko käyttäjä omia tietojaan?
+            if(isAuthorized($user) != true){
+                die();
+            }
+                
             $readLog = ReadLog($type, $user);
             
             if($readLog == false){
@@ -57,10 +79,15 @@ if(empty($_GET["type"])){
             break;
         case "search_event":
             $requestMethod = $_SERVER['REQUEST_METHOD'];
-            $user = $_GET["user"];
-            $header = $_GET["header"];
+            $user = htmlspecialchars($_GET["user"]);
+            $header = htmlspecialchars($_GET["header"]);
             $found_event = SearchEvent($header, $user);
-                
+            
+             //hakeeko käyttäjä omia tietojaan?
+            if(isAuthorized($user) != true){
+                die();
+            }
+            
             if(empty($found_event)){
                 Response(404, "No event found", null);
             } else {
@@ -68,15 +95,33 @@ if(empty($_GET["type"])){
             }
             
             break;
-            
+        
         case "search_user":
+            //username or email to be found
             $index = $_GET["param"];
+            
             $users = SearchUsers($index);
-
+            $type = @$_GET["search_type"];
+            
+            
+            
             if(count($users) == 0){
                 Response(404, "User not found", null);
             } else {
-                Response(200, "Users found", $users);
+                $list = array();
+                
+                if($type == "list"){
+                    foreach($users as $user){
+                        array_push($list, $user["username"]);
+                    }
+                    
+                    Response(200, "Users found", $list);
+                    
+                } else {
+                    Response(200, "Users found", $users);
+                }
+                
+                
             }
             
             break;
@@ -167,15 +212,12 @@ if(empty($_GET["type"])){
             
             switch($requestMethod){
                 case "GET":
-		    /*
-		     
-		    if($_GET["user"] != $_COOKIE["user"]){
-		    	Response("404", "You can only look for your own data", null);
-			break;
-		    }
-		    
-		    */
-            
+                    
+                    $user = htmlspecialchars($_GET["user"]);
+                    //hakeeko käyttäjä omia tietojaan?
+                    if(isAuthorized($user) != true){
+                        die();
+                    }
                     
                     if(is_int($_GET["index"])){
                         $parameter = GetUserEvent($_GET["user"], $_GET["index"]);    
@@ -199,7 +241,11 @@ if(empty($_GET["type"])){
 			break;
 		    }
 		    */
-			    
+			        $user = htmlspecialchars(@$_GET["user"]);
+                    //hakeeko käyttäjä omia tietojaan?
+                    if(isAuthorized($user) != true){
+                        die();
+                    }
 			    
                     //index = otsikko
                     if(isset($_GET["user"]) and isset($_POST["startdatetime"]) and isset($_POST["enddatetime"])) {
@@ -245,14 +291,13 @@ if(empty($_GET["type"])){
                     break;
                     
                 case "PUT":
-			    
-	  	    /*
-		    if($_GET["user"] != $_COOKIE["user"]){
-		    	Response("404", "You can only change events you have created", null);
-			break;
-		    }
-		    */
-			    
+			 
+			         $user = htmlspecialchars(@$_GET["user"]);
+                    //hakeeko käyttäjä omia tietojaan?
+                    if(isAuthorized($user) != true){
+                        die();
+                    }
+                    
                     $user_data = GetUserData($_GET["user"]);
                     $eventdata = GetUserEvent($_GET["user"], $_GET["index"]);
                 
@@ -332,13 +377,13 @@ if(empty($_GET["type"])){
             
                 case "DELETE":
 			  
-                             /*
-                        if($_GET["user"] != $_COOKIE["user"]){
-                            Response("404", "You can only delete events you have created.", null);
-                        break;
-                        }
-                        */
-			   
+			             
+                        $user = htmlspecialchars(@$_GET["user"]);
+                    //hakeeko käyttäjä omia tietojaan?
+                    if(isAuthorized($user) != true){
+                        die();
+                    }
+                    
                         $result = DeleteEvent($_GET["user"], $_GET["index"]);
 
                         if($result == true){
@@ -358,7 +403,14 @@ if(empty($_GET["type"])){
              
             
         case "events":
-		    //isadmin?
+		    
+            $user = $_COOKIE["user"];
+		    //admin=?
+		    if(isUserAdmin($user) != true){
+                Response(404, "You are not a admin", null);
+                die();
+            }
+            
             if($_SERVER['REQUEST_METHOD'] == "GET"){
                 $parameter = GetEvents();
                 
@@ -373,14 +425,14 @@ if(empty($_GET["type"])){
         
             
         case "userEvents":
-		/*
-	    if($_GET["user"] != $_COOKIE["user"]){
-		Response("404", "You can only look up your own events", null);
-		break;
-	    }
-	    */
-            //API/users/{username}/events/
-      
+		
+                $user = htmlspecialchars(@$_GET["index"]);
+                //hakeeko käyttäjä omia tietojaan?
+                if(isAuthorized($user) != true){
+                    die();
+                }
+            
+            
                 $parameter = GetUserEvents($_GET["index"]);
 
                 if($parameter == null){
@@ -402,6 +454,14 @@ if(empty($_GET["type"])){
 		    }
 		    */
 		    
+            $user = htmlspecialchars(@$_GET["index"]);
+            
+            //hakeeko käyttäjä omia tietojaan?
+            if(isAuthorized($user) != true and $requestMethod =! "POST"){
+                die();
+            }
+            
+            
             switch($requestMethod){
                 case "GET":
                     $parameter = GetUserData($_GET["index"]);
@@ -546,8 +606,13 @@ if(empty($_GET["type"])){
             break;
         case "users":
 		    
-		//admin=?
-		    
+            $user = $_COOKIE["user"];
+		    //admin=?
+		    if(isUserAdmin($user) != true){
+                Response(404, "You are not a admin", null);
+                die();
+            } 
+                
             //API/users/
             if($_SERVER['REQUEST_METHOD'] == "GET"){
                 
@@ -567,16 +632,14 @@ if(empty($_GET["type"])){
             break;
             
         case "EventsSharedTo":
-             /*
-		    if($_GET["index"] != $_COOKIE["user"]){
-		    	Response("404", "You can only look for your own data", null);
-			break;
-		    }
-		    */
+            $user = htmlspecialchars(@$_GET["index"]);
+            //hakeeko käyttäjä omia tietojaan?
+            if(isAuthorized($user) != true){
+                die();
+            }
 		    
             if($_SERVER['REQUEST_METHOD'] == "GET"){
                 //user we want
-                $user = $_GET["index"];
                 $event_header = $_GET["header"];
                 $usernames = EventSharedToUsers($event_header, $user);
                 
@@ -593,16 +656,15 @@ if(empty($_GET["type"])){
             }
             break;
             case "SharedToMe":
-             /*
-		    if($_GET["index"] != $_COOKIE["user"]){
-		    	Response("404", "You can only look for your own data", null);
-			break;
-		    }
-		    */
+           
+            $user = htmlspecialchars(@$_GET["index"]);
+                //hakeeko käyttäjä omia tietojaan?
+                if(isAuthorized($user) != true){
+                    die();
+                }
 		    
             if($_SERVER['REQUEST_METHOD'] == "GET"){
                 //user we want
-                $user = $_GET["index"];
                 $events = GetSharedEvents($user);
                 
                 if(!empty($events)){
@@ -618,16 +680,14 @@ if(empty($_GET["type"])){
             
         case "SharedEvents":
             
-		  /*
-		    if($_GET["user"] != $_COOKIE["user"]){
-		    	Response("404", "You can only look for your own data", null);
-			break;
-		    }
-		    */
+		  $user = htmlspecialchars(@$_GET["index"]);
+            //hakeeko käyttäjä omia tietojaan?
+            if(isAuthorized($user) != true){
+                die();
+            }
 		    
                 if($_SERVER['REQUEST_METHOD'] == "GET"){
                 
-                $user = $_GET["index"];
                 $events = GetEventsSharedByUser($user);
                 
                 if(!empty($events)){
@@ -640,13 +700,20 @@ if(empty($_GET["type"])){
                 Response(404, "Invalid http type", null);
             }
             break;
+            
         case "eventSpef":
+            
+            
+                $user = htmlspecialchars(@$_GET["user"]);
+                //hakeeko käyttäjä omia tietojaan?
+                if(isAuthorized($user) != true){
+                    die();
+                }
             
             if($_SERVER['REQUEST_METHOD'] == "GET"){
                 //index.php?type=eventSpef&user=$1&start=$2&end=$3search_type=$3&apikey=$4
                 $start = $_GET["start"];
                 $end = $_GET["end"];
-                $user = $_GET["user"];
                 $type = @$_GET["search_type"];
                 
                 
@@ -672,7 +739,7 @@ if(empty($_GET["type"])){
                 
   
                 if($events === false or empty($events)){
-                    Response("404", "No events found", false);
+                    Response("404", "No events found", null);
                 } else {
                     Response("200", "Events found", $events);
                 }
@@ -684,12 +751,15 @@ if(empty($_GET["type"])){
         case "Share":
 			
             //event id = eventid, user whos event is shared 
+            //hakeeko käyttäjä omia tietojaan?
+            if(isAuthorized($_COOKIE["user"]) != true){
+                die();
+            }
+            
             $eventID = $_GET["eventid"];
 			$httpMethod = $_SERVER['REQUEST_METHOD'];
             $target_user = @$_GET["selecteduser"];
-            $eventID = $_GET["eventid"];
-                
-                    
+                        
 			switch($httpMethod){
 				case "POST":
 					
@@ -765,21 +835,37 @@ reg_match
 
 //used to read input when using http method PUT
 function GetInput(){
-//script will read x-www-form-urlencoded data
-$input = file_get_contents('php://input');
-$input = urldecode($input);
-$array = explode("&", $input);
-$array2 = array();
-$parameter = array();
-foreach($array as $field){
-    $parameter = explode("=", $field);
-    $array2[$parameter[0]] = $parameter[1];
+    //script will read x-www-form-urlencoded data
+    $input = file_get_contents('php://input');
+    $input = urldecode($input);
+    $array = explode("&", $input);
+    $array2 = array();
+    $parameter = array();
+    foreach($array as $field){
+        $parameter = explode("=", $field);
+        $array2[$parameter[0]] = $parameter[1];
+    }
+
+    $input = $array2;
+    return $input;
+
+    //input[firstname] = X
 }
 
-$input = $array2;
-return $input;
-
-//input[firstname] = X
+function isAuthorized($username){
+    $user = $_COOKIE["user"];
+    $token = $_COOKIE["token"];
+    
+    $username = htmlspecialchars($username);
+    $user = htmlspecialchars($user);
+    
+    if($user == $username or isUserAdmin($user)){
+        return true;
+    } else {
+        Response(404, "You have no access to this element", false);
+        return false;
+    }
+    
 }
 
 function Response($status, $status_message, $data){

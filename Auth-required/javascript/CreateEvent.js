@@ -244,7 +244,31 @@
     function GetUsers(parent, event){
 
         try{
+            
+            var cookies = GetCookies();
+            console.log(cookies);
 
+            var apikey = "";
+            var user_cookie = "";
+
+            for(var x = 0; x < cookies.length; x++){
+
+                        var help2 = cookies[x].split("=");
+                        //console.log(help2);
+                        var helper = help2[0] .replace(" ", "");
+
+                        if(helper == "user"){
+                            user_cookie = help2[1];
+                        }
+
+                        if(helper == "token"){
+                            apikey = help2[1];
+                        }
+
+            }
+            
+            
+            
             var user = document.getElementById("osallistujafield").value;
 
             var users2 = document.getElementById("users");
@@ -262,10 +286,12 @@
         } else {
 
         $.ajax({
-            url: '../API/php-scripts/search-user.php?user=' + user, method: "GET"
+            url: '../API/index.php?type=search_user&search_type=list&param=' + user + "&apikey=" + apikey, method: "GET"
              }).fail(function (data) {
                     console.log("fail!");
                     console.log(data.responseText);
+                    console.log(data);
+                    
 
             }).done(function (data) {
 
@@ -310,7 +336,7 @@
                         };
 
                         a.href = "#";
-                        a.textContent = data.data[x].username;
+                        a.textContent = data.data[x];
                         a.tagName = "option";
 
                         //console.log(data.data[x].username);
@@ -335,7 +361,7 @@
 
                 } else {
                     console.log("Error or no data found");
-                    //console.log(data);
+                    console.log(data);
                 }
 
                 });
@@ -494,11 +520,24 @@
     var cookies = GetCookies();
     console.log(cookies);
 
-    var help1 = cookies[0].split("=");
-    var apikey = help1[1];
-
-    var help2 = cookies[1].split("=");
-    var user = help2[1];
+    var apikey = "";
+    var user = "";
+        
+    for(var x = 0; x < cookies.length; x++){
+                
+                var help2 = cookies[x].split("=");
+                //console.log(help2);
+                var helper = help2[0] .replace(" ", "");
+                
+                if(helper == "user"){
+                    user = help2[1];
+                }
+                
+                if(helper == "token"){
+                    apikey = help2[1];
+                }
+                    
+    }
 
     console.log(apikey);
     console.log(user);
