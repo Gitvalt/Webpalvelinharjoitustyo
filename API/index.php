@@ -39,20 +39,22 @@ if(empty($_GET["type"])){
                 break;
             case "user":
                 break;
+            case "search_user":
+                
+                break;
             default:
                 Response(404, "For creating a user, user POST header", null);
                 die();
                 break;
         }
         
-    }
-    
+    } else {
     //Jos käyttäjä on kirjautunut sisään
     if(isValidToken($_GET["apikey"]) == false){
-        Response(400, "You have to login", null);
+        Response(400, "Incorrect apikey. You have to relogin", null);
         die();
     }
-    
+    }
     
     $parameter;
 
@@ -101,8 +103,7 @@ if(empty($_GET["type"])){
             $index = $_GET["param"];
             
             $users = SearchUsers($index);
-            $type = @$_GET["search_type"];
-            
+            $type = $_GET["search_type"];
             
             
             if(count($users) == 0){
@@ -234,14 +235,10 @@ if(empty($_GET["type"])){
                     break;
                 case "POST":
                     //create event for user. index = username
-		    
-		     /*
-		    if($_GET["user"] != $_COOKIE["user"]){
-		    	Response("404", "You can only create events for yourself", null);
-			break;
-		    }
-		    */
-			        $user = htmlspecialchars(@$_GET["user"]);
+		            
+                    
+                    
+			        $user = htmlspecialchars($_GET["user"]);
                     //hakeeko käyttäjä omia tietojaan?
                     if(isAuthorized($user) != true){
                         die();
@@ -252,14 +249,14 @@ if(empty($_GET["type"])){
 
                         //all required data exists
                         //validate input
-                        if(!empty(@$_GET["index"])){
-                            $header = @$_GET["index"];
+                        if(!empty($_GET["index"])){
+                            $header = $_GET["index"];
                         } else {
                             $header = "";
                         }
 
-                        if(!empty(@$_POST["description"])){
-                            $desc = @$_POST["description"];
+                        if(!empty($_POST["description"])){
+                            $desc = $_POST["description"];
                         } else {
                             $desc = "";
                         }
@@ -271,8 +268,8 @@ if(empty($_GET["type"])){
                         $EventEnd =  new DateTime($_POST["enddatetime"]);
                         $FormatEnd = $EventEnd->format("Y-m-d H:i:s");
 
-                        if(!empty(@$_POST["location"])){
-                            $location = @$_POST["location"];
+                        if(!empty($_POST["location"])){
+                            $location = $_POST["location"];
                         } else {
                             $location = "";
                         }
@@ -292,7 +289,7 @@ if(empty($_GET["type"])){
                     
                 case "PUT":
 			 
-			         $user = htmlspecialchars(@$_GET["user"]);
+			         $user = htmlspecialchars($_GET["user"]);
                     //hakeeko käyttäjä omia tietojaan?
                     if(isAuthorized($user) != true){
                         die();
@@ -378,7 +375,7 @@ if(empty($_GET["type"])){
                 case "DELETE":
 			  
 			             
-                        $user = htmlspecialchars(@$_GET["user"]);
+                        $user = htmlspecialchars($_GET["user"]);
                     //hakeeko käyttäjä omia tietojaan?
                     if(isAuthorized($user) != true){
                         die();
@@ -426,7 +423,7 @@ if(empty($_GET["type"])){
             
         case "userEvents":
 		
-                $user = htmlspecialchars(@$_GET["index"]);
+                $user = htmlspecialchars($_GET["index"]);
                 //hakeeko käyttäjä omia tietojaan?
                 if(isAuthorized($user) != true){
                     die();
@@ -445,22 +442,17 @@ if(empty($_GET["type"])){
    	case "user":
             
             $requestMethod = $_SERVER['REQUEST_METHOD'];
+            
             // When creating event index = header, else = id         
             
-	     	/*
-		    if($_GET["index"] != $_COOKIE["user"]){
-		    	Response("404", "You can only access you own information", null);
-			break;
-		    }
-		    */
-		    
-            $user = htmlspecialchars(@$_GET["index"]);
+            $user = htmlspecialchars($_GET["index"]);
             
             //hakeeko käyttäjä omia tietojaan?
+            /*
             if(isAuthorized($user) != true and $requestMethod =! "POST"){
                 die();
             }
-            
+            */
             
             switch($requestMethod){
                 case "GET":
@@ -474,61 +466,100 @@ if(empty($_GET["type"])){
                 break;
                     
                 case "POST":
-                        $id = @$_GET["index"];
                         
-                        if(empty($id) or empty($_POST["password"]) or empty($_POST["email"])){
-                            Response(404,"Form data missing", null);
-                        } else {
+                        $username = $_POST["username"];
+                        $error = 0;
+                        $error_list = array();
+                         
+                    if(empty($username) or empty($_POST["password"]) or empty($_POST["email"])){
+                            Response(404,"username, password, firstname, lastname and email have to defined.", false);
+                        } 
+                        else {
                             
-                            if(!empty(@$_POST["password"])){
+                            if(!empty($_POST["password"])){
                                     //! ENCRYPTAUS
                                     $password = sha1($_POST["password"]);
+                                     //[A-ZÖÄÅ].[a-zöäå]+    
+                                    $valid = preg_match("/.{8,25}/", $_POST["password"]);
+                                    if($valid == false){
+                                        array_push($error_list, "Password must be 8 - 25 long");
+                                        $error++;
+                                    }
                                     
                             } else {
                                     Response(404, "password not defined", null);
                             }
 
-                            if(!empty(@$_POST["firstname"])){
+                            if(!empty($_POST["firstname"])){
                                     $firstname = $_POST["firstname"];
+                                
+                                    $valid = preg_match("/[a-zA-ZöäåÖÄÅ\-]+/", $firstname);
+                                    if($valid == false){
+                                        array_push($error_list, "firstname must be only letters. Can contain letter -");
+                                        $error++;
+                                    }
+                                
                                 } else {
                                     $firstname = "";
                             }
 
-                            if(!empty(@$_POST["lastname"])){
+                            if(!empty($_POST["lastname"])){
                                     $lastname = $_POST["lastname"];
+                                    $valid = preg_match("/[a-zA-ZöäåÖÄÅ\-]+/", $lastname);
+                                    if($valid == false){
+                                        array_push($error_list, "lastname must be only letters. Can contain letter -");
+                                        $error++;
+                                    }
                                 } else {
                                     $lastname = "";
                             }
 
-                            if(!empty(@$_POST["email"])){
+                            if(!empty($_POST["email"])){
                                     $email = $_POST["email"];
+                                    $valid = preg_match("/^[a-zA-ZöäåÖÄÅ0-9]+@[a-zA-ZöäåÖÄÅ0-6]+\.[a-zA-ZöäåÖÄÅ0-6]+/", $email);
+                                    if($valid == false){
+                                        array_push($error_list, "email is not in valid format");
+                                        $error++;
+                                    }
                                 } else {
                                     Response(404, "email not defined", null);
                             }
 
-                            if(!empty(@$_POST["phone"])){
+                            if(!empty($_POST["phone"])){
                                     $phone = $_POST["phone"];
+                                    $valid = preg_match("/^[0-9 \-+]+$/", $phone);
+                                    if($valid == false){
+                                        array_push($error_list, "phonenumber is in incorrect format. Can contain numbers or whitespace or -");
+                                        $error++;
+                                    }
                                 } else {
                                     $phone = "";                }
 
-                            if(!empty(@$_POST["address"])){
+                            if(!empty($_POST["address"])){
                                     $address = $_POST["address"];
+                                    $valid = preg_match("/[a-zA-ZöäåÖÄÅ0-9 ]+/", $firstname);
+                                    if($valid == false){
+                                        array_push($error_list, "Address in incorrect format. Can contain letters, numbers and whitespaces");
+                                        $error++;
+                                    }
                                 } else {
                                     $address = "";
                             }
-
-                            if(empty($id) or empty($password) or empty($email)){
-                                Response(404,"Form data missing", null);
-                            } else {
-
-                                $respond = InsertUser($id, $password, $firstname, $lastname, $email, $phone, $address);
-
-                                if($respond === true){
-                                    Response(200, "Response ok", $respond);
-                                } else {
-                                    Response(400, "Response false", $respond);
-                                }
-                            }
+                                if($error == 0){
+                                    $respond = InsertUser($username, $password, $firstname, $lastname, $email, $phone, $address);
+                                    } else {
+                                    
+                                        $response = false;
+                                        Response(400, "Error input not correct", $error_list);
+                                        die();    
+                                    }
+                            
+                                    if($respond === true){
+                                        Response(200, "Response ok", $respond);
+                                    } else {
+                                        Response(400, "Creating user failed", $respond);
+                                    }
+                            
                         }
                 break;
                 
@@ -545,37 +576,38 @@ if(empty($_GET["type"])){
                             }
 
                             if(!empty($input["firstname"])){
+                                
                                 $firstname = $input["firstname"];
                             } else {
                                 $firstname = $user_data["firstname"];
                             }
 
                             if(isset($input["lastname"])){
-                                $lastname = @$input["lastname"];
+                                $lastname = $input["lastname"];
                             } else {
                                 $lastname = $user_data["lastname"];
                             }
 
                             if(isset($input["password"])){
-                                $password = @$input["password"];
+                                $password = $input["password"];
                             } else {
                                 $password = $user_data["password"];
                             }
 
                             if(isset($input["address"])){
-                                $address = @$input["address"];
+                                $address = $input["address"];
                             } else {
                                 $address = $user_data["address"];
                             }
 
                             if(isset($input["phone"])){
-                                $phone = @$input["phone"];
+                                $phone = $input["phone"];
                             } else {
                                 $phone = $user_data["phone"];
                             }
 
                             if(isset($input["email"])){
-                                $email = @$input["email"];
+                                $email = $input["email"];
                             } else {
                                 $email = $user_data["email"];
                             }
@@ -632,7 +664,7 @@ if(empty($_GET["type"])){
             break;
             
         case "EventsSharedTo":
-            $user = htmlspecialchars(@$_GET["index"]);
+            $user = htmlspecialchars($_GET["index"]);
             //hakeeko käyttäjä omia tietojaan?
             if(isAuthorized($user) != true){
                 die();
@@ -657,7 +689,7 @@ if(empty($_GET["type"])){
             break;
             case "SharedToMe":
            
-            $user = htmlspecialchars(@$_GET["index"]);
+            $user = htmlspecialchars($_GET["index"]);
                 //hakeeko käyttäjä omia tietojaan?
                 if(isAuthorized($user) != true){
                     die();
@@ -680,7 +712,7 @@ if(empty($_GET["type"])){
             
         case "SharedEvents":
             
-		  $user = htmlspecialchars(@$_GET["index"]);
+		  $user = htmlspecialchars($_GET["index"]);
             //hakeeko käyttäjä omia tietojaan?
             if(isAuthorized($user) != true){
                 die();
@@ -704,7 +736,7 @@ if(empty($_GET["type"])){
         case "eventSpef":
             
             
-                $user = htmlspecialchars(@$_GET["user"]);
+                $user = htmlspecialchars($_GET["user"]);
                 //hakeeko käyttäjä omia tietojaan?
                 if(isAuthorized($user) != true){
                     die();
@@ -714,7 +746,7 @@ if(empty($_GET["type"])){
                 //index.php?type=eventSpef&user=$1&start=$2&end=$3search_type=$3&apikey=$4
                 $start = $_GET["start"];
                 $end = $_GET["end"];
-                $type = @$_GET["search_type"];
+                $type = $_GET["search_type"];
                 
                 
                 switch($type){
@@ -758,7 +790,7 @@ if(empty($_GET["type"])){
             
             $eventID = $_GET["eventid"];
 			$httpMethod = $_SERVER['REQUEST_METHOD'];
-            $target_user = @$_GET["selecteduser"];
+            $target_user = $_GET["selecteduser"];
                         
 			switch($httpMethod){
 				case "POST":
@@ -824,7 +856,7 @@ reg_match
 //password any min 8 max X
 //firstname letters or -
 //lastname letters
-//email X@X.X
+//email XX.X
 //phone numbers and optional + at start
 //address
 

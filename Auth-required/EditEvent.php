@@ -41,32 +41,32 @@ $message = "";
         
         $shared = false;
         
-        if(isset($_GET["id"]) or isset($_POST["otsikko"])){
+        if(!empty($_GET["id"]) or isset($_POST["otsikko"])){
         
-            $response = GetEventData($_GET["id"]);
             
-            if(empty($response)){
-                die("Tapahtumaa ei löydetty!");
+            if(!empty($_GET["id"])){
+                $response = GetEventData(@$_GET["id"]);    
             } else {
-                $header = $response["header"];    
+                if(!isset($_POST["otsikko"])){
+                    die("Tapahtumaa ei löydetty!");
+
+                    } else {
+
+                    $header = $_POST["original"];
+                    
+                    $response = GetEventDataHeader($header, $_COOKIE["user"]);
+                }
             }
-            
-            if(isset($_POST["otsikko"])){
-                $header = $_POST["original"];
-            }
-            
-            
-            
+                
             $validator = GetSharedEvents($_COOKIE["user"]);
             $foo = false;
-            
+            /*
             echo "<pre>";
-            
-            //print_r($response);
-            //print_r($validator);
-            
+            print_r($response);
+            print_r($validator);
             echo "</pre>";
-            
+            */     
+        
             if(empty($validator) and $_COOKIE["user"] != $response["owner"]){
                 
                 if($_COOKIE["user"] != $response["owner"]){

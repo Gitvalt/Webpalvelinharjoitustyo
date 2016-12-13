@@ -15,11 +15,19 @@
             </li>
             
             <li>
+                Julkisen puolen syntax-highlighter:<br>
                 <a href="php-syntax-highlighter.php">php-syntax-highlighter</a><br>
+                <hr>
+                Kirjautumisen vaativan puolen syntax-highlighter:<br>
+                <a href="Auth-required/php-syntax-highlighter.php">php-syntax-highlighter</a><br>
+                <hr>
+                REST-rajapinnan syntax-highlighter:<br>
+                <a href="API/php-syntax-highlighter.php">php-syntax-highlighter</a><br>
+                
             </li>
             
             <li>
-                <a href="loppuraportti.html">loppuraportti</a><br>
+                <a href="../loppuraportti.php">loppuraportti</a><br>
             </li>
             
             

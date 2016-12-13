@@ -93,7 +93,7 @@ require("isValidUser.php");
             } 
         } else {
                 echo "<tr>";
-                        echo "<td colspan=5>" . "No events found" . "</td>";
+                        echo "<td colspan=6>" . "No events found" . "</td>";
                 echo "</tr>";
             }
         

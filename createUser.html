@@ -4,130 +4,286 @@
 <head>
 	<meta charset="UTF-8">
 	<title>database testi</title>
+    <link href="style/default.css" rel="stylesheet" type="text/css">
+    <link href="style/createuser.css" rel="stylesheet" type="text/css">
+    <script src="jquery/jquery-3.1.0.min.js"></script>
+    
     <script>
         
-        function GetCookies(){
-
-            var lookfor;
-
-            //console.log(document.cookie);
-            var slipcookie = document.cookie.split(";");
+        var username = document.getElementById("username");
+        var username_error = document.getElementById("error_user");
         
-            return slipcookie;
-        }
+        var password1 = document.getElementById("password");
+        var password2 = document.getElementById("password_again");
         
-        var cookies = GetCookies();
-        console.log(cookies);
+        var firstname = document.getElementById("first");
+        var lastname = document.getElementById("last");
         
-        var help1 = cookies[1].split("=");
-        var apikey = help1[1];
+        var address = document.getElementById("address");
+        var phone = document.getElementById("phone");
+        var email = document.getElementById("email");
         
-        var help2 = cookies[2].split("=");
-        var user = help2[1];
         
-        console.log(apikey);
-        console.log(user);
-        
-		var api = "http://192.168.100.51/harkkatyo/API/";
+		var api = "./API/index.php?";
 		//index = username, apikey = cookie.token
         //./API/index.php?type=user&index=$1&apikey=$2
+        function DoesUsernameExist(){
+            //console.log(api);
+            var username = document.getElementById("username");
+            apiquery = api + "param=" + username.value + "&type=search_user&search_type=list";
+            
+            if(username.value != ""){
+            
+                $.ajax({
+                url: apiquery, method: "GET"
+                 }).fail(function (data) {
+                        console.log("fail!");
+                        console.log(data.responseText);
+
+                }).done(function (data) {
+
+                    //var x = data.kentta["geometry"]["location"];
+
+                    var array = [];
+
+                    //if events found
+                    if(data.status === 200){
+                        //console.log("Data found");
+                        //console.log(data);
+
+                        for(x in data.data){
+                            //username already exists
+                            if(username.value == data.data[x]){
+                                document.getElementById("error_user").textContent = "Username exists";
+                                return true;
+                            }
+                        }
+                        document.getElementById("error_user").textContent = "";
+                        return false;
+
+                    }
+                });
+            }
+        }
         
-		function getUsers(){
-			var out = document.getElementById("output");
-			var xhttp = new XMLHttpRequest();
-			
-			var a = "users/";
-			
-			var url = api+a;
-			
-			xhttp.open("GET", url, true);
-			xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-			xhttp.onreadystatechange = function() {
-				if (this.readyState == 4 && this.status == 200) {
-					
-					out.innerHTML += this.responseText;
-				}
-			};
-			xhttp.send();
-		}
-		function getUser(){
-			var out = document.getElementById("output");
-			var xhttp = new XMLHttpRequest();
-			
-			var a = "users/";
-			
-			var name = document.getElementsByName("getUName")[0].value;
-			
-			var url = api+a+name;
-			
-			xhttp.open("GET", url, true);
-			xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-			xhttp.onreadystatechange = function() {
-				if (this.readyState == 4 && this.status == 200) {
-					
-					out.innerHTML += this.responseText;
-				}
-			};
-			xhttp.send();
-		}
-		function addUser(){
-			var out = document.getElementById("output");
-			var xhttp = new XMLHttpRequest();
-			
-			var a = "users/";
-			
-			var name = document.getElementsByName("addUName")[0].value;
-			var pass = document.getElementsByName("addPWd")[0].value;
-			var email = document.getElementsByName("addEmail")[0].value;
-			var fName = document.getElementsByName("addFName")[0].value;
-			var lName = document.getElementsByName("addLName")[0].value;
-			var phone = document.getElementsByName("addPhone")[0].value;
-			var addr = document.getElementsByName("addAddr")[0].value;
-			
-			var url = api+a+name;
-			
-			xhttp.open("POST", url, true);
-			xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-			xhttp.onreadystatechange = function() {
-				if (this.readyState == 4 && this.status == 200) {
-					
-					out.innerHTML += this.responseText;
-				}
-			};
-			xhttp.send("password=" + pass + "&" +
-			"email=" + email + "&" +
-			"firstname=" + fName + "&" +
-			"lastname=" + lName + "&" +
-			"phone=" + phone + "&" +
-			"address=" + addr
-			);
-		}
-		function delUser(){
-			var out = document.getElementById("output");
-			var xhttp = new XMLHttpRequest();
-			
-			var a = "users/";
-			
-			var name = document.getElementsByName("delUName")[0].value;
-			var pass = document.getElementsByName("delPWd")[0].value;
-			
-			var url = api+a+name;
-			
-			xhttp.open("DELETE", url, true);
-			xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-			xhttp.onreadystatechange = function() {
-				if (this.readyState == 4 && this.status == 200) {
-					
-					out.innerHTML += this.responseText;
-				}
-			};
-			xhttp.send();
-		}
+        function DoesEmailExist(){
+            
+            
+            var email = document.getElementById("email");
+            
+            console.log(api);
+            console.log(document.getElementById("email").value);
+            
+            apiquery = api + "param=" + email.value + "&type=search_user&search_type=list";
+            
+            if(email.value != ""){
+            
+                $.ajax({
+                url: apiquery, method: "GET"
+                 }).fail(function (data) {
+                        console.log("fail!");
+                        console.log(data.responseText);
+
+                }).done(function (data) {
+
+                    //var x = data.kentta["geometry"]["location"];
+
+                    var array = [];
+
+                    //if events found
+                    if(data.status === 200){
+                        //console.log("Data found");
+                        //console.log(data);
+
+                        for(x in data.data){
+                            //username already exists
+                            if(email.value == data.data[x]){
+                                document.getElementById("email_error").textContent = "Email already attached to a account";
+                                return true;
+                            }
+                        }
+                        document.getElementById("email_error").textContent = "";
+                        return false;
+
+                    }
+                });
+            }
+        }
+        
+        function validateInput(){
+            var username = document.getElementById("username");
+            var username_error = document.getElementById("error_user");
+
+            var password1 = document.getElementById("password");
+            var password2 = document.getElementById("password_again");
+
+            var firstname = document.getElementById("first");
+            var lastname = document.getElementById("last");
+
+            var address = document.getElementById("address");
+            var phone = document.getElementById("phone");
+            var email = document.getElementById("email");
+
+        
+		var api = "./API/index.php?";
+            var error_counter = 0;
+            var error_list = [];
+            
+            if(DoesUsernameExist() == true || DoesEmailExist() == true){
+                error_counter += 1;
+                error_list.push("username or email exists");
+            } 
+            
+            if(password1.value == null || password2.value == null || password1.value != password2.value){
+                error_counter += 1;
+                error_list.push("password");
+            } 
+            
+            if(firstname.value == null || lastname.value == null){
+                error_counter += 1;
+                error_list.push("name");
+            }
+            
+            if(email.value == null){
+                error_counter += 1;
+                error_list.push("email");
+            }
+            
+            console.log(error_list);
+            
+            if(error_counter > 0){
+                //errors detected! do not submit
+                console.log("Errors detected!");
+            } else {
+                
+                apiquery = api + "index=" + username.value + "&type=user";
+				
+                //huoleksi jää middle man hyökkäys
+                $.ajax({
+                url: apiquery, method: "POST", data: {username: username.value, password: password1.value, firstname: firstname.value, lastname: lastname.value, address: address.value, phone: phone.value, email: email.value}
+                 }).fail(function (data) {
+                        
+                        var responsebox = document.getElementById("ServerResponse");
+                    
+                        responsebox.textContent = "";
+                    
+                        console.log("fail!");
+                        console.log(data.responseText);
+                    
+                        var message = data.responseText.split(":[");
+                        console.log(message[1]);
+                        var message_2 = message[1].split("]}");
+                        
+                        
+                        var text = document.createTextNode(message_2[0]);
+                    
+                        responsebox.appendChild(text);
+                        
+                    
+                }).done(function (data) {
+                    console.log(data);
+    
+                    var array = [];
+
+                    if(data.status === 200){
+                        
+                        window.alert("Käyttäjän luominen onnistui!");
+                        window.location.assign("login.php");
+						console.log("onnistui!");
+                        
+
+                    }
+                });
+                
+                
+                console.log("No errors!");
+            }
+            
+            
+        }
+        
+        function validoiPassword(){
+            
+        }
+        
+        function validoiNames(){
+            
+        }
+        
+        
+        function validoiemail(){
+            var email = document.getElementById("email").value;
+            
+            if(email == ""){
+                document.getElementById("email_error").textContent = "Error email empty!";
+            } else {
+                document.getElementById("email_error").textContent = "";
+            }
+            
+        }
+        
     </script>
 </head>
 
 <body>
-	<button onclick="getUsers()">All</button>
+    
+    <h1>Käyttäjän luominen</h1>
+    <form method="post">
+	<table>
+        
+        <div id="account">
+            <tr>
+                <td>Käyttäjätunnus*</td>
+                <td><input type="text" id="username" name="kayttajatunnu" required onkeyup="DoesUsernameExist()"></td>
+                <td id="error_user"></td>
+            </tr>
+            <tr>
+                <td>Salasana*</td>
+                <td><input type="password" id="password" required name="salasana"></td>
+            </tr>
+            <tr>
+                <td>Salasana uudestaan*</td>
+                <td><input type="password" id="password_again" required name="salasana_2"></td>
+                <td id="password_error"></td>
+            </tr>
+        </div>
+        <div id="personal">
+            <tr>
+                <td>Etunimi*</td>
+                <td><input type="text" id="first" required name="etunimi"></td>
+                <td id="first_error"></td>
+            </tr>
+            <tr>
+                <td>Sukunimi*</td>
+                <td><input type="text" id="last" required name="sukunimi"></td>
+                <td id="last_error"></td>
+            </tr>
+            <tr>
+                <td>Osoite</td>
+                <td><input type="text" id="address" name="osoite"></td>
+            </tr>
+            <tr>
+                <td>Puhelinnumero</td>
+                <td><input type="tel" id="phone" name="puhelin"></td>
+            </tr>
+            <tr>
+                <td>Sähköposti*</td>
+                <td><input type="email" id="email" required name="sahkoposti" onkeyup="DoesEmailExist(); validoiemail();"></td>
+                <td id="email_error"></td>
+            </tr>
+        </div>
+        <!--google api captcha-->
+        <tr>
+            <td>Luo käyttäjä</td>
+            <td><input type="button" value="Tallenna käyttäjä" onclick="validateInput()"></td>
+        </tr>
+    </table>
+	</form>
+    <a href="index.php">Takaisin etusivulle</a>
+    <p id="ServerResponse">
+    </p>
+	<!--
+    <button onclick="getUsers()">All</button>
 	<br>
 	<input type="text" name="getUName" placeholder="name">
 	<button onclick="getUser()">Get</button>
@@ -145,6 +301,7 @@
 	<input type="text" name="delPWd" placeholder="pwd">
 	<button onclick="delUser()">Del</button>
 	<p id="output"></p>
+    -->
 </body>
 
 </html>

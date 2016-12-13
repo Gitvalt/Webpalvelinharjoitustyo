@@ -68,7 +68,6 @@ if(isset($_POST["submit"])){
     }
     
     </script>
-    
     <body>
         <!--navbar.php-->
         <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
@@ -91,7 +90,7 @@ if(isset($_POST["submit"])){
         echo @$_SESSION["token"] . "<br>";
         echo $message . "<br><br>";
         ?>
-
+        <a href="createUser.html">Luo uusi käyttäjä</a><br>
         <a href="index.php">Takaisin etusivulle</a>
         <!--footer.php-->
     </body>

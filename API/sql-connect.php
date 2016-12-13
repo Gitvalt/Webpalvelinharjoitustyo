@@ -214,12 +214,12 @@ function GetEventData($event){
 function GetEventDataHeader($eventheader, $user){
      try {
         $conn = Connect();
-        $event = htmlspecialchars($event);
+        $event = htmlspecialchars($eventheader);
         $statement = $conn->prepare("SELECT * FROM event where header=? and owner=?;");
         $statement->bindValue(1, $eventheader, PDO::PARAM_STR);
         $statement->bindValue(2, $user, PDO::PARAM_STR);
         $statement->execute();
-        $tulos = $statement->fetchALL(PDO::FETCH_ASSOC);;
+        $tulos = $statement->fetch(PDO::FETCH_ASSOC);;
         return $tulos;
 
     } catch(PDOException $e){

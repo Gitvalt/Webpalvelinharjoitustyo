@@ -134,9 +134,10 @@ require("isValidUser.php");
 									$message .= "<b>Tapahtuman luominen onnistui!</b><br>";
 									$index = $function;
 									//share event
-
+                                    print_r($index);
 									$shareusers = @$_POST["forPHP"];
                                     if(count($shareusers) != 0){
+                                        
 									$response = ShareFunction($id["id"], $shareusers);
 									
                                     if($response === false){
