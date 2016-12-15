@@ -433,7 +433,7 @@ require("isValidUser.php");
                 if(week.length == 7){
                         helpArray.push(week);    
                         week = [];
-                        element.push(apudate.getFullYear());
+                        element.push((apudate.getFullYear() + "-" + apudate.getMonth() + "-" + apudate.getDate()));
                         element.push(apudate.getMonth());
                         element.push(apudate.getDate());
                         
@@ -441,7 +441,7 @@ require("isValidUser.php");
                         element = [];
                         
                     } else {
-                        element.push(apudate.getFullYear());
+                        element.push((apudate.getFullYear() + "-" + apudate.getMonth() + "-" + apudate.getDate()));
                         element.push(apudate.getMonth());
                         element.push(apudate.getDate());
                         
@@ -721,48 +721,48 @@ require("isValidUser.php");
                         //console.log("events");
                         //console.log(events);
                         //console.log(key);
-                        //console.log(key);
+                        console.log(key);
                         
                         return(
                                 <tr>
                                 
-                                    <td key={key[0][2]}>
+                                    <td key={key[0][0]}>
                                     {key[0][2]}<br/>
                                     <hr/>
                                     {monday}
                                     </td>
                                     
-                                    <td>
+                                    <td key={key[1][0]}>
                                     {key[1][2]}<br/>
                                     <hr/>
                                     {tuesday}
                                     </td>
                                     
-                                    <td>
+                                    <td key={key[2][0]}>
                                     {key[2][2]}<br/>
                                     <hr/>
                                     {wendsday}
                                     </td>
                                     
-                                    <td>
+                                    <td key={key[3][0]}>
                                     {key[3][2]}<br/>
                                     <hr/>
                                     {thursday}
                                     </td>
                                     
-                                    <td>
+                                    <td key={key[4][0]}>
                                     {key[4][2]}<br/>
                                     <hr/>
                                     {friday}
                                     </td>
                                     
-                                    <td>
+                                    <td key={key[5][0]}>
                                     {key[5][2]}<br/>
                                     <hr/>
                                     {saturday}
                                     </td>
                                     
-                                    <td>
+                                    <td key={key[6][0]}>
                                     {key[6][2]}<br/>
                                     <hr/>
                                     {sunday}
@@ -799,7 +799,11 @@ require("isValidUser.php");
                     </div>
                     );
                     
-            }, specificDate: function(value){
+            }, getkey: function(x){
+                console.log("x value: " + x);
+                console.log(this.keys);
+            },
+            specificDate: function(value){
                 console.log(value);
                 
                 console.log(value.item.valueAsDate);
